@@ -1,0 +1,58 @@
+/* Home page (DESIGN §8.1). Prefixed `.home-*`; tokens only. */
+
+/* ---- Hero ---------------------------------------------------------------------------------- */
+/* Wau enters from below-right, then keeps swaying (its body carries `animate-sway`). §7.4 t=420 */
+@keyframes home-wau-in { from { opacity: 0; translate: 24px 40px; rotate: 10deg; } }
+.home-wau-in { animation: home-wau-in 900ms var(--ease-out-soft) 420ms both; }
+html[data-intro="done"] .home-wau-in { animation: none; }
+
+/* Oyen peeks over the hero search pill: the wrapper clips his body below the pill's top edge. */
+.home-peek { position: absolute; z-index: 10; bottom: calc(100% - 7px); right: 22px; width: 76px; height: 64px; overflow: clip; pointer-events: none; }
+@media (min-width: 1024px) { .home-peek { right: 36px; } }
+.home-peek > svg { display: block; margin-top: 1px; }
+
+/* Search pill example ticker: old example slides up, new one slides in from below (380 ms). */
+.home-example { position: absolute; inset: 0; display: flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.home-example[data-state="in"] { animation: home-ex-in 380ms var(--ease-out-soft) both; }
+.home-example[data-state="out"] { animation: home-ex-out 380ms var(--ease-out-soft) both; }
+@keyframes home-ex-in { from { transform: translateY(100%); opacity: 0; } }
+@keyframes home-ex-out { to { transform: translateY(-100%); opacity: 0; } }
+
+/* ---- Live ticker --------------------------------------------------------------------------- */
+.home-ticker .marquee-track { gap: 0; }
+@media (prefers-reduced-motion: reduce) { .home-ticker-dup, .home-ticker-toggle { display: none !important; } }
+html[data-motion="reduce"] :is(.home-ticker-dup, .home-ticker-toggle) { display: none !important; }
+
+/* ---- Rails inside the framed bands: narrower phone cells so the third card peeks (swipe cue) -- */
+.home-band .rail-track { --rail-col: clamp(136px, 38vw, 188px); }
+@media (min-width: 1024px) { .home-band .rail-track { --rail-col: 216px; } }
+
+/* ---- Promo band hem: rebung strip in jambu ---------------------------------------------- */
+.home-hem { height: 14px; background: var(--color-jambu) var(--pat-rebung) repeat-x bottom / 24px 14px; border-bottom: 2px solid var(--color-ink); }
+
+/* ---- Explainer steps (§7.5 #7): transitions, not animations, so Activity never replays them -- */
+.home-xp-sync { transition: rotate 600ms var(--ease-out-soft); rotate: 360deg; }
+.home-xp-strike { transform-origin: left center; transition: transform 240ms var(--ease-out-soft) 120ms; }
+.home-xp-new { transition: opacity 200ms var(--ease-out-soft) 380ms, scale 320ms var(--ease-pop) 380ms; }
+.home-xp-sticker { transition: opacity 200ms var(--ease-out-soft) 520ms, scale 360ms var(--ease-pop) 520ms; }
+[data-active="false"] .home-xp-sync { rotate: 0deg; transition: none; }
+[data-active="false"] .home-xp-strike { transform: scaleX(0); transition: none; }
+[data-active="false"] :is(.home-xp-new, .home-xp-sticker) { opacity: 0; scale: .6; transition: none; }
+[data-active="true"] .home-xp-arrow { animation: home-nudge 900ms var(--ease-in-out-soft) 200ms 1 both; }
+@keyframes home-nudge { 25%, 75% { translate: 3px -3px; } 0%, 50%, 100% { translate: 0 0; } }
+.home-xp-dot { transition: background-color 200ms var(--ease-out-soft), scale 320ms var(--ease-pop); }
+[data-active="false"] .home-xp-dot { scale: .85; }
+[data-active="true"] .home-xp-dot { background-color: var(--color-mangga-tint); }
+
+/* ---- Tier journey (§7.5 #5) ---------------------------------------------------------------- */
+.home-tj-node { transition: scale 360ms var(--ease-pop); }
+[data-active="false"] .home-tj-node { scale: .88; }
+.home-tj-stamp { display: inline-block; transition: opacity 160ms var(--ease-out-soft), scale 420ms var(--ease-pop), rotate 420ms var(--ease-pop); }
+[data-active="false"] .home-tj-stamp { opacity: 0; scale: 1.35; rotate: -11deg; transition: none; }
+.home-tj-ring { position: absolute; inset: -4px; border-radius: 9999px; border: 2px solid var(--color-ink); opacity: 0; pointer-events: none; }
+[data-active="true"] .home-tj-ring { animation: home-ring 420ms var(--ease-out-soft) 80ms both; }
+@keyframes home-ring { from { scale: .6; opacity: .5; } to { scale: 1.25; opacity: 0; } }
+
+/* ---- State chips: two-row horizontal scroller on phones, wraps from md ------------------- */
+.home-states { display: grid; grid-auto-flow: column; grid-template-rows: repeat(2, auto); grid-auto-columns: max-content; width: max-content; gap: 8px; }
+@media (min-width: 768px) { .home-states { display: flex; flex-wrap: wrap; width: auto; } }

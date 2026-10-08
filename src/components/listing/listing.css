@@ -1,0 +1,20 @@
+/* Listing island (/promos, /new). Prefixed `.listing-*`; imported once by product-listing.tsx. */
+
+/* Pending (filters applied before the full list arrived): dim after 120 ms, never instantly. */
+.listing-body { transition: opacity 150ms var(--ease-out-soft); }
+.listing-results[data-pending] > .listing-body { opacity: 0.55; transition-delay: 120ms; }
+
+.listing-progress { position: absolute; inset-inline: 0; top: -10px; border-radius: 9999px; }
+
+/* Filtered results crossfade (DESIGN §6.6): 180 ms, no movement. */
+::view-transition-old(results-promos),
+::view-transition-new(results-promos),
+::view-transition-old(results-new),
+::view-transition-new(results-new) { animation-duration: 180ms; }
+
+/* End-of-list kite floats up once it is revealed. */
+.listing-end .listing-wau { translate: 0 10px; opacity: 0; transition: translate 600ms var(--ease-out-soft), opacity 400ms var(--ease-out-soft); }
+.listing-end.is-in .listing-wau,
+html:not(.reveal-ready) .listing-end .listing-wau { translate: 0 0; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .listing-end .listing-wau { translate: none; opacity: 1; } }
+html[data-motion="reduce"] .listing-end .listing-wau { translate: none; opacity: 1; }

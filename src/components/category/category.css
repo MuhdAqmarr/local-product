@@ -1,0 +1,44 @@
+/* ---- Category tile (DESIGN §6.5): hop off the shelf, squash on press ---- */
+.cat-tile { -webkit-tap-highlight-color: transparent; }
+.cat-lift { transition: transform 200ms var(--ease-pop); }
+.cat-contact { transition: transform 200ms var(--ease-pop), opacity 200ms var(--ease-pop); }
+@media (hover: hover) and (pointer: fine) {
+  .cat-tile:hover .cat-lift { transform: translateY(-6px); }
+  .cat-tile:hover .cat-contact { transform: scaleX(0.85); opacity: 0.6; }
+  .cat-tile:hover .cat-icon { animation: var(--animate-wiggle); }
+}
+.cat-tile:focus-visible { outline: none; }
+.cat-tile:focus-visible .cat-squircle { outline: 3px solid var(--color-telang); outline-offset: 3px; }
+.cat-tile:active .cat-squircle { transform: scale(1.06, 0.92); transition-duration: 90ms; }
+.cat-squircle { transition: transform 160ms var(--ease-out-soft); transform-origin: 50% 100%; }
+
+/* ---- Shelf: every row of tiles stands on a plank (B); labels sit below the plank edge like
+   shelf price strips. Rows are 4 (mobile) / 6 (>= 1024) wide. ---- */
+.cat-shelf { --cols: 4; --gap-x: 8px; --sq: 64px; display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); column-gap: var(--gap-x); row-gap: 22px; }
+@media (min-width: 640px) { .cat-shelf { --gap-x: 16px; } }
+@media (min-width: 1024px) { .cat-shelf { --cols: 6; --gap-x: 24px; --sq: 80px; row-gap: 28px; } }
+
+.cat-cell { position: relative; padding-top: 8px; }
+/* Plank segment: spans half the column gap on each side so a row reads as one board. */
+.cat-cell::after, .cat-cell::before {
+  content: ""; position: absolute; z-index: 0; pointer-events: none;
+  left: calc(var(--gap-x) / -2); right: calc(var(--gap-x) / -2);
+}
+.cat-cell::after { top: calc(8px + var(--sq) - 1px); height: 10px; background: #EBCFB5; border-block: 2px solid var(--color-ink); }
+.cat-cell::before { top: calc(8px + var(--sq) + 9px); height: 5px; background: rgb(43 23 54 / 0.08); }
+/* Row ends overhang 8 px and round off. */
+.cat-cell:nth-child(4n + 1)::after { left: -8px; border-left: 2px solid var(--color-ink); border-radius: 6px 0 0 6px; }
+.cat-cell:nth-child(4n + 1)::before { left: -6px; border-radius: 0 0 0 6px; }
+.cat-cell:nth-child(4n)::after, .cat-cell:last-child::after { right: -8px; border-right: 2px solid var(--color-ink); border-radius: 0 6px 6px 0; }
+.cat-cell:nth-child(4n)::before, .cat-cell:last-child::before { right: -6px; border-radius: 0 0 6px 0; }
+@media (min-width: 1024px) {
+  .cat-cell:nth-child(4n + 1)::after { left: calc(var(--gap-x) / -2); border-left: 0; border-radius: 0; }
+  .cat-cell:nth-child(4n + 1)::before { left: calc(var(--gap-x) / -2); border-radius: 0; }
+  .cat-cell:nth-child(4n)::after { right: calc(var(--gap-x) / -2); border-right: 0; border-radius: 0; }
+  .cat-cell:nth-child(4n)::before { right: calc(var(--gap-x) / -2); border-radius: 0; }
+  .cat-cell:nth-child(6n + 1)::after { left: -8px; border-left: 2px solid var(--color-ink); border-radius: 6px 0 0 6px; }
+  .cat-cell:nth-child(6n + 1)::before { left: -6px; border-radius: 0 0 0 6px; }
+  .cat-cell:nth-child(6n)::after, .cat-cell:last-child::after { right: -8px; border-right: 2px solid var(--color-ink); border-radius: 0 6px 6px 0; }
+  .cat-cell:nth-child(6n)::before, .cat-cell:last-child::before { right: -6px; border-radius: 0 0 6px 0; }
+}
+.cat-cell > * { position: relative; z-index: 1; }

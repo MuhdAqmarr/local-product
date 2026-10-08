@@ -1,0 +1,73 @@
+/* Global (prefixed) styles for src/components/art. Plain CSS, not a CSS module: next.config routes
+   every *.css through the Tailwind loader as global CSS, so module class maps come back empty.
+   Motion for the art motifs that is not covered by globals.css (DESIGN §7.5 #6, Appendix D #1).
+   Compositor-only (rotate / translate / scale / opacity). Global reduced-motion rules collapse these. */
+
+/* ---- Logo mark: rotate one petal (72°) when its link or button is hovered / focused ---- */
+.art-logo-mark { flex: none; transition: rotate 400ms var(--ease-pop); }
+@media (hover: hover) {
+  :where(a, button):hover .art-logo-mark { rotate: 72deg; }
+}
+:where(a, button):focus-visible .art-logo-mark { rotate: 72deg; }
+
+/* ---- Tier icon micro: chili shakes, sprout rises, crown bows + jewels twinkle ---- */
+.art-tier { flex: none; overflow: visible; }
+.art-cili, .art-daun, .art-ikon, .art-jewel { transform-box: fill-box; }
+.art-cili { transform-origin: 60% 10%; }
+.art-daun { transform-origin: 50% 100%; }
+.art-ikon { transform-origin: 50% 85%; }
+.art-jewel { transform-origin: center; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .art-tier:hover .art-cili,
+  :where([data-tier-trigger]:hover, [data-tier-trigger]:focus-visible, [data-tier-trigger][data-active="true"]) .art-cili {
+    animation: tier-cili 420ms var(--ease-in-out-soft);
+  }
+  .art-tier:hover .art-daun,
+  :where([data-tier-trigger]:hover, [data-tier-trigger]:focus-visible, [data-tier-trigger][data-active="true"]) .art-daun {
+    animation: tier-daun 560ms var(--ease-out-soft);
+  }
+  .art-tier:hover .art-ikon,
+  :where([data-tier-trigger]:hover, [data-tier-trigger]:focus-visible, [data-tier-trigger][data-active="true"]) .art-ikon {
+    animation: tier-ikon 520ms var(--ease-pop);
+  }
+  .art-tier:hover .art-jewel,
+  :where([data-tier-trigger]:hover, [data-tier-trigger]:focus-visible, [data-tier-trigger][data-active="true"]) .art-jewel {
+    animation: tier-twinkle 420ms var(--ease-out-soft) 160ms;
+  }
+  :where([data-tier-trigger]:hover, [data-tier-trigger]:focus-visible, [data-tier-trigger][data-active="true"]) .art-jewel:nth-of-type(2),
+  .art-tier:hover .art-jewel:nth-of-type(2) { animation-delay: 230ms; }
+  :where([data-tier-trigger]:hover, [data-tier-trigger]:focus-visible, [data-tier-trigger][data-active="true"]) .art-jewel:nth-of-type(3),
+  .art-tier:hover .art-jewel:nth-of-type(3) { animation-delay: 300ms; }
+}
+
+@keyframes tier-cili {
+  0%, 100% { rotate: 0deg; }
+  17% { rotate: 12deg; } 33% { rotate: -12deg; }
+  50% { rotate: 12deg; } 67% { rotate: -12deg; }
+  83% { rotate: 8deg; }
+}
+@keyframes tier-daun {
+  0%, 100% { translate: 0 0; rotate: 0deg; }
+  45%, 70% { translate: 0 -4px; rotate: -8deg; }
+}
+@keyframes tier-ikon {
+  0%, 100% { scale: 1; rotate: 0deg; }
+  45% { scale: 1.15; rotate: -8deg; }
+}
+@keyframes tier-twinkle {
+  0%, 100% { scale: 1; opacity: 1; }
+  40% { scale: 1.6; opacity: .65; }
+}
+
+/* ---- Particle burst (save heart, suggest success). Same --dx/--dy/--k contract as the global
+   .art-particle, but glyph-sized: pops to full size, then drifts out and fades. ---- */
+.art-particle {
+  position: absolute; left: 50%; top: 50%; pointer-events: none;
+  animation: art-particle 520ms var(--ease-out-soft) calc(var(--k, 0) * 15ms) both;
+}
+@keyframes art-particle {
+  0% { transform: translate(0, 0) scale(.3) rotate(0deg); opacity: 1; }
+  35% { transform: translate(calc(var(--dx) * .6), calc(var(--dy) * .6)) scale(1) rotate(var(--rot, 20deg)); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(.5) rotate(var(--rot, 20deg)); opacity: 0; }
+}

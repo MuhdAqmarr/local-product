@@ -390,7 +390,7 @@
     transition: transform var(--dur-roll) var(--ease-out-soft); }
   .odo-d i { display: block; height: 1.1em; line-height: 1.1em; font-style: normal; }
   .odo[data-roll="intro"] .odo-d > span { animation: odo-roll var(--dur-roll) var(--ease-out-soft) calc(var(--p, 0) * 70ms) both; }
-  .reveal-ready [data-reveal]:not(.is-in) .odo[data-roll="reveal"] .odo-d > span { transform: translateY(0); transition: none; }
+  .reveal-ready [data-reveal].rv-wait:not(.is-in) .odo[data-roll="reveal"] .odo-d > span { transform: translateY(0); transition: none; }
   html[data-intro="done"] .odo[data-roll="intro"] .odo-d > span { animation: none; }
 
   /* ---- 6.9 Marquee (live ticker) ---- */
@@ -446,7 +446,7 @@
 /* =====================================================================
    7. SCROLL REVEAL (one IntersectionObserver: src/components/motion/reveal-observer.tsx)
    ===================================================================== */
-.reveal-ready [data-reveal]:not(.is-in) { opacity: 0; translate: 0 16px; }
+.reveal-ready [data-reveal].rv-wait:not(.is-in) { opacity: 0; translate: 0 16px; }
 .reveal-ready [data-reveal].is-in {
   transition: opacity var(--dur-reveal) var(--ease-out-soft), translate var(--dur-reveal) var(--ease-out-soft);
   transition-delay: calc(min(var(--i, 0), 5) * 60ms);
@@ -477,7 +477,7 @@
   *, ::before, ::after { animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; transition-delay: 0ms !important; }
   .marquee-track { animation: none !important; } .marquee { overflow-x: auto; }
   .mesh-blob, .ambient, .skeleton::after, .live-dot::after { animation: none !important; }
-  .reveal-ready [data-reveal]:not(.is-in) { translate: none; }
+  .reveal-ready [data-reveal].rv-wait:not(.is-in) { translate: none; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation-duration: 0s !important; animation-delay: 0s !important; }
 }
 html[data-motion="reduce"] *, html[data-motion="reduce"] ::before, html[data-motion="reduce"] ::after {
@@ -485,9 +485,68 @@ html[data-motion="reduce"] *, html[data-motion="reduce"] ::before, html[data-mot
 html[data-motion="reduce"] :is(.marquee-track, .mesh-blob, .ambient) { animation: none !important; }
 html[data-motion="reduce"] .skeleton::after, html[data-motion="reduce"] .live-dot::after { animation: none !important; }
 html[data-motion="reduce"] .marquee { overflow-x: auto; }
-html[data-motion="reduce"].reveal-ready [data-reveal]:not(.is-in) { translate: none; }
+html[data-motion="reduce"].reveal-ready [data-reveal].rv-wait:not(.is-in) { translate: none; }
 html[data-motion="reduce"]::view-transition-group(*), html[data-motion="reduce"]::view-transition-old(*), html[data-motion="reduce"]::view-transition-new(*) { animation-duration: 0s !important; }
 
 /* Hide-on-print & high-contrast niceties */
 @media (prefers-contrast: more) { :root { --color-garis: #8C7B98; } .songket, .batik, .mesh-blob { display: none; } }
 @media print { .mesh, .marquee, nav[aria-label="Navigasi utama"] { display: none !important; } }
+
+/* =====================================================================
+   10. SHELL (header sticky stack, popovers, tabs) — added by the shell foundation
+   ===================================================================== */
+/* Header: the awning tucks past 24px; on < 1024px the whole sticky stack hides on scroll down.
+   The awning block is 2px ink line + --awning-h; the bar is --header-h. */
+:root { --awning-block: calc(var(--awning-h) + 2px); --header-total: calc(var(--awning-block) + var(--header-h)); }
+.site-header { transition: transform var(--dur-base) var(--ease-out-soft); }
+.header-hairline { opacity: 0; transition: opacity var(--dur-base) var(--ease-out-soft); }
+html[data-awning="tucked"] .site-header { transform: translateY(calc(-1 * var(--awning-block))); }
+html[data-awning="tucked"] .header-hairline { opacity: 1; }
+
+/* Page-level sticky bars (filter bar, brand tabs) join the header's sticky stack:
+   <div class="sticky-stack">…</div> sits right under the header and moves with it. */
+.sticky-stack {
+  position: sticky; top: var(--header-total); z-index: var(--z-sticky);
+  transition: transform var(--dur-base) var(--ease-out-soft);
+}
+html[data-awning="tucked"] .sticky-stack { transform: translateY(calc(-1 * var(--awning-block))); }
+/* Sticky sub-headers (DealGroupHeader, KalendarKoyak) sit under the header + filter bar and move with
+   the same stack, so no gap opens when the header tucks or hides. `--sub-top` = extra offset under the
+   header (defaults to the filter bar); set `--filterbar-h: 0px` on a wrapper where no filter bar shows. */
+.sticky-sub {
+  position: sticky; top: calc(var(--header-total) + var(--sub-top, var(--filterbar-h))); z-index: calc(var(--z-sticky) - 10);
+  transition: transform var(--dur-base) var(--ease-out-soft);
+}
+html[data-awning="tucked"] .sticky-sub { transform: translateY(calc(-1 * var(--awning-block))); }
+@media (max-width: 1023.98px) {
+  html[data-header="hidden"] .site-header,
+  html[data-header="hidden"] .sticky-stack,
+  html[data-header="hidden"] .sticky-sub { transform: translateY(calc(-1 * var(--header-total))); }
+}
+
+/* Native popovers: anchor to the trigger where supported, otherwise a centred card under the header. */
+[popover].anchored-panel { position: fixed; inset: auto; margin: 0; top: calc(var(--header-total) + 8px); left: 50%; translate: -50% 0; max-width: calc(100vw - 32px); }
+@supports (position-area: bottom) {
+  [popover].anchored-panel { top: auto; left: auto; translate: none; margin: 8px 0; position-area: bottom span-right; position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline; }
+  [popover].anchored-panel[data-align="end"] { position-area: bottom span-left; }
+  [popover].anchored-panel[data-align="center"] { position-area: bottom center; }
+}
+[popover].kategori-panel { position: fixed; inset: auto; margin: 0; top: calc(var(--header-total) - 6px); left: 50%; translate: -50% 0; }
+html[data-awning="tucked"] [popover].kategori-panel { top: calc(var(--header-h) - 6px); }
+.kategori-trigger:has(+ [popover]:popover-open) .kategori-chev { rotate: 180deg; }
+
+/* Tab panels fade in when un-hidden (DESIGN §6.17). */
+.tab-panel:not([hidden]) { animation: fade-in 160ms var(--ease-out-soft) both; }
+
+/* Section accent word pops in once its header reveals (DESIGN §7.5 #1). */
+.reveal-ready [data-reveal].is-in .accent-word { display: inline-block; animation: pop-in 420ms var(--ease-pop) 120ms both; }
+
+/* Skeleton regions: no shimmer until 400ms (fast loads stay calm); static under reduced motion (see §9). */
+.skeleton-card { border: 2px solid var(--color-garis); background: var(--color-putih); }
+
+/* 404 kite: drifts away once (its body keeps swaying via WauBulan). DESIGN §7.5 #30 */
+@keyframes kite-drift { from { translate: -24px 24px; rotate: -6deg; } to { translate: 0 0; rotate: 0deg; } }
+.lost-kite { display: block; animation: kite-drift 2.4s var(--ease-out-soft) both; }
+
+/* Max one Oyen per viewport: the footer cat stays asleep off-stage on short 404/error pages. */
+body:has(.error-frame) .footer-oyen { display: none; }

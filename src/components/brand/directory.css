@@ -1,0 +1,28 @@
+/* ---- /brands directory (DESIGN §8.4) ---- */
+
+/* Every brand cell skips rendering offscreen. content-visibility implies paint containment,
+   so the cell keeps room for the card's 6 px pop shadow, hover lift and 3 px focus ring. */
+.dir-item {
+  min-width: 0;
+  padding: 4px;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 96px;
+}
+@media (min-width: 480px) {
+  .dir-item { padding: 6px; contain-intrinsic-size: auto 392px; }
+}
+
+/* Search input: the type="search" cancel button duplicates our clear button. */
+.dir-search::-webkit-search-cancel-button { appearance: none; }
+
+/* Sticky bar hairline only once it sits under the header. */
+.dir-bar { box-shadow: 0 2px 0 -1px var(--color-garis); }
+
+/* A–Z rail fades out when the list is not A–Z (keeps its column so the grid never jumps). */
+.dir-rail { transition: opacity var(--dur-base, 220ms) var(--ease-out-soft); }
+.dir-rail.is-off { opacity: 0; pointer-events: none; }
+.dir-letter { transition: background-color 120ms var(--ease-out-soft), transform 120ms var(--ease-out-soft); }
+@media (hover: hover) and (pointer: fine) {
+  .dir-letter:not(:disabled):hover { background: var(--color-bandung-tint); transform: scale(1.18); }
+}
+.dir-letter:not(:disabled):active { transform: scale(0.9); }

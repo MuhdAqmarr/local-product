@@ -1,0 +1,89 @@
+import type { Metadata } from "next";
+import { Store } from "lucide-react";
+import { Seal } from "@/components/art/seal";
+import { DirectoryFilter, type DirectoryBrand, type DirectoryFacets } from "@/components/brand/directory-filter";
+import { RandomBrandButton } from "@/components/brand/random-brand-button";
+import { LivePill } from "@/components/feedback/live-pill";
+import { Odometer } from "@/components/feedback/odometer";
+import { PageTransition } from "@/components/motion/page-transition";
+import { Band } from "@/components/ui/band";
+import { Accent } from "@/components/ui/section-header";
+import { getBrandSummaries, getStats, type BrandSummary } from "@/lib/catalog";
+import { normalizeText } from "@/lib/search";
+import { CATEGORIES, CATEGORY_BY_SLUG, STATES } from "@/lib/taxonomy";
+
+const DESCRIPTION =
+  "Direktori jenama lokal Malaysia, dari Cili Padi ke Jenama Ikon. Tapis ikut kategori, saiz jenama, negeri dan promo, terus ke kedai rasmi mereka.";
+
+export const metadata: Metadata = {
+  title: "Direktori jenama",
+  description: DESCRIPTION,
+  alternates: { canonical: "/brands" },
+  openGraph: { title: "Direktori jenama · LokalLah!", description: DESCRIPTION, url: "/brands" },
+};
+
+function letterOf(name: string): string {
+  const c = normalizeText(name).charAt(0).toUpperCase();
+  return /[A-Z]/.test(c) ? c : "#";
+}
+
+function haystack(b: BrandSummary): string {
+  return normalizeText([b.name, b.subcategory.replace(/-/g, " "), CATEGORY_BY_SLUG[b.category].nameMs, b.origin ?? "", ...b.tags].join(" "));
+}
+
+export default async function BrandsPage() {
+  const [stats, brands] = await Promise.all([getStats(), getBrandSummaries()]);
+
+  const facets: DirectoryFacets = {
+    total: brands.length,
+    categories: CATEGORIES.map((c) => ({ slug: c.slug, count: brands.filter((b) => b.category === c.slug).length })).filter((c) => c.count > 0),
+    states: STATES.filter((st) => brands.some((b) => b.state === st)),
+    letters: [...new Set(brands.map((b) => letterOf(b.name)))].sort((a, b) => (a === "#" ? 1 : b === "#" ? -1 : a.localeCompare(b))),
+  };
+
+  // Slim, serialisable card data (+ letter and search text) for the client directory.
+  const list: DirectoryBrand[] = brands.map((b) => ({
+    slug: b.slug,
+    name: b.name,
+    category: b.category,
+    tier: b.tier,
+    description: b.description,
+    state: b.state,
+    live: b.live,
+    promoCount: b.promoCount,
+    newCount: b.newCount,
+    previews: b.previews,
+    letter: letterOf(b.name),
+    hay: haystack(b),
+  }));
+
+  return (
+    <PageTransition>
+      <Band as="header" tone="bandung-fizz" className="mt-3 md:mt-5">
+        <div className="flex items-start justify-between gap-6">
+          <div className="min-w-0">
+            <p className="mb-2 flex items-center gap-1.5 text-overline text-ink uppercase">
+              <Store aria-hidden size={16} /> Rak jenama
+            </p>
+            <h1 className="text-title-1 text-ink">
+              Direktori jenama <Accent>lokal</Accent>
+            </h1>
+            <p className="mt-2 max-w-[56ch] text-body text-ink-2">
+              <Odometer value={brands.length} className="font-num text-ink" /> jenama buatan Malaysia, dari Cili Padi ke Jenama Ikon.{" "}
+              {stats.liveBrands} daripadanya ada kedai online yang kami semak live.
+            </p>
+            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-3">
+              <RandomBrandButton slugs={brands.map((b) => b.slug)} size="sm" />
+              <LivePill syncedAt={stats.syncedAt} source={stats.source} liveBrands={stats.liveBrands} brands={stats.brands} size="sm" />
+            </div>
+          </div>
+          <Seal size={96} className="mt-1 hidden shrink-0 rotate-[8deg] md:block" />
+        </div>
+      </Band>
+
+      <div className="container-page pb-(--section-y)">
+        <DirectoryFilter brands={list} facets={facets} />
+      </div>
+    </PageTransition>
+  );
+}

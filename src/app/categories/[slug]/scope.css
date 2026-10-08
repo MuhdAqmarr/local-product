@@ -1,0 +1,18 @@
+/* Category page tier scoping (DESIGN §8.6). Items carry data-in="all cili-padi …"; the wrapper's
+   data-scope hides everything not in the current scope. Rail cells are hidden through :has() so no
+   empty snap cell remains. */
+.scope-root[data-scope="all"] [data-in]:not([data-in~="all"]),
+.scope-root[data-scope="cili-padi"] [data-in]:not([data-in~="cili-padi"]),
+.scope-root[data-scope="naik-daun"] [data-in]:not([data-in~="naik-daun"]),
+.scope-root[data-scope="ikon"] [data-in]:not([data-in~="ikon"]),
+.scope-root[data-scope="all"] .rail-track > div:has(> [data-in]:not([data-in~="all"])),
+.scope-root[data-scope="cili-padi"] .rail-track > div:has(> [data-in]:not([data-in~="cili-padi"])),
+.scope-root[data-scope="naik-daun"] .rail-track > div:has(> [data-in]:not([data-in~="naik-daun"])),
+.scope-root[data-scope="ikon"] .rail-track > div:has(> [data-in]:not([data-in~="ikon"])) {
+  display: none;
+}
+
+/* After the first switch, items that come back fade + rise in (CSS animations restart when an
+   element leaves display:none). Never on first paint, so the LCP image is not hidden. */
+@keyframes scope-in { from { opacity: 0; translate: 0 6px; } }
+.scope-root[data-touched] [data-in] { animation: scope-in 240ms var(--ease-out-soft) both; }

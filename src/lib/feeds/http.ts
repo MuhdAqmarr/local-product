@@ -1,4 +1,4 @@
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://local-product.vercel.app";
+import { SITE_URL } from "../site";
 
 /** Identify ourselves honestly; stores can find out who we are and ask us to stop. */
 export const USER_AGENT = `Mozilla/5.0 (compatible; LokalLahBot/1.0; +${SITE_URL}/about)`;

@@ -1,0 +1,8 @@
+/* Rail progress thumb: CSS scroll-driven (zero JS). Hidden where unsupported. */
+.rail-section { timeline-scope: --rail; }
+.rail-track { scroll-timeline: --rail x; }
+.rail-progress { display: none; }
+@supports (animation-timeline: scroll()) {
+  .rail-progress { display: block; }
+  .rail-thumb { transform-origin: 0 50%; animation: grow-x linear both; animation-timeline: --rail; }
+}

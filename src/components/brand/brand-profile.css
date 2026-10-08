@@ -1,0 +1,32 @@
+/* ---- Brand profile (DESIGN §8.5) ---- */
+
+/* Best deal: a pop-shadow sticker card (transform-only lift), with a kraft "Deal terbaik" tag. */
+.best-deal { isolation: isolate; }
+.best-deal::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: var(--radius-card-lg);
+  background: var(--color-ink); transform: translate(5px, 5px);
+}
+.best-deal-face { position: relative; transition: transform 180ms var(--ease-out-soft); }
+@media (hover: hover) and (pointer: fine) {
+  .best-deal:hover .best-deal-face { transform: translate(-2px, -2px); }
+  .best-deal:hover .plate > img[data-fit="cover"] { scale: 1.04; }
+}
+.best-deal:active .best-deal-face { transform: translate(5px, 5px); transition-duration: 90ms; }
+.best-deal:has(.stretched-link:focus-visible) .best-deal-face { outline: 3px solid var(--color-telang); outline-offset: 3px; }
+.best-deal .stretched-link:focus-visible { outline: none; }
+.best-deal-tag {
+  position: absolute; z-index: 3; top: -14px; right: 64px; rotate: 3deg;
+  display: inline-flex; align-items: center; height: 28px; padding-inline: 12px;
+  border: 1.5px solid var(--color-ink); border-radius: 6px;
+  background: var(--color-mangga); color: var(--color-ink);
+  font: 600 13px/1 var(--font-num); letter-spacing: .02em; text-transform: uppercase;
+  box-shadow: var(--shadow-sticker);
+}
+/* Tag hole + string: a little kad harga hanging off the card. */
+.best-deal-tag::before {
+  content: ""; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%;
+  background: var(--color-santan); box-shadow: inset 0 0 0 1.5px var(--color-ink);
+}
+
+/* Identity card: monogram sits on the card edge like a shop sign. */
+.kedai-id-stamp { transform-origin: 100% 0; }

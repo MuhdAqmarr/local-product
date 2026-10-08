@@ -1,0 +1,48 @@
+/* Save heart (DESIGN §7.6). CSS-animated: no Motion inside cards. */
+.heart-btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.92);
+  box-shadow: var(--shadow-xs), inset 0 0 0 1px rgb(43 23 54 / 0.08);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out-soft), background-color 150ms var(--ease-out-soft);
+  -webkit-tap-highlight-color: transparent;
+}
+/* 44 px hit area */
+.heart-btn::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+}
+@media (hover: hover) and (pointer: fine) {
+  .heart-btn:hover { background: var(--color-putih); transform: scale(1.06); }
+}
+.heart-btn:active { transform: scale(0.88); transition-duration: 90ms; }
+.heart-btn:focus-visible { outline: 3px solid var(--color-telang); outline-offset: 2px; }
+
+.heart-btn-lg { width: 44px; height: 44px; }
+.heart-btn-lg::before { inset: 0; }
+.heart-btn-solid { background: var(--color-putih); box-shadow: none; border: 2px solid var(--color-ink); }
+
+.heart-ic { position: relative; display: grid; place-items: center; width: 20px; height: 20px; }
+.heart-ic > svg { grid-area: 1 / 1; transition: opacity 150ms var(--ease-out-soft); }
+.heart-outline { opacity: 1; }
+.heart-filled { opacity: 0; color: var(--color-bandung); }
+.heart-on .heart-outline { opacity: 0; }
+.heart-on .heart-filled { opacity: 1; }
+.heart-on .heart-filled.heart-popping { animation: heart-pop 380ms var(--ease-pop) both; }
+
+.heart-burst-ring { position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--color-jambu); pointer-events: none;
+  animation: ring-out 360ms var(--ease-out-soft) both; }
+
+
+@media (prefers-reduced-motion: reduce) {
+  .heart-burst-ring { display: none; }
+}
+html[data-motion="reduce"] .heart-burst-ring { display: none; }

@@ -259,6 +259,10 @@ export interface SearchItem {
   price?: number;
   currency?: string;
   discount?: number;
+  /** Brands only. */
+  tier?: TierSlug;
+  /** Brands only, when known. */
+  state?: string;
 }
 
 export async function getSearchIndex(): Promise<SearchItem[]> {
@@ -274,6 +278,8 @@ export async function getSearchIndex(): Promise<SearchItem[]> {
     brandName: b.name,
     category: b.category,
     href: `/brands/${b.slug}`,
+    tier: b.tier,
+    ...(b.state ? { state: b.state } : {}),
   }));
   const items: SearchItem[] = scope(products, {})
     .filter((p) => p.available)
