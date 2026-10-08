@@ -2,9 +2,13 @@ import type { FeedStatus } from "./types";
 
 /**
  * Sync freshness (DESIGN §0.3 #21, §6.10):
- * - fresh: a live read, at most 4 h old (the background refresh runs about every 3 h)
- * - stale: 4–24 h old, or served from the build snapshot
- * - old:   more than 24 h old, or the brand's store failed to read
+ * - fresh: at most 4 h old (the background refresh runs about every 3 h)
+ * - stale: 4–24 h old
+ * - old:   more than 24 h old, or the brand's store has never been read
+ *
+ * Freshness follows the age of the data, not where it was served from: every deploy
+ * syncs the snapshot right before building, so a "snapshot" read can be minutes old,
+ * and a brand whose latest refresh failed keeps the timestamp of its last good read.
  * - none:  the brand has no readable store
  */
 export type SyncState = "fresh" | "stale" | "old" | "none";
@@ -17,15 +21,14 @@ export type SyncSource = "live" | "snapshot" | FeedStatus["status"];
 
 /**
  * Pure and deterministic. `now` is required on purpose: Server Components pass the
- * catalog's `syncedAt` (age 0, so the state follows the source alone), client
- * islands pass `Date.now()` after mount.
+ * catalog's `syncedAt` (age 0), client islands pass `Date.now()` after mount.
  */
 export function syncState(iso: string | undefined, source: SyncSource | undefined, now: number): SyncState {
   if (!iso || !source) return "none";
   if (source === "error") return "old";
   const age = Math.max(0, now - Date.parse(iso));
   if (Number.isNaN(age) || age > OLD_MS) return "old";
-  if (source === "snapshot" || age > FRESH_MS) return "stale";
+  if (age > FRESH_MS) return "stale";
   return "fresh";
 }
 
