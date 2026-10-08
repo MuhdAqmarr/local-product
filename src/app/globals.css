@@ -1,26 +1,493 @@
+/* src/app/globals.css — LokalLah! "Kedai Oyen: Comel & Laju" (light theme only) */
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* =====================================================================
+   1. THEME TOKENS (generate Tailwind utilities; `static` = always emit vars)
+   ===================================================================== */
+@theme static {
+  --color-*: initial;             /* only our palette exists: no gray-500, no off-brand colours */
+  --font-weight-*: initial;       /* only the Poppins weights we load */
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-extrabold: 800;
+
+  /* ---- Neutrals ---- */
+  --color-white: #FFFFFF;
+  --color-santan: #FFF8F1;        /* page background (coconut cream) */
+  --color-putih: #FFFFFF;         /* cards, inputs, sheets, tab bar */
+  --color-kapas: #FFEFF6;         /* wells, skeleton bones, hover rows, search pill fill */
+  --color-garis: #EEDDE8;         /* decorative hairlines + card borders (no contrast duty) */
+  --color-garis-kuat: #8C7B98;    /* functional borders: inputs, unselected chips (>= 3:1) */
+  --color-ink: #2B1736;           /* text, outlines, pop shadows, dark bands */
+  --color-ink-2: #4A3B5C;         /* product titles, any text over gradients / mesh */
+  --color-ink-soft: #6B5577;      /* meta, captions, placeholders, struck prices */
+  --color-ink-dim: #C9B8D4;       /* muted text ON INK SURFACES ONLY */
+  --color-faint: #B9ADC4;         /* decoration only, never text */
+
+  /* ---- Brand candy ---- */
+  --color-bandung: #FF6FB5;       /* primary fill (ink text only) */
+  --color-bandung-tint: #FFE4F1;
+  --color-bandung-pekat: #C0136A; /* pink TEXT: promo price, links on pink */
+  --color-jambu: #FF8FC8;         /* decoration, footer accents on ink */
+  --color-keladi: #BDA6FF;        /* secondary fill (ink text only) */
+  --color-keladi-tint: #F3EFFF;
+  --color-telang: #5B2BC9;        /* focus ring, text links, info text */
+  --color-mangga: #FFD54F;        /* highlight fill: L3 burst, count bubbles */
+  --color-mangga-tint: #FFF4C7;   /* search <mark>, stale pill bg */
+  --color-kunyit-pekat: #7A5300;  /* warning / stale TEXT */
+  --color-pandan: #49D6A0;        /* "Baru je" fill (ink text) */
+  --color-pandan-tint: #DAF8EC;
+  --color-pandan-pekat: #0F7A53;  /* success / "Jimat" / calm "Baru" TEXT */
+  --color-sambal-tint: #FFE3E7;
+  --color-sambal-pekat: #B91C3B;  /* error text + destructive */
+  --color-live: #12A15A;          /* live dot (always with a text label) */
+  --color-stale: #B7791F;         /* stale dot */
+  --color-oyen: #FFAA55;          /* mascot fur */
+  --color-oyen-belang: #E07020;   /* mascot stripes */
+
+  /* ---- Category accents: tint (bg) / mid (avatar, icon well) / pop (decor only) / ink (text) ---- */
+  --color-beauty-tint: #FFE8EE;      --color-beauty-mid: #FFB3C4;      --color-beauty-pop: #FF8FA8;      --color-beauty-ink: #AD1D45;
+  --color-fashion-tint: #ECEAFF;     --color-fashion-mid: #BDB6FF;     --color-fashion-pop: #9D93FF;     --color-fashion-ink: #4B3DC4;
+  --color-accessories-tint: #F4E9FF; --color-accessories-mid: #D9BAF7; --color-accessories-pop: #C79BF2; --color-accessories-ink: #7333A6;
+  --color-food-tint: #FFEBE2;        --color-food-mid: #FFB99F;        --color-food-pop: #FF9772;        --color-food-ink: #AE3A10;
+  --color-drinks-tint: #F8EEE3;      --color-drinks-mid: #E5C0A1;      --color-drinks-pop: #D8A275;      --color-drinks-ink: #83461A;
+  --color-home-tint: #E1F6EA;        --color-home-mid: #A3E3BF;        --color-home-pop: #79D6A3;        --color-home-ink: #17704A;
+  --color-health-tint: #DEF5F2;      --color-health-mid: #96DED7;      --color-health-pop: #66CFC5;      --color-health-ink: #0C6964;
+  --color-kids-tint: #FFF4D3;        --color-kids-mid: #FFDF8A;        --color-kids-pop: #FFD159;        --color-kids-ink: #7F5900;
+  --color-tech-tint: #E2F0FF;        --color-tech-mid: #A4CFFF;        --color-tech-pop: #7BB9FF;        --color-tech-ink: #0E5AA4;
+  --color-crafts-tint: #FBE7F7;      --color-crafts-mid: #EEAFE3;      --color-crafts-pop: #E58AD5;      --color-crafts-ink: #922781;
+  --color-lifestyle-tint: #EDF7DA;   --color-lifestyle-mid: #C2E395;   --color-lifestyle-pop: #A6D667;   --color-lifestyle-ink: #4A6611;
+
+  /* ---- Tiers ---- */
+  --color-cili-tint: #FFE5DF; --color-cili-pop: #FF6B4A; --color-cili-ink: #B0271B;
+  --color-daun-tint: #DFF5E4; --color-daun-pop: #4CC27A; --color-daun-ink: #1B6D36;
+  --color-ikon-tint: #FFF0C4; --color-ikon-pop: #F5B820; --color-ikon-ink: #7A5300;
+
+  /* ---- Breakpoints (Tailwind defaults kept; xs added) ---- */
+  --breakpoint-xs: 30rem;         /* 480px: brand cards go 2-up */
+
+  /* ---- Type scale (fluid 360 -> 1280px; rem + vw keeps browser zoom working) ---- */
+  --text-display: clamp(2.375rem, 1.592rem + 3.478vw, 4.375rem);   /* 38 -> 70 */
+  --text-display--line-height: 1.04; --text-display--letter-spacing: -0.035em; --text-display--font-weight: 800;
+  --text-title-1: clamp(1.875rem, 1.533rem + 1.522vw, 2.75rem);    /* 30 -> 44 */
+  --text-title-1--line-height: 1.1;  --text-title-1--letter-spacing: -0.025em; --text-title-1--font-weight: 800;
+  --text-title-2: clamp(1.5rem, 1.255rem + 1.087vw, 2.125rem);     /* 24 -> 34 */
+  --text-title-2--line-height: 1.15; --text-title-2--letter-spacing: -0.02em;  --text-title-2--font-weight: 800;
+  --text-title-3: clamp(1.125rem, 1.027rem + 0.435vw, 1.375rem);   /* 18 -> 22 */
+  --text-title-3--line-height: 1.3;  --text-title-3--letter-spacing: -0.01em;  --text-title-3--font-weight: 600;
+  --text-lead: clamp(1.0625rem, 1.014rem + 0.217vw, 1.1875rem);    /* 17 -> 19 */
+  --text-lead--line-height: 1.55;
+  --text-body: 1rem;        --text-body--line-height: 1.6;
+  --text-body-sm: 0.875rem; --text-body-sm--line-height: 1.35;
+  --text-label: 0.875rem;   --text-label--line-height: 1.2;  --text-label--letter-spacing: 0.005em; --text-label--font-weight: 600;
+  --text-button: 0.9375rem; --text-button--line-height: 1.2; --text-button--font-weight: 600;
+  --text-label-sm: 0.75rem; --text-label-sm--line-height: 1.2; --text-label-sm--letter-spacing: 0.01em; --text-label-sm--font-weight: 600;
+  --text-tab: 0.6875rem;    --text-tab--line-height: 1.2;    --text-tab--font-weight: 600;
+  --text-caption: 0.75rem;  --text-caption--line-height: 1.4;
+  --text-overline: 0.75rem; --text-overline--line-height: 1.2; --text-overline--letter-spacing: 0.08em; --text-overline--font-weight: 600;
+  --text-price: 1.125rem;   --text-price--line-height: 1;    --text-price--letter-spacing: -0.01em;
+  --text-price-lg: 1.5rem;  --text-price-lg--line-height: 1; --text-price-lg--letter-spacing: -0.01em;
+  --text-deal: 0.8125rem;   --text-deal--line-height: 1;
+  --text-deal-lg: 1rem;     --text-deal-lg--line-height: 1;
+  --text-stat: clamp(1.75rem, 1.359rem + 1.739vw, 2.75rem);        /* 28 -> 44 */
+  --text-stat--line-height: 1; --text-stat--letter-spacing: -0.02em;
+  --text-hand: clamp(1.125rem, 1.0272rem + 0.4348vw, 1.375rem);    /* 18 -> 22 */
+  --text-hand--line-height: 1.1; --text-hand--letter-spacing: 0.01em;
+
+  /* ---- Radii ---- */
+  --radius-xs: 6px;        /* kbd, <mark>, tiny tags */
+  --radius-tag: 8px;       /* cop stamps, Habis tag */
+  --radius-thumb: 12px;    /* search thumbs, collage thumbs, list-row plate */
+  --radius-plate: 14px;    /* product photo plate (card 20 - inset 6) */
+  --radius-input: 14px;    /* inputs, textarea, select */
+  --radius-tile: 22px;     /* category tiles / icon squircles */
+  --radius-card: 20px;     /* product cards */
+  --radius-card-lg: 24px;  /* brand cards, popovers, desktop dialog */
+  --radius-sheet: 28px;    /* bottom-sheet top corners, CTA band */
+  --radius-panel: 32px;    /* hero + section band panels */
+
+  /* ---- Shadows (never animated: crossfade a pre-rendered layer instead) ---- */
+  --shadow-xs: 0 1px 2px rgb(43 23 54 / 0.06);
+  --shadow-card: 0 1px 2px rgb(43 23 54 / 0.05), 0 4px 12px -4px rgb(43 23 54 / 0.08);
+  --shadow-card-hover: 0 2px 4px rgb(43 23 54 / 0.06), 0 14px 28px -10px rgb(255 111 181 / 0.38);
+  --shadow-pop-sm: 2px 2px 0 0 #2B1736;
+  --shadow-pop: 4px 4px 0 0 #2B1736;
+  --shadow-pop-lg: 6px 6px 0 0 #2B1736;
+  --shadow-sticker: 0 0 0 2px #FFFFFF, 0 3px 0 2px rgb(43 23 54 / 0.14);
+  --shadow-diecut: 0 0 0 3px #FFFFFF, 0 8px 18px -6px rgb(43 23 54 / 0.3);
+  --shadow-float: 0 18px 40px -12px rgb(43 23 54 / 0.35), 0 4px 12px -4px rgb(43 23 54 / 0.15);
+  --shadow-sheet: 0 -12px 40px -12px rgb(43 23 54 / 0.25);
+  --shadow-up: 0 -8px 24px -12px rgb(43 23 54 / 0.14);
+
+  /* ---- Easing ---- */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);     /* arrivals, settles */
+  --ease-in-soft: cubic-bezier(0.55, 0, 1, 0.45);      /* departures */
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);  /* moves, shimmer */
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);       /* sticker overshoot */
+  --ease-sine: cubic-bezier(0.37, 0, 0.63, 1);         /* ambient loops */
+
+  /* ---- Animations (keyframes are defined top-level in §4 so they are always emitted) ---- */
+  --animate-shimmer: shimmer 1.4s var(--ease-in-out-soft) infinite;
+  --animate-ping-3: ping-soft 1.8s var(--ease-out-soft) 3;
+  --animate-pop-in: pop-in 420ms var(--ease-pop) both;
+  --animate-rise-in: rise-in 320ms var(--ease-out-soft) both;
+  --animate-slap: slap 460ms var(--ease-pop) both;
+  --animate-wiggle: wiggle 420ms var(--ease-out-soft);
+  --animate-grow-x: grow-x 480ms var(--ease-out-soft) both;
+  --animate-peek: peek 520ms var(--ease-pop) both;
+  --animate-float: float 6s var(--ease-sine) infinite alternate;
+  --animate-sway: sway 5.5s var(--ease-in-out-soft) infinite alternate;
+  --animate-blink: blink 5.5s linear infinite;
+  --animate-zzz: zzz 2.4s var(--ease-out-soft) infinite;
+  --animate-spin-slow: spin 30s linear infinite;
+  --animate-marquee: marquee var(--marquee-dur, 48s) linear infinite;
+  --animate-dots: dots 900ms var(--ease-sine) infinite;
+  --animate-indeterminate: indeterminate 1s var(--ease-in-out-soft) infinite;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* next/font sets these variables on <html> (see src/app/fonts.ts) */
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, "Segoe UI", Roboto, "Noto Sans", sans-serif;
+  --font-num: var(--font-fredoka), var(--font-poppins), ui-rounded, system-ui, sans-serif;
+  --font-hand: var(--font-gochi), var(--font-fredoka), "Comic Sans MS", cursive;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* =====================================================================
+   2. NON-UTILITY TOKENS: durations, layout, z-index, gradients, patterns
+   ===================================================================== */
+:root {
+  color-scheme: only light;
+  --dur-tap: 90ms; --dur-fast: 150ms; --dur-base: 220ms; --dur-slow: 320ms;
+  --dur-reveal: 420ms; --dur-hero: 700ms; --dur-roll: 900ms;
+
+  --header-h: 56px; --awning-h: 20px; --tabbar-h: 64px; --filterbar-h: 52px;
+  --gutter: 16px; --container: 1240px;
+  --section-y: clamp(2.5rem, 1.522rem + 4.348vw, 5rem);
+
+  --z-sticky: 30; --z-fab: 35; --z-header: 40; --z-popover: 50; --z-toast: 60; --z-fly: 70;
+
+  --grad-gula-kapas:   linear-gradient(160deg, #FFE3F1 0%, #F1E6FF 48%, #DDF3FF 100%);
+  --grad-bandung-fizz: linear-gradient(135deg, #FF8FC8 0%, #FF6FB5 50%, #FF9D7A 100%);
+  --grad-mangga-lassi: linear-gradient(135deg, #FFE36E 0%, #FFC94D 50%, #FFA45B 100%);
+  --grad-cendol:       linear-gradient(135deg, #D7F9EA 0%, #A8EED8 50%, #BFE6FF 100%);
+  --grad-senja:        linear-gradient(170deg, #FFC2DD 0%, #D9C6FF 50%, #A9DCFF 100%);
+  --grad-teh-tarik:    linear-gradient(180deg, #FFF8F1 0%, #F7E6D5 100%);
+  --grad-santan-wash:  linear-gradient(180deg, #FFEFF6 0px, rgb(255 248 241 / 0) 360px);
+  --grad-text-lokal:   linear-gradient(90deg, #D61F66 0%, #5F45E0 100%);
+  --grad-kuih-lapis:   repeating-linear-gradient(90deg, #FF8FC8 0 12px, #FFD54F 12px 24px, #86DFAA 24px 36px, #BDA6FF 36px 48px);
+  --grad-sunburst:     repeating-conic-gradient(from 0deg, #FFE88A 0deg 10deg, #FFF6CF 10deg 20deg);
+  --grad-tier-cili:    linear-gradient(135deg, #FFE9E4 0%, #FFCFC3 100%);
+  --grad-tier-daun:    linear-gradient(135deg, #E6F8EA 0%, #B9EBC7 100%);
+  --grad-tier-ikon:    linear-gradient(135deg, #FFE7A3 0%, #FFC94D 55%, #F5A524 100%);
+  --grad-shimmer:      linear-gradient(100deg, rgb(255 255 255 / 0) 20%, rgb(255 255 255 / 0.75) 50%, rgb(255 255 255 / 0) 80%);
+
+  /* Pattern tiles (used as masks or backgrounds; see §3 utilities) */
+  --pat-songket: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M16 3 29 16 16 29 3 16Z' fill='none' stroke='%23000' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.5'/%3E%3C/svg%3E");
+  --pat-batik: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='2.2'/%3E%3Cellipse cx='24' cy='16.5' rx='2.6' ry='5'/%3E%3Cellipse cx='24' cy='31.5' rx='2.6' ry='5'/%3E%3Cellipse cx='16.5' cy='24' rx='5' ry='2.6'/%3E%3Cellipse cx='31.5' cy='24' rx='5' ry='2.6'/%3E%3Ccircle cx='0' cy='0' r='3'/%3E%3Ccircle cx='48' cy='0' r='3'/%3E%3Ccircle cx='0' cy='48' r='3'/%3E%3Ccircle cx='48' cy='48' r='3'/%3E%3Ccircle cx='12' cy='12' r='1.2'/%3E%3Ccircle cx='36' cy='12' r='1.2'/%3E%3Ccircle cx='12' cy='36' r='1.2'/%3E%3Ccircle cx='36' cy='36' r='1.2'/%3E%3C/svg%3E");
+  --pat-rebung: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='14' viewBox='0 0 24 14'%3E%3Cpath d='M0 14 6 2l6 12z' fill='%23FFC2D6'/%3E%3Cpath d='M12 14l6-12 6 12z' fill='%23BDA6FF'/%3E%3Ccircle cx='12' cy='11' r='1.6' fill='%23FFD54F'/%3E%3Ccircle cx='0' cy='11' r='1.6' fill='%23FFD54F'/%3E%3Ccircle cx='24' cy='11' r='1.6' fill='%23FFD54F'/%3E%3C/svg%3E");
+}
+@media (min-width: 640px)  { :root { --gutter: 24px; } }
+@media (min-width: 1024px) { :root { --header-h: 72px; --awning-h: 26px; --tabbar-h: 0px; --gutter: 32px; } }
+
+/* Category + tier scoping: set data-cat / data-tier on any wrapper, then use bg-(--cat-tint) etc. */
+[data-cat="beauty"]      { --cat-tint: var(--color-beauty-tint);      --cat-mid: var(--color-beauty-mid);      --cat-pop: var(--color-beauty-pop);      --cat-ink: var(--color-beauty-ink); }
+[data-cat="fashion"]     { --cat-tint: var(--color-fashion-tint);     --cat-mid: var(--color-fashion-mid);     --cat-pop: var(--color-fashion-pop);     --cat-ink: var(--color-fashion-ink); }
+[data-cat="accessories"] { --cat-tint: var(--color-accessories-tint); --cat-mid: var(--color-accessories-mid); --cat-pop: var(--color-accessories-pop); --cat-ink: var(--color-accessories-ink); }
+[data-cat="food"]        { --cat-tint: var(--color-food-tint);        --cat-mid: var(--color-food-mid);        --cat-pop: var(--color-food-pop);        --cat-ink: var(--color-food-ink); }
+[data-cat="drinks"]      { --cat-tint: var(--color-drinks-tint);      --cat-mid: var(--color-drinks-mid);      --cat-pop: var(--color-drinks-pop);      --cat-ink: var(--color-drinks-ink); }
+[data-cat="home"]        { --cat-tint: var(--color-home-tint);        --cat-mid: var(--color-home-mid);        --cat-pop: var(--color-home-pop);        --cat-ink: var(--color-home-ink); }
+[data-cat="health"]      { --cat-tint: var(--color-health-tint);      --cat-mid: var(--color-health-mid);      --cat-pop: var(--color-health-pop);      --cat-ink: var(--color-health-ink); }
+[data-cat="kids"]        { --cat-tint: var(--color-kids-tint);        --cat-mid: var(--color-kids-mid);        --cat-pop: var(--color-kids-pop);        --cat-ink: var(--color-kids-ink); }
+[data-cat="tech"]        { --cat-tint: var(--color-tech-tint);        --cat-mid: var(--color-tech-mid);        --cat-pop: var(--color-tech-pop);        --cat-ink: var(--color-tech-ink); }
+[data-cat="crafts"]      { --cat-tint: var(--color-crafts-tint);      --cat-mid: var(--color-crafts-mid);      --cat-pop: var(--color-crafts-pop);      --cat-ink: var(--color-crafts-ink); }
+[data-cat="lifestyle"]   { --cat-tint: var(--color-lifestyle-tint);   --cat-mid: var(--color-lifestyle-mid);   --cat-pop: var(--color-lifestyle-pop);   --cat-ink: var(--color-lifestyle-ink); }
+[data-tier="cili-padi"]  { --tier-tint: var(--color-cili-tint); --tier-pop: var(--color-cili-pop); --tier-ink: var(--color-cili-ink); --tier-grad: var(--grad-tier-cili); }
+[data-tier="naik-daun"]  { --tier-tint: var(--color-daun-tint); --tier-pop: var(--color-daun-pop); --tier-ink: var(--color-daun-ink); --tier-grad: var(--grad-tier-daun); }
+[data-tier="ikon"]       { --tier-tint: var(--color-ikon-tint); --tier-pop: var(--color-ikon-pop); --tier-ink: var(--color-ikon-ink); --tier-grad: var(--grad-tier-ikon); }
+
+/* =====================================================================
+   3. BASE
+   ===================================================================== */
+@layer base {
+  html {
+    background: var(--color-santan); color: var(--color-ink);
+    font-synthesis: none; -webkit-tap-highlight-color: transparent;
+    scroll-padding-top: calc(var(--header-h) + var(--filterbar-h) + 12px);
+    scroll-padding-bottom: calc(var(--tabbar-h) + 16px);
   }
+  body {
+    min-height: 100dvh; font-family: var(--font-sans);
+    background: var(--grad-santan-wash), var(--color-santan); background-repeat: no-repeat;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4 { text-wrap: balance; }
+  p, li, dd { text-wrap: pretty; }
+  :focus-visible { outline: 3px solid var(--color-telang); outline-offset: 2px; }
+  .on-ink :focus-visible { outline-color: var(--color-mangga); }
+  ::selection { background: var(--color-mangga); color: var(--color-ink); }
+  mark { background: var(--color-mangga-tint); color: var(--color-ink); border-radius: 4px; padding-inline: 1px; }
+  html:has(dialog[open]) { overflow: hidden; }     /* Lenis autoToggle stops itself */
+  dialog::backdrop { background: rgb(43 23 54 / 0.45); }
+  img { -webkit-user-drag: none; }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* =====================================================================
+   4. KEYFRAMES (top-level so they are always emitted)
+   ===================================================================== */
+@keyframes shimmer   { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@keyframes ping-soft { from { transform: scale(1); opacity: .55; } to { transform: scale(2.6); opacity: 0; } }
+@keyframes pop-in    { from { opacity: 0; transform: scale(.6) rotate(-12deg); } }          /* "to" = element's own transform */
+@keyframes rise-in   { from { opacity: 0; transform: translateY(10px); } }
+@keyframes slap      { from { opacity: 0; transform: scale(1.3) rotate(var(--r-from, -14deg)); } to { opacity: 1; transform: scale(1) rotate(var(--r, -3deg)); } }
+@keyframes wiggle    { 25% { rotate: -8deg; } 75% { rotate: 6deg; } }
+@keyframes grow-x    { from { transform: scaleX(0); } }
+@keyframes peek      { from { transform: translateY(105%); } to { transform: translateY(0); } }
+@keyframes float     { from { translate: 0 0; } to { translate: 0 -8px; } }
+@keyframes sway      { from { rotate: -4deg; translate: 0 0; } to { rotate: 4deg; translate: 0 -6px; } }
+@keyframes blink     { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+@keyframes zzz       { 0% { transform: translate(0, 0) scale(.6); opacity: 0; } 30% { opacity: 1; } 100% { transform: translate(10px, -28px) scale(1.1); opacity: 0; } }
+@keyframes spin      { to { transform: rotate(360deg); } }
+@keyframes marquee   { to { transform: translate3d(-50%, 0, 0); } }
+@keyframes dots      { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-4px); } }
+@keyframes indeterminate { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+@keyframes drift-a   { from { transform: translate3d(-8%, -6%, 0) scale(1); } to { transform: translate3d(10%, 8%, 0) scale(1.15); } }
+@keyframes drift-b   { from { transform: translate3d(6%, 4%, 0) scale(1.1); } to { transform: translate3d(-12%, -8%, 0) scale(.9); } }
+@keyframes drift-c   { from { transform: translate3d(0, 10%, 0) scale(.95); } to { transform: translate3d(8%, -10%, 0) scale(1.12); } }
+@keyframes fade-in   { from { opacity: 0; } }
+@keyframes odo-roll  { from { transform: translateY(0); } }
+@keyframes particle  { 0% { transform: translate(0, 0) scale(.5); opacity: 1; } 60% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; } }
+@keyframes heart-pop { 0% { transform: scale(.4); } 55% { transform: scale(1.25); } 100% { transform: scale(1); } }
+@keyframes ring-out  { from { transform: scale(.6); opacity: .8; } to { transform: scale(1.6); opacity: 0; } }
+@keyframes vt-fade   { from { opacity: 0; } }
+@keyframes vt-slide  { from { translate: var(--vt-x) 0; } }
+@keyframes vt-rise   { from { translate: 0 8px; } }
+
+/* =====================================================================
+   5. UTILITIES (@utility = tree-shaken, variant-aware)
+   ===================================================================== */
+@utility bg-gula-kapas   { background-image: var(--grad-gula-kapas); }
+@utility bg-bandung-fizz { background-image: var(--grad-bandung-fizz); }
+@utility bg-mangga-lassi { background-image: var(--grad-mangga-lassi); }
+@utility bg-cendol       { background-image: var(--grad-cendol); }
+@utility bg-senja        { background-image: var(--grad-senja); }
+@utility bg-teh-tarik    { background-image: var(--grad-teh-tarik); }
+@utility bg-kuih-lapis   { background-image: var(--grad-kuih-lapis); }
+@utility bg-sunburst     { background-image: var(--grad-sunburst); }
+@utility bg-tier         { background-image: var(--tier-grad); }
+@utility bg-cover-cat    { background-image: linear-gradient(160deg, var(--cat-tint, #FFE4F1) 0%, #FFFFFF 78%); } /* inline: must resolve --cat-tint at the element */
+@utility text-grad-lokal {
+  background-image: var(--grad-text-lokal); -webkit-background-clip: text; background-clip: text; color: transparent;
+  padding-inline-end: .04em; /* avoid clipping the last glyph */
+  @media (forced-colors: active) { color: CanvasText; background: none; }
 }
+@utility no-scrollbar { scrollbar-width: none; &::-webkit-scrollbar { display: none; } }
+@utility edge-fade {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade, 24px), #000 calc(100% - var(--fade, 24px)), transparent);
+          mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade, 24px), #000 calc(100% - var(--fade, 24px)), transparent);
+}
+@utility stretched-link { &::after { content: ""; position: absolute; inset: 0; z-index: 1; } }
+@utility container-page { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+@utility hand { font-family: var(--font-hand); font-weight: 400; rotate: -4deg; color: var(--color-telang); }
+
+/* =====================================================================
+   6. COMPONENT CLASSES (always emitted)
+   ===================================================================== */
+@layer components {
+  /* ---- 6.1 Pop press: hard shadow is a separate layer; only the face moves (transform-only) ---- */
+  .pop { position: relative; isolation: isolate; display: inline-flex; border-radius: var(--pop-radius, 9999px); }
+  .pop::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
+    background: var(--pop-color, var(--color-ink)); transform: translate(var(--pop-offset, 4px), var(--pop-offset, 4px)); }
+  .pop > .pop-face { display: flex; flex: 1; align-items: center; justify-content: center; gap: 8px; height: 100%;
+    border: 2px solid var(--color-ink); border-radius: inherit; transition: transform 160ms var(--ease-out-soft); }
+  @media (hover: hover) and (pointer: fine) { .pop:hover > .pop-face { transform: translate(-2px, -2px); } }
+  .pop:active > .pop-face { transform: translate(var(--pop-offset, 4px), var(--pop-offset, 4px)); transition-duration: 90ms; }
+  .pop:focus-visible { outline: none; }
+  .pop:focus-visible > .pop-face { outline: 3px solid var(--color-telang); outline-offset: 3px; }
+  .pop[aria-disabled="true"]::before, .pop:disabled::before { display: none; }
+
+  /* ---- 6.2 Awning (header, brand cards, brand profile) ---- */
+  .awning { --w: 16px; --band: 10px; --r: 8px; height: var(--awning-h, 20px);
+    background: repeating-linear-gradient(90deg, var(--awning, var(--color-bandung)) 0 var(--w), #FFFFFF var(--w) calc(var(--w) * 2));
+    -webkit-mask: linear-gradient(#000 0 0) top / 100% var(--band) no-repeat,
+                  radial-gradient(circle var(--r) at calc(var(--w) / 2) var(--band), #000 98%, #0000 100%) 0 0 / var(--w) 100% repeat-x;
+            mask: linear-gradient(#000 0 0) top / 100% var(--band) no-repeat,
+                  radial-gradient(circle var(--r) at calc(var(--w) / 2) var(--band), #000 98%, #0000 100%) 0 0 / var(--w) 100% repeat-x; }
+  @media (min-width: 1024px) { .awning { --w: 20px; --band: 14px; --r: 10px; } }
+  .awning-wrap { filter: drop-shadow(0 2px 0 var(--color-ink)); border-top: 2px solid var(--color-ink); } /* static filter: allowed */
+
+  /* ---- 6.3 Hero mesh: radial blobs, transform-only drift, no blur ---- */
+  .mesh { position: absolute; inset: 0; z-index: -1; overflow: clip; pointer-events: none; contain: strict;
+    background: radial-gradient(40% 35% at 85% 15%, rgb(255 213 79 / .30), transparent 70%),
+                radial-gradient(45% 40% at 10% 90%, rgb(138 208 255 / .35), transparent 70%), var(--grad-gula-kapas); }
+  .mesh-blob { position: absolute; width: var(--s); aspect-ratio: 1; border-radius: 50%; will-change: transform;
+    background: radial-gradient(closest-side, rgb(var(--c) / var(--a, .55)), rgb(var(--c) / 0)); }
+  .mesh-blob:nth-child(1) { --s: min(62vmax, 820px); --c: 255 143 200; left: -22%; top: -28%; animation: drift-a 18s var(--ease-sine) infinite alternate; }
+  .mesh-blob:nth-child(2) { --s: min(66vmax, 860px); --c: 189 166 255; --a: .5; right: -32%; top: 8%; animation: drift-b 23s var(--ease-sine) infinite alternate; }
+  .mesh-blob:nth-child(3) { --s: min(48vmax, 640px); --c: 255 213 79; --a: .4; left: 18%; bottom: -36%; animation: drift-c 29s var(--ease-sine) infinite alternate; }
+  @media (max-width: 767px) { .mesh-blob:nth-child(3) { display: none; } }
+  [data-paused] .mesh-blob, [data-paused] .ambient { animation-play-state: paused; }
+
+  /* ---- 6.4 Skeleton: one shimmer per block, starts after 400ms, travels as a wave via --i ---- */
+  .skeleton { position: relative; overflow: hidden; isolation: isolate; background: var(--skel, var(--color-kapas)); }
+  .skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: var(--grad-shimmer);
+    animation: var(--animate-shimmer); animation-delay: calc(400ms + var(--i, 0) * 80ms); }
+  .bone { display: block; border-radius: 9999px; background: var(--color-kapas); }
+
+  /* ---- 6.5 Stickers & badges ---- */
+  .deal-1 { display: inline-flex; align-items: center; height: 22px; padding-inline: 8px; border-radius: 9999px;
+    background: var(--color-bandung-tint); color: var(--color-bandung-pekat); font: 600 var(--text-deal)/1 var(--font-num); }
+  .deal-2 { display: inline-flex; align-items: center; height: 24px; padding-inline: 9px; border-radius: 9999px; rotate: -3deg;
+    background: var(--color-bandung); color: var(--color-ink); border: 1.5px solid var(--color-ink); box-shadow: var(--shadow-sticker);
+    font: 600 var(--text-deal)/1 var(--font-num); }
+  .deal-3 { position: relative; isolation: isolate; display: grid; place-items: center; width: 56px; aspect-ratio: 1; rotate: -10deg;
+    color: var(--color-ink); font: 600 var(--text-deal-lg)/1 var(--font-num); }
+  .deal-3 > svg { position: absolute; inset: -6px; width: calc(100% + 12px); height: calc(100% + 12px); z-index: -1; overflow: visible; }
+  .baru-je { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding-inline: 8px; border-radius: 9999px; rotate: 2deg;
+    background: var(--color-pandan); color: var(--color-ink); border: 1.5px solid var(--color-ink); box-shadow: var(--shadow-sticker);
+    font: 600 11px/1 var(--font-sans); letter-spacing: .06em; text-transform: uppercase; }
+  .baru { display: inline-flex; align-items: center; height: 22px; padding-inline: 8px; border-radius: 9999px;
+    background: var(--color-pandan-tint); color: var(--color-pandan-pekat);
+    font: 600 11px/1 var(--font-sans); letter-spacing: .06em; text-transform: uppercase; }
+  .habis { display: inline-flex; align-items: center; height: 20px; padding-inline: 6px; border-radius: var(--radius-xs);
+    background: var(--color-ink); color: #FFFFFF; font: 600 11px/1 var(--font-sans); }
+  .cop { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px 0 6px; border-radius: var(--radius-tag);
+    background: var(--tier-tint); color: var(--tier-ink); font: 600 12px/1 var(--font-sans);
+    outline: 1.5px dashed color-mix(in oklab, currentColor 55%, transparent); outline-offset: -4px; }
+  .cop-lg { height: 36px; padding: 0 14px 0 10px; font-size: 14px; background: var(--tier-grad); color: var(--color-ink);
+    border: 2px solid var(--color-ink); box-shadow: var(--shadow-sticker); rotate: -3deg; outline-offset: -6px; }
+  .count-bubble { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding-inline: 4px; border-radius: 9999px;
+    background: var(--color-mangga); color: var(--color-ink); border: 1.5px solid var(--color-ink); font: 600 11px/1 var(--font-num); }
+  .live-dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--dot, var(--color-live)); }
+  .live-dot[data-ping]::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: inherit; animation: var(--animate-ping-3); }
+
+  /* ---- 6.6 Photo plate: makes mixed store photos look like one shelf ---- */
+  .plate { position: relative; aspect-ratio: 1; overflow: hidden; isolation: isolate; border-radius: var(--radius-plate);
+    background: var(--cat-tint, var(--color-kapas)); }
+  .plate > img { width: 100%; height: 100%; transition: opacity 240ms var(--ease-out-soft), scale 360ms var(--ease-out-soft); }
+  /* fade-in only when JS is running (reveal-ready) and the image is below the fold; no-JS and eager images are always visible */
+  .reveal-ready .plate:not([data-eager]) > img:not([data-loaded]) { opacity: 0; }
+  .plate > img[data-fit="cover"]   { object-fit: cover; object-position: 50% 40%; }
+  .plate > img[data-fit="contain"] { object-fit: contain; padding: 8%; mix-blend-mode: multiply; }
+  .plate:has(> img[data-fit="contain"])::before { content: ""; position: absolute; left: 20%; right: 20%; bottom: 7%; height: 9%; z-index: -1;
+    background: radial-gradient(closest-side, rgb(43 23 54 / .16), transparent); }  /* floor shadow */
+  .plate::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgb(43 23 54 / .06); pointer-events: none; }
+  @media (hover: hover) and (pointer: fine) { .card:hover .plate > img[data-fit="cover"] { scale: 1.04; } }
+
+  /* ---- 6.7 Product card hover layer (shadow crossfade, never animate box-shadow) ---- */
+  .card { position: relative; isolation: isolate; transition: transform 180ms var(--ease-out-soft); contain: layout paint; }
+  .card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; box-shadow: var(--shadow-card-hover);
+    opacity: 0; transition: opacity 180ms var(--ease-out-soft); }
+  @media (hover: hover) and (pointer: fine) { .card:hover { transform: translateY(-3px); } .card:hover::before { opacity: 1; } }
+  .card:active { transform: scale(.98); transition-duration: 90ms; }
+  .card:has(.stretched-link:focus-visible) { outline: 3px solid var(--color-telang); outline-offset: 2px; }
+  .card .stretched-link:focus-visible { outline: none; }
+
+  /* ---- 6.8 Odometer: fixed-width digit cells (Poppins/Fredoka ship no tnum) ---- */
+  .odo { display: inline-flex; font-family: var(--font-num); font-weight: 600; }
+  .odo-d { display: inline-block; width: .62em; height: 1.1em; overflow: hidden; text-align: center; }
+  .odo-d > span { display: flex; flex-direction: column; transform: translateY(calc(var(--d) * -1.1em));
+    transition: transform var(--dur-roll) var(--ease-out-soft); }
+  .odo-d i { display: block; height: 1.1em; line-height: 1.1em; font-style: normal; }
+  .odo[data-roll="intro"] .odo-d > span { animation: odo-roll var(--dur-roll) var(--ease-out-soft) calc(var(--p, 0) * 70ms) both; }
+  .reveal-ready [data-reveal]:not(.is-in) .odo[data-roll="reveal"] .odo-d > span { transform: translateY(0); transition: none; }
+  html[data-intro="done"] .odo[data-roll="intro"] .odo-d > span { animation: none; }
+
+  /* ---- 6.9 Marquee (live ticker) ---- */
+  .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, #0000, #000 32px, #000 calc(100% - 32px), #0000);
+             mask-image: linear-gradient(90deg, #0000, #000 32px, #000 calc(100% - 32px), #0000); }
+  .marquee-track { display: flex; gap: 32px; width: max-content; will-change: transform; animation: var(--animate-marquee); }
+  .marquee:hover .marquee-track, .marquee:focus-within .marquee-track,
+  .marquee[data-paused] .marquee-track, [data-paused] .marquee-track { animation-play-state: paused; }
+
+  /* ---- 6.10 Patterns & strips ---- */
+  .pucuk { height: 14px; background: var(--color-ink) var(--pat-rebung) repeat-x bottom / 24px 14px; }
+  .kuih-strip { height: 6px; background-image: var(--grad-kuih-lapis); }
+  .songket { position: absolute; inset: 0; pointer-events: none; background: var(--cat-pop, var(--color-bandung)); opacity: var(--pat-o, .28);
+    -webkit-mask: var(--pat-songket) 0 0 / 32px 32px repeat; mask: var(--pat-songket) 0 0 / 32px 32px repeat; }
+  .batik { position: absolute; inset: 0; pointer-events: none; background: var(--cat-pop, var(--color-bandung)); opacity: var(--pat-o, .3);
+    -webkit-mask: var(--pat-batik) 0 0 / 48px 48px repeat; mask: var(--pat-batik) 0 0 / 48px 48px repeat; }
+
+  /* ---- 6.11 Save heart particles (mounted on click, removed on animationend) ---- */
+  .particle { position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; pointer-events: none;
+    animation: particle 520ms var(--ease-out-soft) calc(var(--k, 0) * 15ms) both; }
+  .heart-ring { position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--color-jambu); pointer-events: none;
+    animation: ring-out 360ms var(--ease-out-soft) both; }
+  .heart-fill { animation: heart-pop 380ms var(--ease-pop) both; }
+
+  /* ---- 6.12 Native <dialog> + popover enter/exit (zero JS animation) ---- */
+  dialog.sheet, dialog.modal, [popover].pop-panel {
+    opacity: 1; transform: none;
+    transition: opacity 180ms var(--ease-out-soft), transform 280ms var(--ease-out-soft),
+                overlay 280ms allow-discrete, display 280ms allow-discrete;
+    @starting-style { opacity: 0; transform: var(--enter-from, translateY(-8px) scale(.97)); }
+  }
+  dialog.sheet { --enter-from: translateY(100%); }
+  dialog.sheet:not([open]), dialog.modal:not([open]), [popover].pop-panel:not(:popover-open) {
+    opacity: 0; transform: var(--exit-to, translateY(-6px)); transition-duration: 120ms, 200ms, 200ms, 200ms; transition-timing-function: var(--ease-in-soft); }
+  dialog.sheet:not([open]) { --exit-to: translateY(100%); }
+  dialog::backdrop { transition: opacity 180ms var(--ease-out-soft), overlay 180ms allow-discrete, display 180ms allow-discrete; }
+  dialog[open]::backdrop { opacity: 1; @starting-style { opacity: 0; } }
+
+  /* ---- 6.13 Loading dots + indeterminate bar ---- */
+  .dots > i { display: inline-block; width: 5px; height: 5px; margin-inline: 1px; border-radius: 50%; background: currentColor; animation: var(--animate-dots); }
+  .dots > i:nth-child(2) { animation-delay: 120ms; } .dots > i:nth-child(3) { animation-delay: 240ms; }
+  .progress-indeterminate { position: relative; height: 3px; overflow: hidden; }
+  .progress-indeterminate::after { content: ""; position: absolute; inset: 0; width: 40%; background-image: var(--grad-kuih-lapis); animation: var(--animate-indeterminate); }
+
+  /* ---- 6.14 One-shot hero intro (CSS, runs before hydration, once per session) ---- */
+  .intro-rise  { animation: rise-in 320ms var(--ease-out-soft) var(--d, 0ms) both; }
+  .intro-slap  { animation: slap 460ms var(--ease-pop) var(--d, 0ms) both; }
+  .intro-swash { transform-origin: left; animation: grow-x 520ms var(--ease-out-soft) var(--d, 120ms) both; }
+  .intro-peek  { animation: peek 520ms var(--ease-pop) var(--d, 650ms) both; }
+  html[data-intro="done"] :is(.intro-rise, .intro-slap, .intro-swash, .intro-peek) { animation: none; }
+}
+
+/* =====================================================================
+   7. SCROLL REVEAL (one IntersectionObserver: src/components/motion/reveal-observer.tsx)
+   ===================================================================== */
+.reveal-ready [data-reveal]:not(.is-in) { opacity: 0; translate: 0 16px; }
+.reveal-ready [data-reveal].is-in {
+  transition: opacity var(--dur-reveal) var(--ease-out-soft), translate var(--dur-reveal) var(--ease-out-soft);
+  transition-delay: calc(min(var(--i, 0), 5) * 60ms);
+}
+
+/* =====================================================================
+   8. VIEW TRANSITIONS (React <ViewTransition> + <Link transitionTypes>)
+   ===================================================================== */
+::view-transition { pointer-events: none; }
+::view-transition-group(site-header), ::view-transition-group(tab-bar) { animation: none; z-index: 100; }
+::view-transition-old(site-header), ::view-transition-old(tab-bar) { display: none; }
+::view-transition-new(site-header), ::view-transition-new(tab-bar) { animation: none; }
+::view-transition-old(.nav-forward) { --vt-x: -32px; animation: 120ms var(--ease-in-soft) both vt-fade reverse, 280ms var(--ease-in-out-soft) both vt-slide reverse; }
+::view-transition-new(.nav-forward) { --vt-x: 32px;  animation: 200ms var(--ease-out-soft) 100ms both vt-fade, 300ms var(--ease-out-soft) both vt-slide; }
+::view-transition-old(.nav-back)    { --vt-x: 32px;  animation: 120ms var(--ease-in-soft) both vt-fade reverse, 280ms var(--ease-in-out-soft) both vt-slide reverse; }
+::view-transition-new(.nav-back)    { --vt-x: -32px; animation: 200ms var(--ease-out-soft) 100ms both vt-fade, 300ms var(--ease-out-soft) both vt-slide; }
+::view-transition-old(.nav-tab)     { animation: 120ms var(--ease-in-soft) both vt-fade reverse; }
+::view-transition-new(.nav-tab)     { animation: 180ms var(--ease-out-soft) 60ms both vt-fade; }
+::view-transition-old(.skeleton-out){ animation: 120ms var(--ease-in-soft) both vt-fade reverse; }
+::view-transition-new(.content-in)  { animation: 200ms var(--ease-out-soft) 80ms both vt-fade, 280ms var(--ease-out-soft) both vt-rise; }
+::view-transition-old(results), ::view-transition-new(results) { animation-duration: 180ms; }
+::view-transition-group(.morph)     { animation-duration: 340ms; animation-timing-function: var(--ease-out-soft); }
+
+/* =====================================================================
+   9. REDUCED MOTION (OS setting OR in-site "Kurangkan animasi" toggle)
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after { animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; transition-delay: 0ms !important; }
+  .marquee-track { animation: none !important; } .marquee { overflow-x: auto; }
+  .mesh-blob, .ambient, .skeleton::after, .live-dot::after { animation: none !important; }
+  .reveal-ready [data-reveal]:not(.is-in) { translate: none; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation-duration: 0s !important; animation-delay: 0s !important; }
+}
+html[data-motion="reduce"] *, html[data-motion="reduce"] ::before, html[data-motion="reduce"] ::after {
+  animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; transition-delay: 0ms !important; }
+html[data-motion="reduce"] :is(.marquee-track, .mesh-blob, .ambient) { animation: none !important; }
+html[data-motion="reduce"] .skeleton::after, html[data-motion="reduce"] .live-dot::after { animation: none !important; }
+html[data-motion="reduce"] .marquee { overflow-x: auto; }
+html[data-motion="reduce"].reveal-ready [data-reveal]:not(.is-in) { translate: none; }
+html[data-motion="reduce"]::view-transition-group(*), html[data-motion="reduce"]::view-transition-old(*), html[data-motion="reduce"]::view-transition-new(*) { animation-duration: 0s !important; }
+
+/* Hide-on-print & high-contrast niceties */
+@media (prefers-contrast: more) { :root { --color-garis: #8C7B98; } .songket, .batik, .mesh-blob { display: none; } }
+@media print { .mesh, .marquee, nav[aria-label="Navigasi utama"] { display: none !important; } }

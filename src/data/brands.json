@@ -1,0 +1,3893 @@
+[
+  {
+    "slug": "adabi",
+    "name": "Adabi",
+    "category": "food",
+    "subcategory": "spices",
+    "tier": "ikon",
+    "description": "Curry powders, spices, cooking pastes and sauces made since 1984, a pantry staple for home-cooked Malaysian dishes.",
+    "founded": 1984,
+    "origin": "Rawang, Selangor",
+    "state": "Selangor",
+    "website": "https://www.adabi.com/",
+    "instagram": "adabi_consumer",
+    "tags": [
+      "halal",
+      "heritage"
+    ]
+  },
+  {
+    "slug": "against-lab",
+    "name": "Against Lab",
+    "category": "fashion",
+    "subcategory": "streetwear",
+    "tier": "naik-daun",
+    "description": "KL streetwear label formed in 2015, known for bold graphic jerseys, statement pieces and its underdog 'All Endeavour, No Surrender' spirit.",
+    "founded": 2015,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://againstlab.com/",
+    "instagram": "againstlab",
+    "tiktok": "againstlab",
+    "tags": [
+      "unisex"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://againstlab.com"
+    }
+  },
+  {
+    "slug": "aik-cheong",
+    "name": "Aik Cheong",
+    "category": "drinks",
+    "subcategory": "coffee",
+    "tier": "ikon",
+    "description": "Melaka coffee roaster since 1955, famous for kopitiam-style instant coffee sachets and drip bags, now exported to over 50 countries.",
+    "founded": 1955,
+    "origin": "Melaka",
+    "state": "Melaka",
+    "website": "https://www.aikcheong.com.my/",
+    "tags": [
+      "heritage",
+      "affordable"
+    ]
+  },
+  {
+    "slug": "aina-collective",
+    "name": "Āina Collective",
+    "category": "fashion",
+    "subcategory": "activewear",
+    "tier": "cili-padi",
+    "description": "Eco-minded Malaysian activewear label started in 2019 by two childhood swim-club friends, focused on sustainable fabrics.",
+    "founded": 2019,
+    "website": "https://a-collectiveclub.com/",
+    "instagram": "a_collectiveclub",
+    "tags": [
+      "eco"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://a-collectiveclub.com"
+    }
+  },
+  {
+    "slug": "akemi",
+    "name": "Akemi",
+    "category": "home",
+    "subcategory": "bedding",
+    "tier": "ikon",
+    "description": "Bedding brand launched in 1992 by Ipoh-born Eastern Decorator, a long-time favourite for bedsheets, quilts and pillows.",
+    "founded": 1992,
+    "origin": "Ipoh, Perak",
+    "state": "Perak",
+    "website": "https://www.akemihome.com/my",
+    "tags": [
+      "heritage"
+    ]
+  },
+  {
+    "slug": "alcadus",
+    "name": "ALCADUS",
+    "category": "accessories",
+    "subcategory": "watches",
+    "tier": "cili-padi",
+    "description": "Independent microbrand of hand-finished mechanical watches founded in 2018 by former Seiko modder Yook Hong, shipping from Malaysia.",
+    "founded": 2018,
+    "website": "https://alcadus.com/",
+    "instagram": "alcaduswatchco",
+    "tags": [
+      "premium",
+      "small-batch"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://alcadus.com"
+    }
+  },
+  {
+    "slug": "amazin-graze",
+    "name": "Amazin' Graze",
+    "category": "food",
+    "subcategory": "granola",
+    "tier": "naik-daun",
+    "description": "KL-born healthy snack brand started in a home kitchen in 2015, known for granolas, nut mixes and breakfast blends with local twists.",
+    "founded": 2015,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.amazingraze.com.my/",
+    "instagram": "amazingrazemy",
+    "tags": [
+      "local-ingredients"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.amazingraze.com.my"
+    }
+  },
+  {
+    "slug": "ameera-zaini",
+    "name": "Ameera Zaini",
+    "category": "fashion",
+    "subcategory": "hijab",
+    "tier": "naik-daun",
+    "description": "Hijab brand started in 2012 by TV presenter Ameera Zaini, famous for printed square scarves sold via 500+ affiliates and mall stores.",
+    "founded": 2012,
+    "origin": "Shah Alam, Selangor",
+    "state": "Selangor",
+    "website": "https://ameerazaini.com/",
+    "instagram": "ameerazainiofficial",
+    "tiktok": "ameerazainiofficial",
+    "tags": [
+      "modest"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://ameerazaini.com"
+    }
+  },
+  {
+    "slug": "ana-tomy",
+    "name": "Ana Tomy",
+    "category": "crafts",
+    "subcategory": "stationery",
+    "tier": "cili-padi",
+    "description": "KL design house (2016) for 100% made-to-order journals and everyday carry you configure yourself, with stores at Zhongshan Building and Pavilion KL.",
+    "founded": 2016,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://ana-tomy.co/",
+    "instagram": "anatomy_co",
+    "tiktok": "anatomy_co",
+    "tags": [
+      "small-batch",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://ana-tomy.co"
+    }
+  },
+  {
+    "slug": "anaabu",
+    "name": "ANAABU",
+    "category": "fashion",
+    "subcategory": "contemporary",
+    "tier": "naik-daun",
+    "description": "Independent label by Ana Abu known for relaxed, practical and versatile contemporary cuts, with heritage shophouse stores in KL and JB.",
+    "founded": 2010,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://anaabu.co/",
+    "instagram": "anaabu.co",
+    "tags": [
+      "unisex"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://anaabu.co"
+    }
+  },
+  {
+    "slug": "anakku",
+    "name": "Anakku",
+    "category": "kids",
+    "subcategory": "baby essentials",
+    "tier": "ikon",
+    "description": "Long-running Malaysian baby brand that began with baby apparel in 1973 and now covers feeding gear, toiletries, wipes and nursery basics.",
+    "founded": 1973,
+    "origin": "Klang, Selangor",
+    "state": "Selangor",
+    "website": "https://anakku.com/",
+    "instagram": "anakkumy",
+    "tags": [
+      "kids",
+      "heritage"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://anakku.com"
+    }
+  },
+  {
+    "slug": "apacs",
+    "name": "Apacs",
+    "category": "lifestyle",
+    "subcategory": "badminton",
+    "tier": "naik-daun",
+    "description": "Muar-based racket sports brand (est. 2002) making badminton, squash and tennis gear, sold via 600+ Malaysian dealers and in about 50 countries.",
+    "founded": 2002,
+    "origin": "Muar, Johor",
+    "state": "Johor",
+    "website": "https://apacssports.com/",
+    "tags": [
+      "unisex",
+      "affordable"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://apacssports.com"
+    }
+  },
+  {
+    "slug": "appeton",
+    "name": "Appeton",
+    "category": "health",
+    "subcategory": "supplements",
+    "tier": "ikon",
+    "description": "Kotra Pharma's familiar supplement brand, best known for kids' multivitamins, weight-gain formulas and growing-up milk, sold in 30+ markets.",
+    "website": "https://www.appeton.com/",
+    "instagram": "appetonmy",
+    "tiktok": "appetonmy",
+    "tags": [
+      "kids"
+    ]
+  },
+  {
+    "slug": "ariani",
+    "name": "Ariani",
+    "category": "fashion",
+    "subcategory": "hijab",
+    "tier": "ikon",
+    "description": "Hijab and modest-wear house with branches nationwide, known for its scarves, Ariani RTW and Luxe lines, plus collabs like Liberty London and Hogwarts.",
+    "website": "https://www.arianionline.my/",
+    "instagram": "galeriariani",
+    "tags": [
+      "modest",
+      "premium"
+    ]
+  },
+  {
+    "slug": "atom-and-the-dot",
+    "name": "Atom & The Dot",
+    "category": "kids",
+    "subcategory": "activity boxes",
+    "tier": "cili-padi",
+    "description": "Art-and-science activity boxes for curious kids, started in 2017 to make learning hands-on through play and simple experiments.",
+    "founded": 2017,
+    "website": "https://www.atomandthedot.com/",
+    "instagram": "atomandthedot",
+    "tiktok": "atomandthedot",
+    "tags": [
+      "kids"
+    ]
+  },
+  {
+    "slug": "ayomayo",
+    "name": "AyoMayo",
+    "category": "food",
+    "subcategory": "nut butter",
+    "tier": "naik-daun",
+    "description": "Penang-made, less-sweet almond and pistachio butters born during the 2020 MCO; the name is Hokkien for 'want or don't want?'",
+    "founded": 2020,
+    "origin": "Penang",
+    "state": "Pulau Pinang",
+    "website": "https://ayomayo.com.my/",
+    "instagram": "ayomayopg",
+    "tags": [
+      "halal",
+      "plant-based"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://ayomayo.com.my"
+    }
+  },
+  {
+    "slug": "b-nottee",
+    "name": "B'Nottee",
+    "category": "crafts",
+    "subcategory": "stationery",
+    "tier": "cili-padi",
+    "description": "KL studio by two interior designers making handmade notebooks, covers and pencil cases from washable kraft paper, plus custom wedding stationery.",
+    "founded": 2015,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://bnottee.com/",
+    "instagram": "b.nottee",
+    "tags": [
+      "handmade",
+      "small-batch"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://bnottee.com"
+    }
+  },
+  {
+    "slug": "baba-s",
+    "name": "Baba's",
+    "category": "food",
+    "subcategory": "spices",
+    "tier": "ikon",
+    "description": "Batu Caves spice specialist known for curry and masala mixes, pure spice powders and flours, sold in 20+ countries.",
+    "origin": "Batu Caves, Selangor",
+    "state": "Selangor",
+    "website": "https://babas.com.my/",
+    "instagram": "babasofficial_",
+    "tiktok": "babasofficial_",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://babas.com.my"
+    }
+  },
+  {
+    "slug": "bad-artist-coffee-co",
+    "name": "Bad Artist Coffee Co.",
+    "category": "drinks",
+    "subcategory": "specialty coffee",
+    "tier": "cili-padi",
+    "description": "Micro specialty roastery in SS2, Petaling Jaya, known for well-priced beans including Malaysian-grown MyLiberica from Johor.",
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://badartistcoffee.com/",
+    "instagram": "badartistcoffeeco",
+    "tags": [
+      "small-batch",
+      "local-ingredients"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://badartistcoffee.com"
+    }
+  },
+  {
+    "slug": "batik-boutique",
+    "name": "Batik Boutique",
+    "category": "fashion",
+    "subcategory": "batik",
+    "tier": "naik-daun",
+    "description": "Award-winning KL social enterprise turning handcrafted Malaysian batik into modern apparel and gifts while training and employing artisans.",
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://batikboutique.com/",
+    "instagram": "thebatikboutique",
+    "tiktok": "batikboutique_",
+    "tags": [
+      "handmade",
+      "heritage",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://batikboutique.com"
+    }
+  },
+  {
+    "slug": "bawal-exclusive",
+    "name": "Bawal Exclusive",
+    "category": "fashion",
+    "subcategory": "bawal",
+    "tier": "ikon",
+    "description": "Went from night-market stalls in 1998 to a luxe hijab house, known for Swarovski-studded bawal and a RM100,000 record-listed hijab.",
+    "founded": 1998,
+    "origin": "Puchong, Selangor",
+    "state": "Selangor",
+    "website": "https://www.bawalexclusive.com/",
+    "instagram": "bawalexclusive",
+    "tiktok": "bawalexclusive",
+    "tags": [
+      "modest",
+      "premium"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.bawalexclusive.com"
+    }
+  },
+  {
+    "slug": "bayu-somerset",
+    "name": "Bayu Somerset",
+    "category": "fashion",
+    "subcategory": "baju kurung",
+    "tier": "naik-daun",
+    "description": "Affordable modest label founded in 2021, popular for colourful printed kurung and kebaya in XXS to 5XL, with outlets across Malaysia.",
+    "founded": 2021,
+    "origin": "Shah Alam, Selangor",
+    "state": "Selangor",
+    "website": "https://www.bayusomerset.com/",
+    "instagram": "bayusomerset",
+    "tiktok": "bayusomerset",
+    "tags": [
+      "modest",
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.bayusomerset.com"
+    }
+  },
+  {
+    "slug": "bea-and-bow",
+    "name": "Bea & Bow",
+    "category": "kids",
+    "subcategory": "baby gifts",
+    "tier": "cili-padi",
+    "description": "KL baby gift label with teepee tents, playmats, blankets and nursery decor that make practical yet fun baby shower presents.",
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.beaandbow.com/",
+    "instagram": "bea.and.bow",
+    "tags": [
+      "kids",
+      "gift"
+    ]
+  },
+  {
+    "slug": "bendang-studio",
+    "name": "Bendang Studio",
+    "category": "home",
+    "subcategory": "ceramics",
+    "tier": "cili-padi",
+    "description": "Rozana Musa's Melaka ceramics studio making handmade plates and bowls, found on the tables of several well-known KL restaurants.",
+    "founded": 2008,
+    "origin": "Melaka",
+    "state": "Melaka",
+    "website": "https://www.bendangstudio.com/",
+    "instagram": "bendangstudio_official",
+    "tags": [
+      "handmade"
+    ]
+  },
+  {
+    "slug": "bernard-chandran",
+    "name": "Bernard Chandran",
+    "category": "fashion",
+    "subcategory": "designer couture",
+    "tier": "ikon",
+    "description": "KL couturier who launched his label in 1993, celebrated for bold, modern reinterpretations of traditional Malay attire.",
+    "founded": 1993,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.bernardchandran.com/",
+    "instagram": "bernardchandranofficial",
+    "tags": [
+      "premium",
+      "heritage"
+    ]
+  },
+  {
+    "slug": "beryl-s",
+    "name": "Beryl's",
+    "category": "food",
+    "subcategory": "chocolate",
+    "tier": "ikon",
+    "description": "Homegrown chocolatier since 1995, from supermarket bars to duty-free gift packs, now found in over 15 countries.",
+    "founded": 1995,
+    "origin": "Seri Kembangan, Selangor",
+    "state": "Selangor",
+    "website": "https://berylschocolate.com/",
+    "instagram": "berylschocolate",
+    "tiktok": "berylschocolate",
+    "tags": [
+      "gift"
+    ]
+  },
+  {
+    "slug": "better-than-blouses",
+    "name": "Better Than Blouses",
+    "category": "fashion",
+    "subcategory": "batik",
+    "tier": "cili-padi",
+    "description": "Penang label by former doctor Pei Shern, making playful, versatile batik pieces sold online and at a George Town boutique.",
+    "origin": "George Town, Penang",
+    "state": "Pulau Pinang",
+    "website": "https://betterthanblouses.com/",
+    "instagram": "betterthanblouses",
+    "tags": [
+      "small-batch",
+      "heritage"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://betterthanblouses.com"
+    }
+  },
+  {
+    "slug": "bingka",
+    "name": "Bingka",
+    "category": "crafts",
+    "subcategory": "screen-printed goods",
+    "tier": "cili-padi",
+    "description": "KL label (since 2015) that silkscreen-prints Malaysian-inspired motifs onto tote bags, pouches, tea towels and cushion covers, sewn locally.",
+    "founded": 2015,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://bingka.my/",
+    "instagram": "bingka.kl",
+    "tags": [
+      "handmade",
+      "small-batch",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://bingka.my"
+    }
+  },
+  {
+    "slug": "bintang-flavours",
+    "name": "Bintang Flavours",
+    "category": "food",
+    "subcategory": "chilli sauce",
+    "tier": "cili-padi",
+    "description": "Kantan chilli sauce from a Sitiawan family recipe, plus a habanero-pineapple hot sauce; plant-based and halal-certified.",
+    "website": "https://www.bintangflavours.com/",
+    "instagram": "bintangflavours",
+    "tags": [
+      "halal",
+      "plant-based",
+      "local-ingredients"
+    ]
+  },
+  {
+    "slug": "bio-life",
+    "name": "BiO-LiFE",
+    "category": "health",
+    "subcategory": "supplements",
+    "tier": "ikon",
+    "description": "KL-born supplement maker with over three decades in the game, now owned by Thailand's Mega Lifesciences, with immunity, joint and kids' ranges.",
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://biolife.megawecare.com/",
+    "instagram": "biolifemy",
+    "tiktok": "biolife.my",
+    "shopee": "https://shopee.com.my/biolife.malaysia",
+    "tags": [
+      "heritage"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://biolife.megawecare.com"
+    }
+  },
+  {
+    "slug": "bloomspace",
+    "name": "Bloomspace",
+    "category": "home",
+    "subcategory": "plants",
+    "tier": "naik-daun",
+    "description": "Online plant shop since 2017 delivering ready-potted indoor plants in biodegradable designer pots across Peninsular Malaysia.",
+    "founded": 2017,
+    "website": "https://www.bloomspace.co/",
+    "instagram": "bloomspace.co",
+    "tags": [
+      "eco"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.bloomspace.co"
+    }
+  },
+  {
+    "slug": "boh-tea",
+    "name": "BOH Tea",
+    "category": "drinks",
+    "subcategory": "tea",
+    "tier": "ikon",
+    "description": "Malaysia's best-known tea brand since 1929, grown in the Cameron Highlands; sells classic blends, garden teas, teh tarik mixes and local-herb infusions.",
+    "founded": 1929,
+    "origin": "Cameron Highlands, Pahang",
+    "state": "Pahang",
+    "website": "https://shop.bohtea.com/",
+    "instagram": "bohteamalaysia",
+    "tiktok": "bohteamalaysia",
+    "tags": [
+      "heritage",
+      "local-ingredients"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://shop.bohtea.com"
+    }
+  },
+  {
+    "slug": "bonia",
+    "name": "Bonia",
+    "category": "accessories",
+    "subcategory": "leather goods",
+    "tier": "ikon",
+    "description": "KL-headquartered leather goods house dating back to 1974, known for monogram handbags, wallets, belts and shoes sold across Asia.",
+    "founded": 1974,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.bonia.com.my/",
+    "instagram": "bonia",
+    "tiktok": "boniaofficial",
+    "tags": [
+      "premium",
+      "heritage",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.bonia.com.my"
+    }
+  },
+  {
+    "slug": "breakfirst-by-amy",
+    "name": "breakfirst by Amy",
+    "category": "food",
+    "subcategory": "nut butter",
+    "tier": "cili-padi",
+    "description": "Less-sweet nut butters by a holistic nutritionist, all dairy-free and gluten-free, including an espresso almond butter.",
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://breakfirstbyamy.com/",
+    "instagram": "breakfirstbyamy",
+    "tags": [
+      "plant-based"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://breakfirstbyamy.com"
+    }
+  },
+  {
+    "slug": "breaking-system",
+    "name": "Breaking System",
+    "category": "fashion",
+    "subcategory": "streetwear",
+    "tier": "cili-padi",
+    "description": "Bukit Jalil streetwear brand with a minimal, monochrome look and understated branding across hoodies, tees and jerseys.",
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://breakingsystem.co/",
+    "instagram": "breakingsystem",
+    "tiktok": "breaking.system",
+    "tags": [
+      "unisex"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://breakingsystem.co"
+    }
+  },
+  {
+    "slug": "breeze-for-you",
+    "name": "Breeze For You",
+    "category": "health",
+    "subcategory": "menstrual cups",
+    "tier": "naik-daun",
+    "description": "PJ menstrual cup brand started by a scuba-diving founder, known for Malaysian-made cups, carry cases and cup-sterilising tablets.",
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://breezeforyou.com/",
+    "instagram": "breezeforyou_",
+    "tiktok": "breezeforyou",
+    "tags": [
+      "eco"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://breezeforyou.com"
+    }
+  },
+  {
+    "slug": "brik",
+    "name": "Brïk",
+    "category": "accessories",
+    "subcategory": "handbags",
+    "tier": "naik-daun",
+    "description": "Sister-founded bag label (2023) known for colour-blocked bags like its Chroma line; 100,000+ bags sold and now in Indonesia.",
+    "founded": 2023,
+    "website": "https://bybrik.com/",
+    "instagram": "by.brik",
+    "tiktok": "by.brik",
+    "tags": [
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://bybrik.com"
+    }
+  },
+  {
+    "slug": "british-india",
+    "name": "British India",
+    "category": "fashion",
+    "subcategory": "tropical wear",
+    "tier": "ikon",
+    "description": "Homegrown label since 1994, known for breezy colonial-inspired clothing in natural linen and cotton made for tropical weather.",
+    "founded": 1994,
+    "website": "https://www.britishindia.com.my/",
+    "instagram": "britishindiaasia",
+    "tags": [
+      "premium"
+    ]
+  },
+  {
+    "slug": "buddy-gator",
+    "name": "Buddy Gator",
+    "category": "lifestyle",
+    "subcategory": "comics",
+    "tier": "cili-padi",
+    "description": "Feel-good comic by Malaysian artist Chow Hon Lam about a cheerful alligator, with books and collabs including Uniqlo UTme and CASETiFY.",
+    "website": "https://www.buddygator.com/",
+    "instagram": "buddygatorcomics",
+    "tags": [
+      "kids",
+      "gift"
+    ]
+  },
+  {
+    "slug": "buku-fixi",
+    "name": "Buku Fixi",
+    "category": "crafts",
+    "subcategory": "books",
+    "tier": "naik-daun",
+    "description": "Indie publisher launched in 2011 by Malaysian writer-filmmaker Amir Muhammad; its titles sell via the official Buku Fixi Shopee store.",
+    "founded": 2011,
+    "website": "https://shopee.com.my/bukufixi.os",
+    "shopee": "https://shopee.com.my/bukufixi.os",
+    "tags": [
+      "gift"
+    ]
+  },
+  {
+    "slug": "by-hogen",
+    "name": "By Hogen",
+    "category": "home",
+    "subcategory": "furniture",
+    "tier": "cili-padi",
+    "description": "Penang design studio founded in 2022, making tool-free-assembly furniture such as the Unfold couch with local craftsmen.",
+    "founded": 2022,
+    "origin": "George Town, Penang",
+    "state": "Pulau Pinang",
+    "website": "https://byhogen.com/",
+    "instagram": "byhogenofficial",
+    "tags": [
+      "handmade"
+    ]
+  },
+  {
+    "slug": "calaqisya",
+    "name": "CalaQisya",
+    "category": "fashion",
+    "subcategory": "modest wear",
+    "tier": "naik-daun",
+    "description": "Modest-wear label founded in 2010 by three sisters, known for comfy everyday pieces and Raya sets, with stores in KL, Shah Alam, JB and Ipoh.",
+    "founded": 2010,
+    "origin": "Selangor",
+    "state": "Selangor",
+    "website": "https://calaqisya.com/",
+    "instagram": "calaqisya",
+    "tags": [
+      "modest"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://calaqisya.com"
+    }
+  },
+  {
+    "slug": "carlo-rino",
+    "name": "Carlo Rino",
+    "category": "accessories",
+    "subcategory": "handbags",
+    "tier": "ikon",
+    "description": "Homegrown ladies' label established in 1986, known for handbags, wallets and shoes, plus the C.Rino eyewear line.",
+    "founded": 1986,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.carlorino.net/my/",
+    "instagram": "carlorino",
+    "tiktok": "carlorino_official",
+    "tags": [
+      "gift"
+    ]
+  },
+  {
+    "slug": "cheetah",
+    "name": "Cheetah",
+    "category": "fashion",
+    "subcategory": "sportswear",
+    "tier": "ikon",
+    "description": "Homegrown sports and casual wear label launched in 1979, now spanning ladies, junior, baby and lifestyle lines.",
+    "founded": 1979,
+    "origin": "Seri Kembangan, Selangor",
+    "state": "Selangor",
+    "website": "https://www.cheetah.com.my/",
+    "instagram": "cheetahmalaysia",
+    "tiktok": "cheetahmalaysia",
+    "tags": [
+      "unisex",
+      "affordable"
+    ]
+  },
+  {
+    "slug": "chek-hup",
+    "name": "Chek Hup",
+    "category": "drinks",
+    "subcategory": "white coffee",
+    "tier": "ikon",
+    "description": "Ipoh firm that started out selling rock sugar in 1965 and launched its 3-in-1 Ipoh White Coffee in 2000; also makes teh tarik and chocolate mixes.",
+    "founded": 1965,
+    "origin": "Ipoh, Perak",
+    "state": "Perak",
+    "website": "https://chekhup.com.my/",
+    "instagram": "chekhup",
+    "tiktok": "chekhup",
+    "tags": [
+      "heritage",
+      "affordable"
+    ]
+  },
+  {
+    "slug": "chocolate-concierge",
+    "name": "Chocolate Concierge",
+    "category": "food",
+    "subcategory": "chocolate",
+    "tier": "cili-padi",
+    "description": "Bangsar small-batch tree-to-bar maker using Malaysian single-origin cacao, with bonbons in local flavours like laksa and teh tarik.",
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://chocconcierge.com/",
+    "instagram": "chocconcierge",
+    "tags": [
+      "local-ingredients",
+      "premium",
+      "small-batch"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://chocconcierge.com"
+    }
+  },
+  {
+    "slug": "christy-ng",
+    "name": "Christy Ng",
+    "category": "accessories",
+    "subcategory": "shoes",
+    "tier": "naik-daun",
+    "description": "Started in a living room in 2012 and grew to 12 stores, known for comfy, affordable heels, flats and bags with customisation options.",
+    "founded": 2012,
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://www.christyng.com/",
+    "instagram": "christyngshoes",
+    "tiktok": "christyngshoes",
+    "tags": [
+      "affordable",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.christyng.com"
+    }
+  },
+  {
+    "slug": "chuck-s",
+    "name": "Chuck's",
+    "category": "beauty",
+    "subcategory": "skincare",
+    "tier": "naik-daun",
+    "description": "Started in 2019 by influencer Jane Chuck; known for sheet masks in clean, Insta-worthy packaging, later adding playful makeup.",
+    "founded": 2019,
+    "website": "https://chuck-s.co/",
+    "instagram": "chucks.co",
+    "tiktok": "chucks.co",
+    "tags": [
+      "cruelty-free"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://chuck-s.co"
+    }
+  },
+  {
+    "slug": "clary",
+    "name": "Clary",
+    "category": "fashion",
+    "subcategory": "kebaya",
+    "tier": "cili-padi",
+    "description": "Young Klang Valley label launched in 2023, serving bold modern kebaya sets, capes and dresses for Raya and special occasions.",
+    "founded": 2023,
+    "origin": "Seri Kembangan, Selangor",
+    "state": "Selangor",
+    "website": "https://clarykl.com/",
+    "instagram": "clary.kl",
+    "tiktok": "clary.kl",
+    "tags": [
+      "modest"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://clarykl.com"
+    }
+  },
+  {
+    "slug": "clef",
+    "name": "CLEF",
+    "category": "beauty",
+    "subcategory": "skincare",
+    "tier": "naik-daun",
+    "description": "Malaysian beauty brand founded in 2019 around clean, effective skincare, since expanded into hair, body and personal care.",
+    "founded": 2019,
+    "website": "https://www.clefbeauty.com/",
+    "tags": [
+      "cruelty-free",
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.clefbeauty.com"
+    }
+  },
+  {
+    "slug": "clinelle",
+    "name": "Clinelle",
+    "category": "beauty",
+    "subcategory": "skincare",
+    "tier": "ikon",
+    "description": "Skincare launched in 2004 by Malaysia's listed Esthetics International Group, formulated without a list of 1,600 known irritants.",
+    "founded": 2004,
+    "website": "https://clinelle.com/",
+    "instagram": "myclinelle",
+    "tiktok": "myclinelle",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://clinelle.com"
+    }
+  },
+  {
+    "slug": "cosmoderm",
+    "name": "Cosmoderm",
+    "category": "beauty",
+    "subcategory": "skincare",
+    "tier": "ikon",
+    "description": "Halal pharmacy-shelf skincare made by PJ-based Vanity Cosmeceutical since 2001, with ranges like tea tree, vitamin C and niacinamide.",
+    "founded": 2001,
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://cosmoderm.com.my/",
+    "instagram": "cosmoderm",
+    "tiktok": "cosmoderm",
+    "tags": [
+      "halal",
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://cosmoderm.com.my"
+    }
+  },
+  {
+    "slug": "cotton-mermaid",
+    "name": "Cotton Mermaid",
+    "category": "health",
+    "subcategory": "period care",
+    "tier": "cili-padi",
+    "description": "Mum-founded period care label from 2017, making reusable cloth pads, menstrual cups and period panties in sizes up to 6XL.",
+    "founded": 2017,
+    "website": "https://cottonmermaid.com/",
+    "instagram": "cottonmermaid_mermaidcup",
+    "tags": [
+      "eco"
+    ]
+  },
+  {
+    "slug": "createe-kit",
+    "name": "CreaTee Kit",
+    "category": "kids",
+    "subcategory": "diy art kits",
+    "tier": "cili-padi",
+    "description": "Sister-founded social enterprise selling DIY t-shirt and tote art kits for kids aged 5-12, with profits funding free workshops.",
+    "website": "https://www.createekit.com/",
+    "instagram": "createekit",
+    "tags": [
+      "kids"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.createekit.com"
+    }
+  },
+  {
+    "slug": "cs12",
+    "name": "CS12",
+    "category": "beauty",
+    "subcategory": "skincare",
+    "tier": "cili-padi",
+    "description": "Mother-daughter skincare brand by specialist Madam Heng and blogger Ashley Ong, known for its silk Miracle Mask for sensitive skin.",
+    "website": "https://cs12skincare.com.my/",
+    "instagram": "cs12skincare",
+    "tiktok": "cs12skincare",
+    "tags": [
+      "premium"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://cs12skincare.com.my"
+    }
+  },
+  {
+    "slug": "cuura",
+    "name": "Cuura",
+    "category": "beauty",
+    "subcategory": "skincare",
+    "tier": "naik-daun",
+    "description": "Halal-certified skincare founded by modest-fashion entrepreneur Sarah Shah Nor, popular for its sunscreens and stocked in 280+ Guardian stores.",
+    "website": "https://cuuraofficial.com/",
+    "instagram": "cuuraofficial",
+    "tiktok": "cuuraofficial",
+    "tags": [
+      "halal"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://cuuraofficial.com"
+    }
+  },
+  {
+    "slug": "cytron",
+    "name": "Cytron",
+    "category": "tech",
+    "subcategory": "maker electronics",
+    "tier": "naik-daun",
+    "description": "Penang maker-electronics firm founded by five UTM grads in 2004; known for its Maker boards, REKA:BIT kits, motor drivers and education robots.",
+    "founded": 2004,
+    "origin": "Penang",
+    "state": "Pulau Pinang",
+    "website": "https://my.cytron.io/",
+    "instagram": "cytrontech",
+    "tiktok": "cytrontech",
+    "tags": [
+      "affordable"
+    ]
+  },
+  {
+    "slug": "dododots",
+    "name": "Dododots",
+    "category": "beauty",
+    "subcategory": "acne care",
+    "tier": "naik-daun",
+    "description": "Malaysia's first fully coloured pimple patch brand, built by two Malaysians to spread acne-positivity with fun patch designs.",
+    "website": "https://dododots.com/",
+    "instagram": "dododots",
+    "tiktok": "dododots",
+    "tags": [
+      "unisex",
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://dododots.com"
+    }
+  },
+  {
+    "slug": "dreamland",
+    "name": "Dreamland",
+    "category": "home",
+    "subcategory": "mattress",
+    "tier": "ikon",
+    "description": "Began as a small foam mattress maker in Muar before moving into spring mattresses; a familiar name for mattresses, headboards and pillows.",
+    "origin": "Muar, Johor",
+    "state": "Johor",
+    "website": "https://dreamland.com.my/",
+    "tags": [
+      "heritage"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://dreamland.com.my"
+    }
+  },
+  {
+    "slug": "earth-heir",
+    "name": "Earth Heir",
+    "category": "crafts",
+    "subcategory": "artisan crafts",
+    "tier": "cili-padi",
+    "description": "KL social enterprise and B Corp (2013) selling bags, accessories and gifts made by Malaysian artisans, refugee makers and impact brands.",
+    "founded": 2013,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://earthheir.com/",
+    "instagram": "earthheir",
+    "tags": [
+      "handmade",
+      "eco",
+      "heritage",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://earthheir.com"
+    }
+  },
+  {
+    "slug": "ejen-ali-wau-animation",
+    "name": "Ejen Ali (WAU Animation)",
+    "category": "lifestyle",
+    "subcategory": "animation merch",
+    "tier": "naik-daun",
+    "description": "Official home of Ejen Ali, WAU Animation's Cyberjaya-made spy-kid hit whose 2019 movie grossed RM30m+; shop has IRIS specs and fan merch.",
+    "founded": 2014,
+    "origin": "Cyberjaya, Selangor",
+    "state": "Selangor",
+    "website": "https://ejenali.my/",
+    "instagram": "ejen_ali",
+    "tiktok": "officialejenali",
+    "tags": [
+      "kids",
+      "gift"
+    ]
+  },
+  {
+    "slug": "farm-fresh",
+    "name": "Farm Fresh",
+    "category": "drinks",
+    "subcategory": "dairy",
+    "tier": "ikon",
+    "description": "Started in 2009 with 60 cows on a Johor farm and grew into Malaysia's No.1 dairy brand: fresh and UHT milk, yogurts, kids' milk and plant-based drinks.",
+    "founded": 2009,
+    "origin": "Mawai, Johor",
+    "state": "Johor",
+    "website": "https://shop.farmfresh.com.my/",
+    "instagram": "farmfreshmilkmalaysia",
+    "tiktok": "farmfreshmilkmalaysia",
+    "tags": [
+      "local-ingredients",
+      "kids"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://shop.farmfresh.com.my"
+    }
+  },
+  {
+    "slug": "fateh-watches",
+    "name": "Fateh Watches",
+    "category": "accessories",
+    "subcategory": "watches",
+    "tier": "naik-daun",
+    "description": "Melaka-born watchmaker releasing limited-run, Swiss-powered watches with Malaysian motifs like songket; a Malaysia Good Design Award winner.",
+    "founded": 2016,
+    "origin": "Melaka",
+    "state": "Melaka",
+    "website": "https://fatehwatches.com/",
+    "instagram": "fatehwatches",
+    "tiktok": "fatehwatches16",
+    "tags": [
+      "premium",
+      "small-batch",
+      "men"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://fatehwatches.com"
+    }
+  },
+  {
+    "slug": "fella-design",
+    "name": "Fella Design",
+    "category": "home",
+    "subcategory": "furniture",
+    "tier": "ikon",
+    "description": "Sofa and furniture maker started by three graduates with RM700 during the 1986 recession, now a major Malaysian home furniture name.",
+    "founded": 1986,
+    "origin": "Shah Alam, Selangor",
+    "state": "Selangor",
+    "website": "https://fella.com.my/",
+    "instagram": "felladesign",
+    "tiktok": "felladesignmalaysia",
+    "tags": [
+      "heritage"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://fella.com.my"
+    }
+  },
+  {
+    "slug": "fipper",
+    "name": "Fipper",
+    "category": "accessories",
+    "subcategory": "slippers",
+    "tier": "ikon",
+    "description": "Rubber flip-flop brand launched in 2008 that became a Malaysian everyday staple, with 100+ outlets and styles for men, women and kids.",
+    "founded": 2008,
+    "website": "https://www.fipperslipper.com.my/",
+    "tags": [
+      "unisex",
+      "kids",
+      "affordable"
+    ]
+  },
+  {
+    "slug": "floe-active",
+    "name": "FLOE Active",
+    "category": "fashion",
+    "subcategory": "activewear",
+    "tier": "cili-padi",
+    "description": "Johor Bahru activewear label making functional sports bras, leggings, skorts and sets with a clean, timeless look.",
+    "origin": "Johor Bahru, Johor",
+    "state": "Johor",
+    "website": "https://floeactive.com/",
+    "instagram": "floeactive",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://floeactive.com"
+    }
+  },
+  {
+    "slug": "follow-me",
+    "name": "Follow Me",
+    "category": "beauty",
+    "subcategory": "haircare",
+    "tier": "ikon",
+    "description": "Penang-made personal care line from Tohtonku since 1983, best known for Green Tea shampoos (incl. a hijab variant) and anti-bacterial body wash.",
+    "founded": 1983,
+    "origin": "Penang",
+    "state": "Pulau Pinang",
+    "website": "https://followme.com.my/",
+    "tags": [
+      "heritage",
+      "affordable"
+    ]
+  },
+  {
+    "slug": "forest-cloud",
+    "name": "Forest Cloud",
+    "category": "drinks",
+    "subcategory": "matcha",
+    "tier": "naik-daun",
+    "description": "Penang-rooted brand that began with coffee and turned matcha-first; sells matcha, hojicha, cocoa, coffee and brewing tools, now HQ'd in Selangor.",
+    "origin": "Penang",
+    "state": "Pulau Pinang",
+    "website": "https://www.forestcloud.com/",
+    "instagram": "forestcloudofficial",
+    "tiktok": "forestcloudofficial",
+    "tags": [
+      "premium",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.forestcloud.com"
+    }
+  },
+  {
+    "slug": "franoe",
+    "name": "Franoe",
+    "category": "health",
+    "subcategory": "aromatherapy",
+    "tier": "cili-padi",
+    "description": "Essential oil label founded in 2020 by Vanessa Chong of an incense-making family, also running scent-blending workshops and wellness retreats.",
+    "founded": 2020,
+    "website": "https://franoe.com/",
+    "tags": [
+      "plant-based"
+    ]
+  },
+  {
+    "slug": "galado",
+    "name": "Galado",
+    "category": "tech",
+    "subcategory": "phone accessories",
+    "tier": "cili-padi",
+    "description": "Malaysian phone accessory brand by a husband-and-wife duo, known for name-printed and hand-drawn custom cases, ProGuard cases and charms.",
+    "website": "https://galado.com.my/",
+    "instagram": "galadomy",
+    "tiktok": "galado_my",
+    "shopee": "https://shopee.com.my/galado",
+    "tags": [
+      "gift"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://galado.com.my"
+    }
+  },
+  {
+    "slug": "getha",
+    "name": "Getha",
+    "category": "home",
+    "subcategory": "mattress",
+    "tier": "ikon",
+    "description": "Natural latex bedding brand since 1969 (the name nods to \"getah\"), known for latex mattresses, pillows and bed frames.",
+    "founded": 1969,
+    "website": "https://getha.com.my/",
+    "instagram": "gethabedding",
+    "tags": [
+      "heritage"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://getha.com.my"
+    }
+  },
+  {
+    "slug": "ghee-hiang",
+    "name": "Ghee Hiang",
+    "category": "food",
+    "subcategory": "pastries",
+    "tier": "ikon",
+    "description": "Penang heritage name dating back to 1856, famed for its handmade tau sar pneah pastries and Baby Brand sesame oil.",
+    "founded": 1856,
+    "origin": "George Town, Penang",
+    "state": "Pulau Pinang",
+    "website": "https://ghee-hiang.com/",
+    "instagram": "gheehiang",
+    "tags": [
+      "heritage",
+      "gift"
+    ]
+  },
+  {
+    "slug": "ghostbird-coffee-co",
+    "name": "Ghostbird Coffee Co.",
+    "category": "drinks",
+    "subcategory": "specialty coffee",
+    "tier": "naik-daun",
+    "description": "KL specialty roaster since 2015 offering blends, single origins and drip bags; works with local growers and hosts the Malaysia AeroPress Championship.",
+    "founded": 2015,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://ghostbirdcoffee.co/",
+    "instagram": "ghostbirdcoffee",
+    "tags": [
+      "premium"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://ghostbirdcoffee.co"
+    }
+  },
+  {
+    "slug": "gigi-coffee",
+    "name": "Gigi Coffee",
+    "category": "drinks",
+    "subcategory": "coffee",
+    "tier": "naik-daun",
+    "description": "Shah Alam-based grab-and-go coffee chain with 100+ stores and app ordering; its online shop also sells roasted coffee beans and merch.",
+    "founded": 2019,
+    "origin": "Shah Alam, Selangor",
+    "state": "Selangor",
+    "website": "https://www.gigicoffee.com/",
+    "instagram": "gigicoffeemy",
+    "tiktok": "gigicoffeemy",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://www.gigicoffee.com"
+    }
+  },
+  {
+    "slug": "greenroom136",
+    "name": "Greenroom136",
+    "category": "accessories",
+    "subcategory": "backpacks",
+    "tier": "cili-padi",
+    "description": "Independent Kajang workshop making backpacks, messenger bags and wallets since 2011, with a custom builder to design your own bag.",
+    "founded": 2011,
+    "origin": "Kajang, Selangor",
+    "state": "Selangor",
+    "website": "https://www.greenroom136.com/",
+    "tags": [
+      "unisex",
+      "handmade"
+    ]
+  },
+  {
+    "slug": "habib-jewels",
+    "name": "Habib Jewels",
+    "category": "accessories",
+    "subcategory": "jewellery",
+    "tier": "ikon",
+    "description": "Penang jeweller founded on Pitt Street in 1958, now a household name for gold, diamonds and bridal jewellery nationwide.",
+    "founded": 1958,
+    "origin": "George Town, Penang",
+    "state": "Pulau Pinang",
+    "website": "https://habibjewels.com/",
+    "instagram": "habibjewelsofficial",
+    "tiktok": "habibjewelsofficial",
+    "tags": [
+      "heritage",
+      "premium",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://habibjewels.com"
+    }
+  },
+  {
+    "slug": "handmade-heroes",
+    "name": "Handmade Heroes",
+    "category": "beauty",
+    "subcategory": "skincare",
+    "tier": "cili-padi",
+    "description": "Small-batch, vegan and cruelty-free skincare and lip tints co-founded by Bella Kuan, Lim Cai Jin and Lynsey Lim, with a store at APW Bangsar.",
+    "website": "https://handmadeheroes.my/",
+    "instagram": "handmadeheroesmy",
+    "tags": [
+      "vegan",
+      "cruelty-free",
+      "small-batch"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://handmadeheroes.my"
+    }
+  },
+  {
+    "slug": "hdpc",
+    "name": "HdPc",
+    "category": "fashion",
+    "subcategory": "streetwear",
+    "tier": "cili-padi",
+    "description": "KL-inspired label founded in 2022 by the team behind Hundred Percent, blending workwear and streetwear into clean, wearable staples.",
+    "founded": 2022,
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://hdpc.online/",
+    "instagram": "hdpc.dept",
+    "tiktok": "hdpc.dept",
+    "tags": [
+      "unisex"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://hdpc.online"
+    }
+  },
+  {
+    "slug": "hemito",
+    "name": "Hemito",
+    "category": "kids",
+    "subcategory": "kids fashion",
+    "tier": "naik-daun",
+    "description": "Kidswear label founded in 2019, offering comfy everyday outfits, swimwear and accessories at wallet-friendly prices, online and in Johor.",
+    "founded": 2019,
+    "origin": "Iskandar Puteri, Johor",
+    "state": "Johor",
+    "website": "https://hemitokids.com/",
+    "instagram": "hemitokids",
+    "tags": [
+      "kids",
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://hemitokids.com"
+    }
+  },
+  {
+    "slug": "him-heang",
+    "name": "Him Heang",
+    "category": "food",
+    "subcategory": "pastries",
+    "tier": "cili-padi",
+    "description": "Third-generation family bakery in George Town since 1948, making handmade local pastries with no added preservatives.",
+    "founded": 1948,
+    "origin": "George Town, Penang",
+    "state": "Pulau Pinang",
+    "website": "https://www.himheang.com/",
+    "tags": [
+      "heritage",
+      "handmade"
+    ]
+  },
+  {
+    "slug": "hipster-pomade",
+    "name": "Hipster Pomade",
+    "category": "beauty",
+    "subcategory": "men grooming",
+    "tier": "naik-daun",
+    "description": "Homegrown pomade brand set up in 2015 by ex-geologist Amir Syakireen Ramli, offering affordable water-based styling products for men.",
+    "founded": 2015,
+    "website": "https://www.hipsterpomade.com/",
+    "instagram": "hipster_pomade",
+    "tags": [
+      "men",
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.hipsterpomade.com"
+    }
+  },
+  {
+    "slug": "ho-yan-hor",
+    "name": "Ho Yan Hor",
+    "category": "health",
+    "subcategory": "herbal tea",
+    "tier": "ikon",
+    "description": "Ipoh's classic herbal tea, first sold to tin miners in the 1940s and still a home-cupboard staple; now part of the Hovid group.",
+    "origin": "Ipoh, Perak",
+    "state": "Perak",
+    "website": "https://hoyanhor.com/",
+    "tags": [
+      "heritage",
+      "plant-based"
+    ]
+  },
+  {
+    "slug": "hovid",
+    "name": "Hovid",
+    "category": "health",
+    "subcategory": "pharmacy",
+    "tier": "ikon",
+    "description": "Ipoh pharma group that grew out of the Ho Yan Hor herbal tea business, known for palm-oil tocotrienol supplements and 400+ medicines.",
+    "founded": 1980,
+    "origin": "Ipoh, Perak",
+    "state": "Perak",
+    "website": "https://hovid.com/",
+    "instagram": "hovid_malaysia",
+    "tags": [
+      "heritage",
+      "local-ingredients"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://hovid.com"
+    }
+  },
+  {
+    "slug": "hup-seng",
+    "name": "Hup Seng",
+    "category": "food",
+    "subcategory": "biscuits",
+    "tier": "ikon",
+    "description": "Batu Pahat biscuit house started by the Kerk brothers in 1957, behind the Cap Ping Pong label and its famous Special Cream Crackers.",
+    "founded": 1957,
+    "origin": "Batu Pahat, Johor",
+    "state": "Johor",
+    "website": "https://www.hupseng.com/",
+    "instagram": "myhupseng",
+    "tags": [
+      "heritage"
+    ]
+  },
+  {
+    "slug": "inari-jewellery",
+    "name": "Inari Jewellery",
+    "category": "accessories",
+    "subcategory": "jewellery",
+    "tier": "cili-padi",
+    "description": "Founded in 2022 by Eva Woon to honour her family's goldsmith roots; handmade gold-filled and silver jewellery with a KL flagship.",
+    "founded": 2022,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.inarijewellery.com/",
+    "instagram": "inarijewellery",
+    "tags": [
+      "handmade",
+      "small-batch",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.inarijewellery.com"
+    }
+  },
+  {
+    "slug": "inisaya",
+    "name": "inisaya",
+    "category": "fashion",
+    "subcategory": "batik",
+    "tier": "cili-padi",
+    "description": "Subang Jaya label by designer Jeffery, making comfy, size-adaptive batik pieces in small batches with local factories and home tailors.",
+    "founded": 2021,
+    "origin": "Subang Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://inisaya.my/",
+    "tags": [
+      "small-batch",
+      "heritage"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://inisaya.my"
+    }
+  },
+  {
+    "slug": "jaws-and-claws-chocolate",
+    "name": "Jaws & Claws Chocolate",
+    "category": "food",
+    "subcategory": "chocolate",
+    "tier": "cili-padi",
+    "description": "Sabah bean-to-bar maker crafting single-estate dark chocolate from local cacao, working directly with Sabah cocoa farmers.",
+    "origin": "Sabah",
+    "state": "Sabah",
+    "website": "https://jawsclawschocolate.com/",
+    "instagram": "jawsclawschocolate",
+    "tags": [
+      "local-ingredients",
+      "small-batch"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://jawsclawschocolate.com"
+    }
+  },
+  {
+    "slug": "joa-lab",
+    "name": "Joa Lab",
+    "category": "beauty",
+    "subcategory": "skincare",
+    "tier": "cili-padi",
+    "description": "Vegan, natural skincare by organic formulator Joannie Chin, known for rustic botanical soap bars, lip balms and hand washes.",
+    "website": "https://www.joalabskincare.com/",
+    "instagram": "joa_lab",
+    "tags": [
+      "vegan",
+      "plant-based",
+      "handmade"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.joalabskincare.com"
+    }
+  },
+  {
+    "slug": "joey-mattress",
+    "name": "Joey Mattress",
+    "category": "home",
+    "subcategory": "mattress",
+    "tier": "naik-daun",
+    "description": "Online-first mattress brand selling foam and hybrid mattresses, sofas and bed frames direct to buyers, backed by a 99-night trial.",
+    "founded": 2018,
+    "website": "https://joeymattress.com/",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://joeymattress.com"
+    }
+  },
+  {
+    "slug": "jolicare",
+    "name": "Jolicare",
+    "category": "beauty",
+    "subcategory": "skincare",
+    "tier": "naik-daun",
+    "description": "Made-in-Malaysia herbal creams and lotions for dry, itchy, sensitive skin, now stocked in 1,300+ pharmacies and stores nationwide.",
+    "website": "https://jolicare.my/",
+    "instagram": "jolicare.official",
+    "tiktok": "jolicare.my",
+    "tags": [
+      "plant-based"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://jolicare.my"
+    }
+  },
+  {
+    "slug": "julie-s",
+    "name": "Julie's",
+    "category": "food",
+    "subcategory": "biscuits",
+    "tier": "ikon",
+    "description": "Alor Gajah biscuit maker since 1985, loved for its sandwich biscuits, crackers and Love Letters wafer rolls, exported to 80+ countries.",
+    "founded": 1985,
+    "origin": "Alor Gajah, Melaka",
+    "state": "Melaka",
+    "website": "https://julies.com.my/",
+    "instagram": "juliesbiscuits",
+    "tiktok": "juliesbiscuits",
+    "shopee": "https://shopee.com.my/julies.os",
+    "tags": [
+      "heritage"
+    ]
+  },
+  {
+    "slug": "juragan",
+    "name": "Juragan",
+    "category": "fashion",
+    "subcategory": "baju melayu",
+    "tier": "cili-padi",
+    "description": "Wangsa Maju menswear label since 2022, offering slim-fit, pesak and classic baju Melayu plus songkok, samping and capal for the full look.",
+    "founded": 2022,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://juraganmy.com/",
+    "instagram": "juraganmy",
+    "tags": [
+      "men",
+      "kids"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://juraganmy.com"
+    }
+  },
+  {
+    "slug": "kamelia-cosmetics",
+    "name": "Kamelia Cosmetics",
+    "category": "beauty",
+    "subcategory": "makeup",
+    "tier": "naik-daun",
+    "description": "Mermaid-themed makeup started from home in 2016 by a mompreneur, loved for affordable, cute-packaged picks like Mermaid Skin Foundation.",
+    "founded": 2016,
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://kameliacosmetics.com/",
+    "instagram": "kameliacosmetics",
+    "tiktok": "kameliahq",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://kameliacosmetics.com"
+    }
+  },
+  {
+    "slug": "kanoe",
+    "name": "KANOE",
+    "category": "fashion",
+    "subcategory": "batik",
+    "tier": "cili-padi",
+    "description": "KL batik label born in 2016, making playful tropical batik wear with local artisans and refugee communities linked to fair trade.",
+    "founded": 2016,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.kanoewear.com/",
+    "instagram": "kanoewear",
+    "tags": [
+      "small-batch",
+      "heritage"
+    ]
+  },
+  {
+    "slug": "kapas-living",
+    "name": "Kapas Living",
+    "category": "home",
+    "subcategory": "bedding",
+    "tier": "naik-daun",
+    "description": "Sibling-founded bedding label (2020) known for long-staple cotton and TENCEL sheets, now with showrooms in KL and PJ.",
+    "founded": 2020,
+    "website": "https://kapasliving.com/",
+    "instagram": "kapasliving",
+    "tiktok": "kapasliving",
+    "tags": [
+      "premium"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://kapasliving.com"
+    }
+  },
+  {
+    "slug": "kapten-batik",
+    "name": "Kapten Batik",
+    "category": "fashion",
+    "subcategory": "batik",
+    "tier": "naik-daun",
+    "description": "KL label founded in 2017 to redefine batik for modern men, known for tailored batik shirts with fresh Nusantara-inspired motifs.",
+    "founded": 2017,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.kaptenbatik.com.my/",
+    "instagram": "kapten.batik",
+    "tiktok": "kapten.batik",
+    "tags": [
+      "men",
+      "heritage"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.kaptenbatik.com.my"
+    }
+  },
+  {
+    "slug": "kays-kins",
+    "name": "Kays + Kins",
+    "category": "kids",
+    "subcategory": "babywear",
+    "tier": "naik-daun",
+    "description": "Homegrown babywear label of soft everyday basics like kimono sets and rompers; went from online-only to a flagship at Pavilion Bukit Jalil.",
+    "website": "https://kaysandkins.com/",
+    "instagram": "kaysandkins",
+    "tags": [
+      "kids"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://kaysandkins.com"
+    }
+  },
+  {
+    "slug": "khind",
+    "name": "Khind",
+    "category": "home",
+    "subcategory": "home appliances",
+    "tier": "ikon",
+    "description": "Began as a Sekinchan appliance repair shop in 1961 and grew into a household name for fans, rice cookers and small kitchen appliances.",
+    "founded": 1961,
+    "origin": "Sekinchan, Selangor",
+    "state": "Selangor",
+    "website": "https://khind.com.my/",
+    "instagram": "khindmalaysia",
+    "tags": [
+      "heritage"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://khind.com.my"
+    }
+  },
+  {
+    "slug": "kintry",
+    "name": "Kintry",
+    "category": "food",
+    "subcategory": "snacks",
+    "tier": "cili-padi",
+    "description": "Mum-founded brand of handmade, JAKIM-halal, locally inspired snacks and gift boxes; the name is short for 'Kindred Pantry'.",
+    "website": "https://kintry.co/",
+    "instagram": "kintryco",
+    "tiktok": "kintryco",
+    "tags": [
+      "halal",
+      "handmade",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://kintry.co"
+    }
+  },
+  {
+    "slug": "larney",
+    "name": "LARNEY",
+    "category": "fashion",
+    "subcategory": "modest wear",
+    "tier": "naik-daun",
+    "description": "Luxury-leaning KL label since 2015, known for vibrant prints, delicate embroidery and statement kurung and kebaya for Raya.",
+    "founded": 2015,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://larney.com.my/",
+    "instagram": "larneyofficial",
+    "tags": [
+      "modest",
+      "premium"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://larney.com.my"
+    }
+  },
+  {
+    "slug": "lilin-co",
+    "name": "Lilin+Co",
+    "category": "home",
+    "subcategory": "candles",
+    "tier": "naik-daun",
+    "description": "KL studio hand-pouring soy candles, reed diffusers and room sprays in small batches since 2016, including candles in ceramic vessels.",
+    "founded": 2016,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.lilinandco.com/",
+    "instagram": "lilinandco",
+    "tiktok": "lilinandco",
+    "tags": [
+      "handmade",
+      "small-batch",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.lilinandco.com"
+    }
+  },
+  {
+    "slug": "little-moomoo-craft",
+    "name": "Little MooMoo Craft",
+    "category": "home",
+    "subcategory": "candles",
+    "tier": "cili-padi",
+    "description": "KL craft brand started by three friends, known for hand-poured candles, candle-making DIY kits and scented pouches.",
+    "founded": 2019,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://littlemoomoocraft.com/",
+    "instagram": "littlemoomoocraft",
+    "tags": [
+      "handmade",
+      "gift"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://littlemoomoocraft.com"
+    }
+  },
+  {
+    "slug": "loka-made",
+    "name": "Loka Made",
+    "category": "crafts",
+    "subcategory": "art prints",
+    "tier": "cili-padi",
+    "description": "Subang Jaya illustration brand (since 2015) turning Malaysian landmarks and daily life into anime-style postcards, pop-up cards, puzzles and art books.",
+    "founded": 2015,
+    "origin": "Subang Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://lokamade.com/",
+    "instagram": "thelokamade",
+    "tiktok": "thelokamade",
+    "tags": [
+      "gift",
+      "heritage"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://lokamade.com"
+    }
+  },
+  {
+    "slug": "loucase",
+    "name": "Loucase",
+    "category": "tech",
+    "subcategory": "phone accessories",
+    "tier": "naik-daun",
+    "description": "Subang Jaya tech-accessory label (formerly Casesbywf) by Ain Nurina, loved for story-led artsy phone cases, grips and batik Raya collections.",
+    "founded": 2019,
+    "origin": "Subang Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://loucase.com/",
+    "instagram": "loucase.official",
+    "tiktok": "loucase.official",
+    "tags": [
+      "gift",
+      "unisex"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://loucase.com"
+    }
+  },
+  {
+    "slug": "love-maya",
+    "name": "Love Maya",
+    "category": "beauty",
+    "subcategory": "bodycare",
+    "tier": "naik-daun",
+    "description": "Malaysian body care and perfume label built around nostalgic, travel-inspired scents, with mall flagships in the Klang Valley.",
+    "website": "https://lovemaya.co/",
+    "instagram": "lovemaya.my",
+    "tags": [
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://lovemaya.co"
+    }
+  },
+  {
+    "slug": "love18-chocolate",
+    "name": "Love18 Chocolate",
+    "category": "food",
+    "subcategory": "chocolate",
+    "tier": "naik-daun",
+    "description": "Husband-and-wife brand making handmade bonbons and bars since 2013; the first Malaysian brand to win an International Chocolate Award.",
+    "founded": 2013,
+    "website": "https://www.love18chocolate.com/",
+    "instagram": "love18chocolates",
+    "tiktok": "love18chocolates",
+    "tags": [
+      "handmade",
+      "gift"
+    ]
+  },
+  {
+    "slug": "mad3-studio",
+    "name": "MAD3 Studio",
+    "category": "home",
+    "subcategory": "furniture",
+    "tier": "cili-padi",
+    "description": "KL design studio started by three friends in 2015, making handcrafted chairs and stools with traditional cord work and a modern look.",
+    "founded": 2015,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.mad3studio.com/",
+    "instagram": "mad3studio",
+    "tags": [
+      "handmade",
+      "small-batch"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.mad3studio.com"
+    }
+  },
+  {
+    "slug": "malaya-perfumery",
+    "name": "Malaya Perfumery",
+    "category": "beauty",
+    "subcategory": "fragrance",
+    "tier": "cili-padi",
+    "description": "Local perfume label mixing Malaysian identity with modern perfumery, from Bayu Wangi to floral, fruity and vanilla series.",
+    "website": "https://malayaperfumery.com/",
+    "instagram": "malayaperfumery",
+    "tags": [
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://malayaperfumery.com"
+    }
+  },
+  {
+    "slug": "mamee",
+    "name": "Mamee",
+    "category": "food",
+    "subcategory": "snacks",
+    "tier": "ikon",
+    "description": "Melaka snack and noodle maker since 1971, best known for the iconic Mamee Monster noodle snack loved by generations of Malaysian kids.",
+    "founded": 1971,
+    "origin": "Ayer Keroh, Melaka",
+    "state": "Melaka",
+    "website": "https://mamee.com/",
+    "tags": [
+      "heritage",
+      "kids"
+    ]
+  },
+  {
+    "slug": "maslea",
+    "name": "Maslea",
+    "category": "fashion",
+    "subcategory": "baju kurung",
+    "tier": "cili-padi",
+    "description": "PJ-based label selling kurung tops and bottoms separately for mix-and-match styling, with bold, nostalgic floral prints.",
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://maslea.com/",
+    "instagram": "maslea",
+    "tags": [
+      "modest"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://maslea.com"
+    }
+  },
+  {
+    "slug": "massimo",
+    "name": "Massimo",
+    "category": "food",
+    "subcategory": "bread",
+    "tier": "ikon",
+    "description": "Supermarket bread staple launched in 2011 by The Italian Baker (FFM Bhd), known for soft sandwich loaves, wheatgerm and whole wheat bread.",
+    "founded": 2011,
+    "origin": "Pulau Indah, Klang, Selangor",
+    "state": "Selangor",
+    "website": "https://massimo.com.my/",
+    "instagram": "massimobread",
+    "tags": [
+      "halal",
+      "affordable"
+    ]
+  },
+  {
+    "slug": "meals-in-minutes",
+    "name": "Meals in Minutes",
+    "category": "food",
+    "subcategory": "frozen meals",
+    "tier": "naik-daun",
+    "description": "Blast-frozen, vacuum-packed proteins, bases and sides with no preservatives, for fuss-free home-cooked meals.",
+    "founded": 2020,
+    "website": "https://mealsinminutes.co/",
+    "instagram": "mealsinminutes.co",
+    "tiktok": "mealsinminutes.co",
+    "tags": [
+      "halal"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://mealsinminutes.co"
+    }
+  },
+  {
+    "slug": "melinda-looi",
+    "name": "Melinda Looi",
+    "category": "fashion",
+    "subcategory": "designer",
+    "tier": "ikon",
+    "description": "Award-winning KL designer label founded in 2000, spanning couture, ready-to-wear and corporate uniforms.",
+    "founded": 2000,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://melindalooi.com/",
+    "instagram": "melindalooi",
+    "tags": [
+      "premium"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://melindalooi.com"
+    }
+  },
+  {
+    "slug": "mentega",
+    "name": "Mentega",
+    "category": "beauty",
+    "subcategory": "men grooming",
+    "tier": "cili-padi",
+    "description": "Barber-made pomades hand-blended at PJ's The Oven Cuttery since 2015, built to hold up in humid weather with cocoa butter.",
+    "founded": 2015,
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://mentega.co/",
+    "instagram": "mentegapomade",
+    "tags": [
+      "men",
+      "handmade"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://mentega.co"
+    }
+  },
+  {
+    "slug": "mewah-exclusive",
+    "name": "Mewah Exclusive",
+    "category": "fashion",
+    "subcategory": "baju kurung",
+    "tier": "cili-padi",
+    "description": "Kota Tinggi, Johor label offering modern kurung, jubah and telekung in breathable, iron-friendly fabrics suited to Malaysian weather.",
+    "origin": "Kota Tinggi, Johor",
+    "state": "Johor",
+    "website": "https://mewahexclusive.com/",
+    "instagram": "mewah.exclusive",
+    "tags": [
+      "modest"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://mewahexclusive.com"
+    }
+  },
+  {
+    "slug": "mils-and-key",
+    "name": "Mils & Key",
+    "category": "kids",
+    "subcategory": "baby accessories",
+    "tier": "cili-padi",
+    "description": "Minimalist baby accessories like pacifier clips and teethers, launched in 2020 by an ex-pharma mum who wanted modern, non-cartoony designs.",
+    "founded": 2020,
+    "website": "https://www.milsandkey.com/",
+    "instagram": "milsandkey",
+    "tags": [
+      "kids"
+    ]
+  },
+  {
+    "slug": "mira-cake-house",
+    "name": "Mira Cake House",
+    "category": "food",
+    "subcategory": "kek lapis",
+    "tier": "cili-padi",
+    "description": "Kuching family bakery specialising in moist kek lapis basah (Sarawak layer cake), with 50+ flavours and designs shipped nationwide.",
+    "origin": "Kuching, Sarawak",
+    "state": "Sarawak",
+    "website": "https://miracakehouse.com/",
+    "instagram": "miracakehouse_official",
+    "tags": [
+      "gift",
+      "heritage"
+    ]
+  },
+  {
+    "slug": "monsta-boboiboy",
+    "name": "Monsta (BoBoiBoy)",
+    "category": "kids",
+    "subcategory": "toys & collectibles",
+    "tier": "ikon",
+    "description": "Cyberjaya animation studio behind BoBoiBoy, Mechamato and Papa Zola, with an official store for toys, collectibles and merch.",
+    "founded": 2009,
+    "origin": "Cyberjaya, Selangor",
+    "state": "Selangor",
+    "website": "https://store.monsta.com/",
+    "instagram": "themonstastudio",
+    "tiktok": "monstastore",
+    "tags": [
+      "kids",
+      "gift"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://store.monsta.com"
+    }
+  },
+  {
+    "slug": "mooit",
+    "name": "MOOIT",
+    "category": "food",
+    "subcategory": "snacks",
+    "tier": "cili-padi",
+    "description": "Klang-based snack brand (est. 2019) reworking familiar bites with simple ingredients, from brownie crisps to coconut crisps and nut mixes.",
+    "founded": 2019,
+    "origin": "Klang, Selangor",
+    "state": "Selangor",
+    "website": "https://mooit.com.my/",
+    "tiktok": "mooit.co",
+    "shopee": "https://shopee.com.my/mooit",
+    "tags": [
+      "halal"
+    ]
+  },
+  {
+    "slug": "mossery",
+    "name": "Mossery",
+    "category": "crafts",
+    "subcategory": "stationery",
+    "tier": "naik-daun",
+    "description": "PJ paper studio since 2011, known for customisable notebooks and planners with artist-collab covers, shipped to fans in 90+ countries.",
+    "founded": 2011,
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://www.mossery.co/",
+    "instagram": "mosseryco",
+    "tags": [
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.mossery.co"
+    }
+  },
+  {
+    "slug": "mutu-case",
+    "name": "Mutu Case",
+    "category": "tech",
+    "subcategory": "phone accessories",
+    "tier": "cili-padi",
+    "description": "Melaka phone case label whose name means 'quality' in BM; budget-friendly cases with kampung-nostalgia and festive Raya prints.",
+    "origin": "Melaka",
+    "state": "Melaka",
+    "website": "https://mutucase.com/",
+    "instagram": "mutucase",
+    "tiktok": "mutucasestore",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://mutucase.com"
+    }
+  },
+  {
+    "slug": "my-ballerine",
+    "name": "My Ballerine",
+    "category": "accessories",
+    "subcategory": "flats",
+    "tier": "naik-daun",
+    "description": "Klang-based label of light, comfy ballet flats, sandals and bags, known for cute collabs with Disney and Barbie.",
+    "origin": "Klang, Selangor",
+    "state": "Selangor",
+    "website": "https://www.myballerine.com/",
+    "instagram": "myballerine_my",
+    "tiktok": "myballerine",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.myballerine.com"
+    }
+  },
+  {
+    "slug": "mykefirworld",
+    "name": "MyKefirWorld",
+    "category": "drinks",
+    "subcategory": "kefir",
+    "tier": "cili-padi",
+    "description": "Cheras-based kefir specialist selling milk and water kefir grains plus ready-made kefir, including its signature roselle kefir.",
+    "origin": "Cheras, Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.mykefirworld.com/",
+    "instagram": "mykefirworld",
+    "tags": [
+      "handmade"
+    ]
+  },
+  {
+    "slug": "mykuali",
+    "name": "MyKuali",
+    "category": "food",
+    "subcategory": "instant noodles",
+    "tier": "naik-daun",
+    "description": "Penang-born brand launched in 2012 that took Penang White Curry instant noodles global, packing hawker-style flavour into a noodle packet.",
+    "founded": 2012,
+    "origin": "Penang",
+    "state": "Pulau Pinang",
+    "website": "https://www.mykuali.com/",
+    "tags": [
+      "premium"
+    ]
+  },
+  {
+    "slug": "naelofar-hijab",
+    "name": "Naelofar Hijab",
+    "category": "fashion",
+    "subcategory": "hijab",
+    "tier": "ikon",
+    "description": "Hijab label launched in 2014 by actress-host Neelofa, known for printed and Swarovski-embellished shawls, instant styles and sport hijabs.",
+    "founded": 2014,
+    "website": "https://my.naelofar.com/",
+    "tags": [
+      "modest",
+      "premium"
+    ]
+  },
+  {
+    "slug": "nattome",
+    "name": "Nattome",
+    "category": "health",
+    "subcategory": "gut health",
+    "tier": "naik-daun",
+    "description": "Gut-health brand making soy-based drinks with fermented natto extract and enzymes, sold online and through pharmacies and TCM shops.",
+    "website": "https://nattome.com.my/",
+    "instagram": "nattomeofficial",
+    "tags": [
+      "plant-based"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://nattome.com.my"
+    }
+  },
+  {
+    "slug": "nazifi-nasri",
+    "name": "Nazifi Nasri",
+    "category": "accessories",
+    "subcategory": "leather goods",
+    "tier": "cili-padi",
+    "description": "Klang Valley studio handcrafting leather sandals, footwear and bags in limited runs; it started with minimalist men's sandals.",
+    "origin": "Klang Valley",
+    "state": "Selangor",
+    "website": "https://nazifinasri.com/",
+    "instagram": "nazifinasri",
+    "tiktok": "nazifinasri",
+    "tags": [
+      "handmade",
+      "small-batch",
+      "unisex"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://nazifinasri.com"
+    }
+  },
+  {
+    "slug": "nelissa-hilman",
+    "name": "Nelissa Hilman",
+    "category": "accessories",
+    "subcategory": "shoes",
+    "tier": "naik-daun",
+    "description": "Women's footwear label founded in 2012, with every pair handcrafted locally to keep Malaysian shoemaking alive; known for art collabs.",
+    "founded": 2012,
+    "website": "https://www.nelissahilman.com/",
+    "instagram": "nelissahilman",
+    "tiktok": "nelissahilmanofficial",
+    "tags": [
+      "handmade",
+      "premium"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.nelissahilman.com"
+    }
+  },
+  {
+    "slug": "nichii",
+    "name": "Nichii",
+    "category": "fashion",
+    "subcategory": "womenswear",
+    "tier": "ikon",
+    "description": "Malaysian womenswear brand known for big, warehouse-style mall stores packed with feminine, wallet-friendly everyday fashion.",
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://nichii.com/",
+    "instagram": "nichii_asia",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://nichii.com"
+    }
+  },
+  {
+    "slug": "nobat",
+    "name": "Nobat",
+    "category": "accessories",
+    "subcategory": "handbags",
+    "tier": "cili-padi",
+    "description": "Handmade bags that bring traditional woven craft into modern totes and crossbodies, made in-house in small batches since 2020.",
+    "founded": 2020,
+    "website": "https://nobatmalaysia.com/",
+    "instagram": "nvb.at",
+    "tiktok": "nobatmalaysia",
+    "tags": [
+      "handmade",
+      "small-batch",
+      "heritage"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://nobatmalaysia.com"
+    }
+  },
+  {
+    "slug": "noor-arfa",
+    "name": "Noor Arfa",
+    "category": "fashion",
+    "subcategory": "batik",
+    "tier": "ikon",
+    "description": "Terengganu batik house known for hand-drawn canting batik, with a craft complex in Chendering and ready-to-wear and uniform batik lines.",
+    "origin": "Kuala Terengganu, Terengganu",
+    "state": "Terengganu",
+    "website": "https://www.noorarfa.com/",
+    "instagram": "noorarfa",
+    "tiktok": "noorarfaofficial",
+    "tags": [
+      "heritage",
+      "handmade"
+    ]
+  },
+  {
+    "slug": "nosda",
+    "name": "Nosda",
+    "category": "home",
+    "subcategory": "mattress",
+    "tier": "naik-daun",
+    "description": "Kota Kinabalu mattress-in-a-box brand known for charcoal-infused natural latex mattresses and a 100-day home trial.",
+    "founded": 2017,
+    "origin": "Kota Kinabalu, Sabah",
+    "state": "Sabah",
+    "website": "https://www.nosda.com.my/",
+    "instagram": "nosdabed",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://www.nosda.com.my"
+    }
+  },
+  {
+    "slug": "nose",
+    "name": "Nose",
+    "category": "accessories",
+    "subcategory": "shoes",
+    "tier": "ikon",
+    "description": "Family-run women's shoe and bag brand since 1998 whose first store opened at Suria KLCC, known for its comfy Cloud 9 line.",
+    "founded": 1998,
+    "website": "https://nose.com.my/",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://nose.com.my"
+    }
+  },
+  {
+    "slug": "notti-pet-food",
+    "name": "Notti Pet Food",
+    "category": "home",
+    "subcategory": "pet food",
+    "tier": "naik-daun",
+    "description": "Malaysian pet food brand making slow-baked kibble for cats and dogs with fresh meat, plus treats, supplements and feeding accessories.",
+    "website": "https://nottipetfood.com/",
+    "instagram": "nottipetfood",
+    "tiktok": "nottipetfood",
+    "tags": [
+      "premium"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://nottipetfood.com"
+    }
+  },
+  {
+    "slug": "nudecco",
+    "name": "Nudecco",
+    "category": "home",
+    "subcategory": "candles",
+    "tier": "cili-padi",
+    "description": "George Town candle label hand-pouring soy and beeswax candles with phthalate-free scents in amber jars, plus roller blends.",
+    "origin": "George Town, Penang",
+    "state": "Pulau Pinang",
+    "website": "https://nudecco.com/",
+    "instagram": "nudecco",
+    "tags": [
+      "handmade"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://nudecco.com"
+    }
+  },
+  {
+    "slug": "nuria",
+    "name": "Nuria",
+    "category": "fashion",
+    "subcategory": "baju kurung",
+    "tier": "cili-padi",
+    "description": "Began in 2015 as a small passion project; now a Sri Hartamas label of easy kurung and kebaya drawing on Malaysia's mixed heritage.",
+    "founded": 2015,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://nuria.com.my/",
+    "instagram": "nuriaeditions",
+    "tiktok": "shopnuria",
+    "tags": [
+      "modest"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://nuria.com.my"
+    }
+  },
+  {
+    "slug": "offspring",
+    "name": "Offspring",
+    "category": "kids",
+    "subcategory": "baby care",
+    "tier": "naik-daun",
+    "description": "Malaysian baby care brand of plant-based wipes, diapers and gentle skincare, developed in Australia and sold across the region.",
+    "website": "https://www.offspringinc.com/",
+    "instagram": "offspring.inc",
+    "tiktok": "offspringmalaysia",
+    "tags": [
+      "kids",
+      "plant-based"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.offspringinc.com"
+    }
+  },
+  {
+    "slug": "oldtown-white-coffee",
+    "name": "OldTown White Coffee",
+    "category": "drinks",
+    "subcategory": "white coffee",
+    "tier": "ikon",
+    "description": "Ipoh-born white coffee maker (1999) known for its three-bean instant mixes, which grew into the OldTown kopitiam chain. Now owned by JDE.",
+    "founded": 1999,
+    "origin": "Ipoh, Perak",
+    "state": "Perak",
+    "website": "https://www.oldtown.com.my/",
+    "tags": [
+      "heritage",
+      "affordable"
+    ]
+  },
+  {
+    "slug": "oloiya",
+    "name": "Oloiya",
+    "category": "food",
+    "subcategory": "bakkwa",
+    "tier": "cili-padi",
+    "description": "Kuala Lumpur bakkwa maker since 1970, known for pork and chicken bakkwa, meat floss and bite-sized flavoured bakkwa.",
+    "founded": 1970,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.oloiya.com/",
+    "instagram": "oloiya",
+    "tiktok": "oloiya",
+    "tags": [
+      "heritage",
+      "gift"
+    ]
+  },
+  {
+    "slug": "olumes",
+    "name": "Olumes",
+    "category": "beauty",
+    "subcategory": "skincare",
+    "tier": "cili-padi",
+    "description": "Borneo-inspired skincare drawing on Kadazan-Dusun beauty heritage and Sabah seaweed bioactives, developed by a cosmetic scientist.",
+    "origin": "Seri Kembangan, Selangor",
+    "state": "Selangor",
+    "website": "https://olumes.com/",
+    "instagram": "olumesofficial",
+    "tiktok": "olumesofficial",
+    "tags": [
+      "heritage",
+      "local-ingredients"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://olumes.com"
+    }
+  },
+  {
+    "slug": "omar-ali",
+    "name": "Omar Ali",
+    "category": "fashion",
+    "subcategory": "baju melayu",
+    "tier": "ikon",
+    "description": "Heritage tailor born in KL's Masjid India in 1935; pioneered ready-made baju Melayu in set sizes and the 3-button 'Tunku collar' design.",
+    "founded": 1935,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.omarali.com.my/",
+    "instagram": "omarali.my",
+    "tags": [
+      "men",
+      "heritage",
+      "premium"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://www.omarali.com.my"
+    }
+  },
+  {
+    "slug": "oriental-kopi",
+    "name": "Oriental Kopi",
+    "category": "drinks",
+    "subcategory": "kopitiam",
+    "tier": "naik-daun",
+    "description": "Johor kopitiam brand founded in 2020 and now Bursa-listed, which also sells packaged coffee, tea, spreads and snacks.",
+    "founded": 2020,
+    "origin": "Johor Bahru, Johor",
+    "state": "Johor",
+    "website": "https://www.orientalkopi.asia/",
+    "tags": []
+  },
+  {
+    "slug": "oxwhite",
+    "name": "Oxwhite",
+    "category": "fashion",
+    "subcategory": "basics",
+    "tier": "naik-daun",
+    "description": "Direct-to-consumer basics label that made its name with affordable, Asian-fit white shirts, now spanning tees, innerwear and activewear.",
+    "website": "https://oxwhite.com/",
+    "instagram": "oxwhiteofficial",
+    "tiktok": "oxwhitemyofficial",
+    "tags": [
+      "affordable",
+      "unisex"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://oxwhite.com"
+    }
+  },
+  {
+    "slug": "oyufish",
+    "name": "OyuFish",
+    "category": "food",
+    "subcategory": "snacks",
+    "tier": "naik-daun",
+    "description": "Salted egg fish skin snacks started by three young friends in 2017, now on supermarket shelves across Malaysia and beyond.",
+    "founded": 2017,
+    "website": "https://www.oyufish.com/",
+    "instagram": "oyufish",
+    "tiktok": "oyufish.official",
+    "tags": [
+      "gift"
+    ]
+  },
+  {
+    "slug": "padini",
+    "name": "Padini",
+    "category": "fashion",
+    "subcategory": "casual wear",
+    "tier": "ikon",
+    "description": "Bursa-listed fashion group dating back to 1971, behind Padini Concept Store, Brands Outlet and Vincci, known for value-priced looks for the family.",
+    "founded": 1971,
+    "origin": "Shah Alam, Selangor",
+    "state": "Selangor",
+    "website": "https://www.padini.com/",
+    "instagram": "padini_my",
+    "tags": [
+      "affordable",
+      "unisex"
+    ]
+  },
+  {
+    "slug": "pagoda",
+    "name": "Pagoda",
+    "category": "food",
+    "subcategory": "nuts",
+    "tier": "ikon",
+    "description": "Perak nut specialist since 1945, best known for Menglembu roasted groundnuts in shell, plus cashews, pistachios and coated peanuts.",
+    "founded": 1945,
+    "origin": "Sungai Siput, Perak",
+    "state": "Perak",
+    "website": "https://pagoda.com.my/",
+    "instagram": "pagodafoods",
+    "tags": [
+      "heritage"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://pagoda.com.my"
+    }
+  },
+  {
+    "slug": "passa-cola",
+    "name": "Passa Cola",
+    "category": "drinks",
+    "subcategory": "craft cola",
+    "tier": "cili-padi",
+    "description": "Small-batch Klang Valley craft cola launched in 2025, spiced with Sichuan pepper, ginger and clove; sold bottled and as a concentrate.",
+    "founded": 2025,
+    "origin": "Klang Valley",
+    "state": "Selangor",
+    "website": "https://www.passacola.com/",
+    "instagram": "passacola.my",
+    "tags": [
+      "handmade",
+      "small-batch"
+    ]
+  },
+  {
+    "slug": "pelangi-books",
+    "name": "Pelangi Books",
+    "category": "kids",
+    "subcategory": "kids books",
+    "tier": "ikon",
+    "description": "Publisher founded by educators in 1979 with 8,000+ titles, from school workbooks and revision guides to kids' storybooks and comics.",
+    "founded": 1979,
+    "origin": "Johor Bahru, Johor",
+    "state": "Johor",
+    "website": "https://store.pelangibooks.com/",
+    "instagram": "pelangibooks",
+    "tiktok": "pelangibooksgallery",
+    "tags": [
+      "kids",
+      "heritage"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://store.pelangibooks.com"
+    }
+  },
+  {
+    "slug": "pensonic",
+    "name": "Pensonic",
+    "category": "home",
+    "subcategory": "home appliances",
+    "tier": "ikon",
+    "description": "Penang appliance brand dating back to 1965, behind everyday kettles, blenders, fans and kitchen gadgets in many Malaysian homes.",
+    "founded": 1965,
+    "origin": "Penang",
+    "state": "Pulau Pinang",
+    "website": "https://www.pensonic.com/",
+    "instagram": "pensonicmalaysia",
+    "tiktok": "pensonicmalaysia",
+    "tags": [
+      "heritage"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://www.pensonic.com"
+    }
+  },
+  {
+    "slug": "perodua",
+    "name": "Perodua",
+    "category": "lifestyle",
+    "subcategory": "cars",
+    "tier": "ikon",
+    "description": "Malaysia's second national carmaker (est. 1993), based in Rawang; the name behind everyday favourites Axia, Bezza and Myvi, plus the QV-E EV.",
+    "founded": 1993,
+    "origin": "Rawang, Selangor",
+    "state": "Selangor",
+    "website": "https://www.perodua.com.my/",
+    "instagram": "perodua",
+    "tiktok": "perodua",
+    "tags": [
+      "affordable"
+    ]
+  },
+  {
+    "slug": "pestle-and-mortar-clothing",
+    "name": "Pestle & Mortar Clothing",
+    "category": "fashion",
+    "subcategory": "streetwear",
+    "tier": "naik-daun",
+    "description": "KL streetwear label started around 2010 by three friends, known for graphic drops and collabs that wear Southeast Asian pride proudly.",
+    "founded": 2010,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://pestlemortarclothing.com/",
+    "instagram": "pestlemortarclothing",
+    "tags": [
+      "unisex"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://pestlemortarclothing.com"
+    }
+  },
+  {
+    "slug": "poh-kong",
+    "name": "Poh Kong",
+    "category": "accessories",
+    "subcategory": "jewellery",
+    "tier": "ikon",
+    "description": "Began in Petaling Jaya in 1976 and grew into one of Malaysia's largest jewellery chains for gold, diamonds and wedding rings.",
+    "founded": 1976,
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://www.pohkong.com.my/",
+    "instagram": "pohkongmy",
+    "tiktok": "pohkongmy",
+    "tags": [
+      "heritage",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.pohkong.com.my"
+    }
+  },
+  {
+    "slug": "poplook",
+    "name": "POPLOOK",
+    "category": "fashion",
+    "subcategory": "modest wear",
+    "tier": "naik-daun",
+    "description": "Homegrown modest label launched online in 2009, known for affordable kurung, tops and scarves in XS to 4XL, plus its POPLOOK Gives Back drives.",
+    "founded": 2009,
+    "website": "https://poplook.com/",
+    "instagram": "poplook",
+    "tiktok": "poplookshop",
+    "tags": [
+      "modest",
+      "affordable",
+      "kids"
+    ]
+  },
+  {
+    "slug": "pott-glasses",
+    "name": "Pott Glasses",
+    "category": "accessories",
+    "subcategory": "eyewear",
+    "tier": "naik-daun",
+    "description": "Eyewear brand founded in 2015 by two childhood friends, offering 800+ frame designs and a personalised 4D Optical Styling service.",
+    "founded": 2015,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://pottglasses.com/",
+    "instagram": "pottglasses",
+    "tags": [
+      "unisex"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://pottglasses.com"
+    }
+  },
+  {
+    "slug": "power-root",
+    "name": "Power Root",
+    "category": "drinks",
+    "subcategory": "instant coffee",
+    "tier": "ikon",
+    "description": "Malaysian beverage group behind Alicafe, Ah Huat White Coffee, Per'l Cafe, Frenche Roast, Oligo and Extra Power Root drinks.",
+    "website": "https://powerroot.com.my/",
+    "shopee": "https://shopee.com.my/powerrootmalaysia",
+    "tags": [
+      "affordable"
+    ]
+  },
+  {
+    "slug": "proton",
+    "name": "Proton",
+    "category": "lifestyle",
+    "subcategory": "cars",
+    "tier": "ikon",
+    "description": "Malaysia's first national carmaker (1983) and maker of the iconic Saga; Geely holds 49.9%, and it now sells X-series SUVs and e.MAS EVs.",
+    "founded": 1983,
+    "origin": "Shah Alam, Selangor",
+    "state": "Selangor",
+    "website": "https://www.proton.com/",
+    "instagram": "protoncars",
+    "tiktok": "protoncarsofficial",
+    "tags": [
+      "heritage",
+      "affordable"
+    ]
+  },
+  {
+    "slug": "purelyb",
+    "name": "PurelyB",
+    "category": "health",
+    "subcategory": "herbal superfoods",
+    "tier": "naik-daun",
+    "description": "Wellness brand founded in 2015, known for herbal blends built on local botanicals like pegaga, tiger milk mushroom and manjakani.",
+    "founded": 2015,
+    "website": "https://purelyb.com/",
+    "instagram": "purelyb",
+    "tiktok": "purelyb",
+    "tags": [
+      "plant-based",
+      "local-ingredients"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://purelyb.com"
+    }
+  },
+  {
+    "slug": "qhiam",
+    "name": "Qhiam",
+    "category": "fashion",
+    "subcategory": "baju melayu",
+    "tier": "naik-daun",
+    "description": "Malay heritage-inspired menswear label offering cekak musang and teluk belanga baju Melayu and samping, with sister womenswear line Sendja.",
+    "origin": "Selangor",
+    "state": "Selangor",
+    "website": "https://qhiam.com.my/",
+    "instagram": "qhiam.official",
+    "tiktok": "qhiam.official",
+    "tags": [
+      "men",
+      "heritage"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://qhiam.com.my"
+    }
+  },
+  {
+    "slug": "ramly",
+    "name": "Ramly",
+    "category": "food",
+    "subcategory": "frozen food",
+    "tier": "ikon",
+    "description": "Halal burger patties and frozen meat products since 1984, the name behind Malaysia's beloved roadside Ramly burger.",
+    "founded": 1984,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.ramly.com.my/",
+    "tags": [
+      "halal",
+      "heritage"
+    ]
+  },
+  {
+    "slug": "rizman-ruzaini",
+    "name": "Rizman Ruzaini",
+    "category": "fashion",
+    "subcategory": "couture",
+    "tier": "ikon",
+    "description": "KL couture house founded in 2005 by two students, known for bridal couture and detailed occasion wear made by in-house artisans.",
+    "founded": 2005,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://rizmanruzaini.com/",
+    "instagram": "rizmanruzaini",
+    "tags": [
+      "premium",
+      "handmade"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://rizmanruzaini.com"
+    }
+  },
+  {
+    "slug": "royal-selangor",
+    "name": "Royal Selangor",
+    "category": "crafts",
+    "subcategory": "pewter & gifts",
+    "tier": "ikon",
+    "description": "Pewter house dating back to 1885 and based in KL, known worldwide for hand-finished tankards, tableware, gifts and decor.",
+    "founded": 1885,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.royalselangor.com/my/",
+    "instagram": "royalselangor",
+    "tags": [
+      "heritage",
+      "premium",
+      "gift"
+    ]
+  },
+  {
+    "slug": "safi",
+    "name": "Safi",
+    "category": "beauty",
+    "subcategory": "skincare",
+    "tier": "ikon",
+    "description": "Wipro Unza Malaysia's long-running halal personal care name, sold here for 30+ years; known for halal skincare and anti-bacterial body wash.",
+    "website": "https://safi.com.my/",
+    "tags": [
+      "halal",
+      "heritage",
+      "affordable"
+    ]
+  },
+  {
+    "slug": "sambal-nyet-khairul-aming",
+    "name": "Sambal Nyet (Khairul Aming)",
+    "category": "food",
+    "subcategory": "sambal",
+    "tier": "naik-daun",
+    "description": "Fiery sambal line by food creator Khairul Aming, made at his Kota Bharu factory; Sambal Nyet Berapi restocks often sell out in minutes.",
+    "founded": 2021,
+    "origin": "Kota Bharu, Kelantan",
+    "state": "Kelantan",
+    "website": "https://shopee.com.my/shop/364740282",
+    "shopee": "https://shopee.com.my/shop/364740282",
+    "tags": []
+  },
+  {
+    "slug": "sendayu-tinggi",
+    "name": "Sendayu Tinggi",
+    "category": "beauty",
+    "subcategory": "herbal beauty",
+    "tier": "ikon",
+    "description": "Bumiputera beauty house started in Klang in 1998, grown into a nationwide outlet network selling skincare, makeup and herbal products.",
+    "founded": 1998,
+    "origin": "Klang, Selangor",
+    "state": "Selangor",
+    "website": "https://www.sendayutinggi.com/",
+    "instagram": "sendayu.tinggi_hq",
+    "tags": [
+      "heritage"
+    ]
+  },
+  {
+    "slug": "shapee",
+    "name": "Shapee",
+    "category": "kids",
+    "subcategory": "maternity & nursing",
+    "tier": "naik-daun",
+    "description": "Johor mum-care brand that started as a 2010 pushcart and grew into nursing bras, postpartum wear and breastfeeding essentials.",
+    "founded": 2010,
+    "origin": "Senai, Johor",
+    "state": "Johor",
+    "website": "https://www.theshapee.com/",
+    "instagram": "shapeemy",
+    "tiktok": "shapeemy",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.theshapee.com"
+    }
+  },
+  {
+    "slug": "silkygirl",
+    "name": "Silkygirl",
+    "category": "beauty",
+    "subcategory": "makeup",
+    "tier": "ikon",
+    "description": "Mass-market colour cosmetics launched in 2005 by Malaysia's Alliance Cosmetics Group; a pharmacy-shelf staple, now owned by Japan's Mandom.",
+    "founded": 2005,
+    "website": "https://silkycosmetics.com/",
+    "instagram": "silkygirlcosmetics",
+    "tags": [
+      "affordable"
+    ]
+  },
+  {
+    "slug": "simplysiti",
+    "name": "SimplySiti",
+    "category": "beauty",
+    "subcategory": "makeup",
+    "tier": "ikon",
+    "description": "Beauty label founded in 2010 by Dato' Sri Siti Nurhaliza, spanning makeup, skincare and fragrance for everyday Malaysian women.",
+    "founded": 2010,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://simplysiti.com.my/",
+    "instagram": "officialsimplysiti",
+    "tiktok": "officialsimplysiti",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://simplysiti.com.my"
+    }
+  },
+  {
+    "slug": "siti-khadijah",
+    "name": "Siti Khadijah",
+    "category": "fashion",
+    "subcategory": "telekung",
+    "tier": "ikon",
+    "description": "Telekung specialist founded in 2009 by Padzilah Enda Sulaiman, known for comfy, well-fitting prayer wear sold through boutiques nationwide.",
+    "founded": 2009,
+    "origin": "Nilai, Negeri Sembilan",
+    "state": "Negeri Sembilan",
+    "website": "https://sitikhadijah.com/",
+    "tags": [
+      "modest",
+      "premium",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://sitikhadijah.com"
+    }
+  },
+  {
+    "slug": "so-lek-cosmetics",
+    "name": "SO.LEK Cosmetics",
+    "category": "beauty",
+    "subcategory": "makeup",
+    "tier": "cili-padi",
+    "description": "Sibling-run KL halal cosmetics label since 2016 with a Malay heritage twist, from Gincu lipsticks to Pemerah Pipi blush.",
+    "founded": 2016,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://solekcosmetics.com/",
+    "instagram": "so.lek",
+    "tiktok": "solekcosmetics",
+    "tags": [
+      "halal",
+      "affordable",
+      "heritage"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://solekcosmetics.com"
+    }
+  },
+  {
+    "slug": "sommni",
+    "name": "Sommni",
+    "category": "home",
+    "subcategory": "mattress",
+    "tier": "naik-daun",
+    "description": "Mattress-in-a-box brand designing and making natural latex mattresses and pillows in Malaysia, using latex from the south of the Peninsula.",
+    "website": "https://sommni.com/",
+    "instagram": "sommni.my",
+    "tiktok": "sommnibedding",
+    "tags": [
+      "local-ingredients"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://sommni.com"
+    }
+  },
+  {
+    "slug": "spirituscents",
+    "name": "Spirituscents",
+    "category": "beauty",
+    "subcategory": "fragrance",
+    "tier": "cili-padi",
+    "description": "Artisanal Kota Kinabalu perfume house compounding concentrated, incense-rich scents in small batches with Borneo-inspired notes.",
+    "founded": 2023,
+    "origin": "Kota Kinabalu, Sabah",
+    "state": "Sabah",
+    "website": "https://www.spirituscents.com/",
+    "instagram": "spirituscents",
+    "tags": [
+      "handmade",
+      "small-batch",
+      "local-ingredients"
+    ]
+  },
+  {
+    "slug": "spritzer",
+    "name": "Spritzer",
+    "category": "drinks",
+    "subcategory": "mineral water",
+    "tier": "ikon",
+    "description": "Taiping natural mineral water brand since 1989, bottled from its own source; also makes sparkling, distilled and Tinge flavoured water.",
+    "founded": 1989,
+    "origin": "Taiping, Perak",
+    "state": "Perak",
+    "website": "https://www.spritzer.com.my/",
+    "instagram": "spritzerwater",
+    "tiktok": "spritzermy",
+    "tags": [
+      "affordable"
+    ]
+  },
+  {
+    "slug": "stoned-and-co",
+    "name": "Stoned & Co",
+    "category": "fashion",
+    "subcategory": "streetwear",
+    "tier": "naik-daun",
+    "description": "Independent Malaysian streetwear brand since 2014, pairing bold graphics with messages of unity, equity and peace, with stores in KL and Subang.",
+    "founded": 2014,
+    "website": "https://stonedandco.com/",
+    "instagram": "stonedandco",
+    "tags": [
+      "unisex"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://stonedandco.com"
+    }
+  },
+  {
+    "slug": "suci-cup",
+    "name": "Suci Cup",
+    "category": "health",
+    "subcategory": "menstrual cups",
+    "tier": "cili-padi",
+    "description": "Women-run menstrual cup brand launched in 2020, offering medical-grade silicone cups, a menstrual disc and cup-care add-ons.",
+    "founded": 2020,
+    "website": "https://sucicup.com/",
+    "instagram": "sucicup",
+    "tiktok": "sucicup",
+    "tags": [
+      "eco"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://sucicup.com"
+    }
+  },
+  {
+    "slug": "sukka",
+    "name": "Sukka",
+    "category": "beauty",
+    "subcategory": "fragrance",
+    "tier": "naik-daun",
+    "description": "Pandemic-born KL perfume house hand-pouring vegan extrait de parfums in micro-batches, with a Publika flagship and 60+ stockists.",
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://sukkaperfumes.com/",
+    "instagram": "sukkaperfumes",
+    "tags": [
+      "vegan",
+      "cruelty-free",
+      "small-batch"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://sukkaperfumes.com"
+    }
+  },
+  {
+    "slug": "supergulp",
+    "name": "Supergulp",
+    "category": "drinks",
+    "subcategory": "prebiotic soda",
+    "tier": "cili-padi",
+    "description": "KL-born sparkling prebiotic soda launched in 2024, low in sugar and calories, in flavours like Lychee Lemon, Lemon Lime and Watermelon Pineapple.",
+    "founded": 2024,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://supergulp.co/",
+    "instagram": "drinksupergulp",
+    "tiktok": "drinksupergulp",
+    "tags": [],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://supergulp.co"
+    }
+  },
+  {
+    "slug": "sweet-blossom-coffee-roasters",
+    "name": "Sweet Blossom Coffee Roasters",
+    "category": "drinks",
+    "subcategory": "specialty coffee",
+    "tier": "cili-padi",
+    "description": "Johor Bahru specialty roaster since 2015 focused on light-roast single origins, with a cafe on JB's heritage Jalan Tan Hiok Nee.",
+    "founded": 2015,
+    "origin": "Johor Bahru, Johor",
+    "state": "Johor",
+    "website": "https://www.sweetblossomcoffee.com/",
+    "instagram": "sweetblossomcoffee",
+    "tags": [
+      "premium"
+    ]
+  },
+  {
+    "slug": "symphony-spread",
+    "name": "Symphony Spread",
+    "category": "food",
+    "subcategory": "spreads",
+    "tier": "naik-daun",
+    "description": "Batu Pahat-born chocolate and nut spreads made without refined sugar, in flavours like hazelnut, matcha, black sesame and pistachio.",
+    "founded": 2020,
+    "origin": "Batu Pahat, Johor",
+    "state": "Johor",
+    "website": "https://symphonyspread.com/",
+    "tags": [
+      "halal"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://symphonyspread.com"
+    }
+  },
+  {
+    "slug": "syomsz",
+    "name": "Syomsz",
+    "category": "fashion",
+    "subcategory": "modest wear",
+    "tier": "cili-padi",
+    "description": "Designer Syomirizwa Gupta's KL label of breathable linen, cotton and tencel pieces, known for genderless Raya silhouettes.",
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://syomsz.com/",
+    "instagram": "by.syomsz",
+    "tiktok": "syomsz",
+    "tags": [
+      "unisex",
+      "eco"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://syomsz.com"
+    }
+  },
+  {
+    "slug": "talee",
+    "name": "Talee",
+    "category": "accessories",
+    "subcategory": "jewellery",
+    "tier": "cili-padi",
+    "description": "Sabah studio hand-knotting colourful, swim-friendly thread jewellery, inspired by knot work from the founder's father's therapy.",
+    "origin": "Sabah",
+    "state": "Sabah",
+    "website": "https://taleestudio.com/",
+    "tags": [
+      "handmade",
+      "eco"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://taleestudio.com"
+    }
+  },
+  {
+    "slug": "tanamera",
+    "name": "Tanamera",
+    "category": "beauty",
+    "subcategory": "spa bodycare",
+    "tier": "ikon",
+    "description": "Family-run tropical spa brand founded in 1995 by three siblings, turning Malay herbal traditions into halal body, face and postnatal care.",
+    "founded": 1995,
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://tanameraofficial.com/",
+    "instagram": "tanameraofficial",
+    "tiktok": "tanameraofficial",
+    "tags": [
+      "halal",
+      "heritage",
+      "local-ingredients"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://tanameraofficial.com"
+    }
+  },
+  {
+    "slug": "tanoti",
+    "name": "Tanoti",
+    "category": "crafts",
+    "subcategory": "songket",
+    "tier": "cili-padi",
+    "description": "Kuching social enterprise keeping Sarawak songket, pua kumbu and batik linut alive through a network of 800+ artisans.",
+    "founded": 2012,
+    "origin": "Kuching, Sarawak",
+    "state": "Sarawak",
+    "website": "https://tanoticrafts.com/",
+    "instagram": "tanoticrafts",
+    "tags": [
+      "handmade",
+      "heritage",
+      "premium"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://tanoticrafts.com"
+    }
+  },
+  {
+    "slug": "tealive",
+    "name": "Tealive",
+    "category": "drinks",
+    "subcategory": "bubble tea",
+    "tier": "naik-daun",
+    "description": "Homegrown bubble tea chain launched in 2017 with hundreds of outlets; its milk tea, coffee and chocolate now also come as 3-in-1 sachets.",
+    "founded": 2017,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://www.tealive.com.my/",
+    "tags": [
+      "affordable"
+    ]
+  },
+  {
+    "slug": "the-backstitch-studio",
+    "name": "The Backstitch Studio",
+    "category": "fashion",
+    "subcategory": "batik",
+    "tier": "cili-padi",
+    "description": "Maker-led studio since 2023, sewing printed batik into small-batch handmade tops, skirts, cardigans and accessories.",
+    "founded": 2023,
+    "website": "https://backstitch.shop/",
+    "instagram": "thebackstitch_studio",
+    "tags": [
+      "handmade",
+      "small-batch",
+      "heritage"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://backstitch.shop"
+    }
+  },
+  {
+    "slug": "the-laundry-pods",
+    "name": "The Laundry Pods",
+    "category": "home",
+    "subcategory": "laundry",
+    "tier": "naik-daun",
+    "description": "Johor-founded laundry brand launched in 2022, known for colourful three-chamber detergent pods sold in plastic-free boxes.",
+    "founded": 2022,
+    "origin": "Johor",
+    "state": "Johor",
+    "website": "https://thelaundrypods.com/",
+    "instagram": "thelaundrypods",
+    "tags": [
+      "eco"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://thelaundrypods.com"
+    }
+  },
+  {
+    "slug": "the-roast-things",
+    "name": "The Roast Things",
+    "category": "drinks",
+    "subcategory": "specialty coffee",
+    "tier": "cili-padi",
+    "description": "Petaling Jaya specialty roaster with a taste-first approach and rotating single origins; also offers co-roasting, wholesale and training.",
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://theroastthings.com/",
+    "instagram": "theroastthings",
+    "tags": [
+      "premium"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://theroastthings.com"
+    }
+  },
+  {
+    "slug": "the-straits-finery",
+    "name": "The Straits Finery",
+    "category": "accessories",
+    "subcategory": "fine jewellery",
+    "tier": "cili-padi",
+    "description": "Minimalist 14k solid-gold jewellery handmade in small batches, started in 2015 by two founders who met at school in Penang.",
+    "founded": 2015,
+    "website": "https://www.thestraitsfinery.com/",
+    "instagram": "thestraitsfinery",
+    "tags": [
+      "premium",
+      "handmade",
+      "small-batch"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.thestraitsfinery.com"
+    }
+  },
+  {
+    "slug": "the-tapping-tapir",
+    "name": "The Tapping Tapir",
+    "category": "drinks",
+    "subcategory": "craft soda",
+    "tier": "naik-daun",
+    "description": "Seri Kembangan craft soda maker since 2013, using real fruit juice and local aromatics like lengkuas; also behind gutC prebiotic soda.",
+    "founded": 2013,
+    "origin": "Seri Kembangan, Selangor",
+    "state": "Selangor",
+    "website": "https://thetappingtapir.com/",
+    "instagram": "thetappingtapir",
+    "tags": [
+      "halal",
+      "local-ingredients"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://thetappingtapir.com"
+    }
+  },
+  {
+    "slug": "tiny-forest",
+    "name": "Tiny Forest",
+    "category": "home",
+    "subcategory": "terrariums",
+    "tier": "cili-padi",
+    "description": "Family-run Subang Jaya shop since 2014 and an early terrarium pioneer, making custom terrariums, potted plants and DIY kits.",
+    "founded": 2014,
+    "origin": "Subang Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://tinyforeststore.com/",
+    "instagram": "tinyforestsj",
+    "tags": [
+      "handmade",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://tinyforeststore.com"
+    }
+  },
+  {
+    "slug": "tinys",
+    "name": "Tinys",
+    "category": "kids",
+    "subcategory": "organic babywear",
+    "tier": "cili-padi",
+    "description": "Organic babywear made mostly from GOTS-certified cotton, from rompers and swaddles to gift sets for sensitive little skin.",
+    "website": "https://www.tinysco.com/",
+    "instagram": "tinys.co",
+    "tags": [
+      "kids",
+      "eco",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.tinysco.com"
+    }
+  },
+  {
+    "slug": "tk-by-tyra",
+    "name": "TK by Tyra",
+    "category": "beauty",
+    "subcategory": "makeup",
+    "tier": "naik-daun",
+    "description": "Makeup line by beauty creator Tyra Kamaruzzaman: beginner-friendly, affordable essentials designed for Malaysian skin tones.",
+    "website": "https://tkbytyra.com/",
+    "instagram": "tkbytyra",
+    "tiktok": "tkbytyra",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://tkbytyra.com"
+    }
+  },
+  {
+    "slug": "tntco",
+    "name": "TNTCO",
+    "category": "fashion",
+    "subcategory": "streetwear",
+    "tier": "naik-daun",
+    "description": "Streetwear brand born in Malaysia in 2013, living by its 'No House Rules' motto with bold, story-driven designs and silhouettes.",
+    "founded": 2013,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://tntco.co/",
+    "instagram": "tntco_official",
+    "tags": [
+      "unisex"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://tntco.co"
+    }
+  },
+  {
+    "slug": "toh-s-daily",
+    "name": "Toh's Daily",
+    "category": "food",
+    "subcategory": "chilli crisp",
+    "tier": "naik-daun",
+    "description": "Vegan chilli garlic crisp cooked with coconut oil, created by a former chef and made in Klang since 2016.",
+    "founded": 2016,
+    "origin": "Klang, Selangor",
+    "state": "Selangor",
+    "website": "https://www.tohsdaily.com/",
+    "instagram": "tohsdaily",
+    "tags": [
+      "vegan"
+    ],
+    "feed": {
+      "type": "woocommerce",
+      "origin": "https://www.tohsdaily.com"
+    }
+  },
+  {
+    "slug": "totomi",
+    "name": "Totomi",
+    "category": "fashion",
+    "subcategory": "modest wear",
+    "tier": "cili-padi",
+    "description": "Slow-fashion label with a PJ store, making breathable, refined pieces incl. Raya edits and encouraging buy-less, wear-more habits.",
+    "origin": "Petaling Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://thetotomi.com/",
+    "tags": [
+      "eco",
+      "modest"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://thetotomi.com"
+    }
+  },
+  {
+    "slug": "tracey",
+    "name": "Tracey",
+    "category": "accessories",
+    "subcategory": "handbags",
+    "tier": "naik-daun",
+    "description": "Klang bag brand inspired by a messy-handbag struggle, known for affordable, compartment-packed handbags, wallets and backpacks.",
+    "founded": 2015,
+    "origin": "Klang, Selangor",
+    "state": "Selangor",
+    "website": "https://www.tracey.com.my/",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://www.tracey.com.my"
+    }
+  },
+  {
+    "slug": "tudungpeople",
+    "name": "TudungPeople",
+    "category": "fashion",
+    "subcategory": "hijab",
+    "tier": "ikon",
+    "description": "Hijab label started in 2011 by IIUM architecture student Fazrena Aziz, known for everyday shawls, instants and sport hijabs, with boutiques in KL and beyond.",
+    "founded": 2011,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://tudungpeople.com/",
+    "instagram": "tudungpeople",
+    "tiktok": "tudungpeopleofficial",
+    "tags": [
+      "modest",
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://tudungpeople.com"
+    }
+  },
+  {
+    "slug": "ulu-soleil",
+    "name": "Ulu Soleil",
+    "category": "beauty",
+    "subcategory": "bodycare",
+    "tier": "cili-padi",
+    "description": "Wife-and-husband body care label making simple, cruelty-free balms locally with native ingredients; its shea butter & retinol balm won awards.",
+    "website": "https://ulusoleil.com/",
+    "instagram": "ulu.soleil",
+    "tags": [
+      "cruelty-free",
+      "local-ingredients"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://ulusoleil.com"
+    }
+  },
+  {
+    "slug": "umbi",
+    "name": "Umbi",
+    "category": "fashion",
+    "subcategory": "baju raya",
+    "tier": "naik-daun",
+    "description": "Playful, print-happy Setia Alam label making modern kurung, kebaya, kurta and teluk belanga so the whole family can match on Raya morning.",
+    "origin": "Shah Alam, Selangor",
+    "state": "Selangor",
+    "website": "https://umbiofficial.com/",
+    "instagram": "umbi.official",
+    "tiktok": "umbi.official",
+    "tags": [
+      "modest",
+      "kids"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://umbiofficial.com"
+    }
+  },
+  {
+    "slug": "umma",
+    "name": "UMMA",
+    "category": "fashion",
+    "subcategory": "hijab",
+    "tier": "naik-daun",
+    "description": "Sibling-founded label led by Zairin Azman that debuted in 2017 with easy semi-instant hijabs for busy women, now spanning modest wear too.",
+    "founded": 2017,
+    "website": "https://umma.my/",
+    "instagram": "umma.my",
+    "tiktok": "umma.my",
+    "tags": [
+      "modest"
+    ]
+  },
+  {
+    "slug": "uncle-jeff-drinks",
+    "name": "Uncle Jeff Drinks",
+    "category": "drinks",
+    "subcategory": "kombucha",
+    "tier": "cili-padi",
+    "description": "Small-batch kombucha and jun tea brewer with local twists such as kelulut (stingless bee) honey, nutmeg and aged brined calamansi soda.",
+    "website": "https://www.unclejeffdrinks.com/",
+    "instagram": "unclejeffdrinks",
+    "shopee": "https://shopee.com.my/unclejeffdrinks",
+    "tags": [
+      "small-batch",
+      "local-ingredients"
+    ]
+  },
+  {
+    "slug": "upin-and-ipin",
+    "name": "Upin & Ipin",
+    "category": "kids",
+    "subcategory": "animation merch",
+    "tier": "ikon",
+    "description": "Les' Copaque's much-loved twin-boy cartoon from Shah Alam, on screens since 2007, with an official store for toys, plushies and merch.",
+    "founded": 2007,
+    "origin": "Shah Alam, Selangor",
+    "state": "Selangor",
+    "website": "https://www.upinipinstore.com/",
+    "instagram": "upinipinstore",
+    "tags": [
+      "kids",
+      "gift"
+    ]
+  },
+  {
+    "slug": "velvet-vanity",
+    "name": "Velvet Vanity",
+    "category": "beauty",
+    "subcategory": "makeup",
+    "tier": "naik-daun",
+    "description": "Homegrown makeup label started in 2016, a cult fave for fuss-free makeup-skincare hybrids like its Peptide Glo lip glazes and slim sticks.",
+    "founded": 2016,
+    "website": "https://velvetvanity.co/",
+    "instagram": "velvetvanity.co",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://velvetvanity.co"
+    }
+  },
+  {
+    "slug": "vincci",
+    "name": "Vincci",
+    "category": "accessories",
+    "subcategory": "shoes",
+    "tier": "ikon",
+    "description": "Padini Group's footwear and accessories label since 1981, the go-to for trendy, wallet-friendly heels, flats and handbags.",
+    "founded": 1981,
+    "website": "https://www.padini.com/vincci",
+    "tags": [
+      "affordable"
+    ]
+  },
+  {
+    "slug": "wanderlust-co",
+    "name": "Wanderlust + Co",
+    "category": "accessories",
+    "subcategory": "jewellery",
+    "tier": "naik-daun",
+    "description": "KL-based jewellery brand since 2010, known for affordable stackable pieces plus walk-in piercing and welding, with stores in MY, SG and NYC.",
+    "founded": 2010,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://wanderlustandco.com/",
+    "instagram": "wanderlustandco",
+    "tiktok": "wanderlustandco",
+    "tags": [
+      "affordable",
+      "gift"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://wanderlustandco.com"
+    }
+  },
+  {
+    "slug": "whimsigirl",
+    "name": "Whimsigirl",
+    "category": "fashion",
+    "subcategory": "womenswear",
+    "tier": "naik-daun",
+    "description": "KL womenswear label founded in 2013 by Syazana Sukiman, loved for easy, polished sets, tops and bottoms for modern women.",
+    "founded": 2013,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://whimsigirl.com/",
+    "instagram": "whimsigirldsgn",
+    "tiktok": "whimsigirldsgn",
+    "tags": [
+      "premium"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://whimsigirl.com"
+    }
+  },
+  {
+    "slug": "wonderbrew",
+    "name": "WonderBrew",
+    "category": "drinks",
+    "subcategory": "kombucha",
+    "tier": "naik-daun",
+    "description": "Halal kombucha and jun tea brewed in small batches with mostly local ingredients; won six medals at the 2025 World Kombucha Awards.",
+    "founded": 2018,
+    "origin": "Subang Jaya, Selangor",
+    "state": "Selangor",
+    "website": "https://wonderbrew.co/",
+    "tags": [
+      "halal",
+      "small-batch",
+      "local-ingredients"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://wonderbrew.co"
+    }
+  },
+  {
+    "slug": "zus-coffee",
+    "name": "ZUS Coffee",
+    "category": "drinks",
+    "subcategory": "coffee",
+    "tier": "naik-daun",
+    "description": "KL-born coffee chain gone regional; its official shop sells NGUPI instant premix and canned kopi, coffee capsules and sachets, plus cups and merch.",
+    "founded": 2019,
+    "origin": "Kuala Lumpur",
+    "state": "Kuala Lumpur",
+    "website": "https://shop.zuscoffee.com/",
+    "instagram": "zus.everywhere",
+    "tiktok": "zuseverywhere",
+    "tags": [
+      "affordable"
+    ],
+    "feed": {
+      "type": "shopify",
+      "origin": "https://shop.zuscoffee.com"
+    }
+  }
+]
