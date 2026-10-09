@@ -2,12 +2,13 @@ import { getDictionary, getLocale } from "@/i18n/server";
 import type { NavCategory } from "./nav-data";
 import { CategoryTiles, TierLinks } from "./category-tiles";
 import { KategoriTrigger } from "./kategori-trigger";
+import { PopoverAutoClose } from "./popover-auto-close";
 
 const ID = "kategori-popover";
 
 /**
- * Desktop "Kategori ▾" (DESIGN §6.2): native `popover` panel, opens on click, Esc / outside click
- * closes. 11 categories + "All brands" with brand counts, then the three tier cops.
+ * Desktop "Kategori ▾" (DESIGN §6.2): native `popover` panel, opens on click; Esc, outside click
+ * or picking a link closes it. 11 categories + "All brands" with brand counts, then the three tier cops.
  */
 export async function CategoryPopover({ categories }: { categories: NavCategory[] }) {
   const [locale, t] = await Promise.all([getLocale(), getDictionary()]);
@@ -15,6 +16,7 @@ export async function CategoryPopover({ categories }: { categories: NavCategory[
   return (
     <>
       <KategoriTrigger target={ID} />
+      <PopoverAutoClose id={ID} />
       <div
         id={ID}
         popover="auto"
