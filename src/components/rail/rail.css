@@ -6,3 +6,12 @@
   .rail-progress { display: block; }
   .rail-thumb { transform-origin: 0 50%; animation: grow-x linear both; animation-timeline: --rail; }
 }
+
+/* Rail cascade (RailStagger, DESIGN §7.5): the `slideInX` values as a CSS transition, so it runs on
+   the compositor while Lenis scrolls the page. SSR + "show" = resting pose; "hidden" is applied
+   offscreen with no transition, then "show" slides the first 6 cells in, each after its
+   --cascade-delay (0.05 s + i × 0.045 s). */
+.rail-cascade > [data-cascade-item] {
+  transition: opacity 360ms var(--ease-out-soft) var(--cascade-delay, 0s), translate 360ms var(--ease-out-soft) var(--cascade-delay, 0s);
+}
+.rail-cascade[data-cascade="hidden"] > [data-cascade-item] { opacity: 0; translate: 24px 0; transition: none; }

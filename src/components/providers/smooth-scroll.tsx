@@ -5,9 +5,17 @@ import type Lenis from "lenis";
 import { ReactLenis, useLenis } from "lenis/react";
 import { cancelFrame, frame } from "motion/react";
 
+/** One 60 Hz frame (ms): the step Lenis takes on the first frame after an idle gap. */
+const FRAME_MS = 1000 / 60;
+
+/**
+ * `lerp: 0.25` (DESIGN §7.3): still a Lenis glide, but a wheel notch settles in ≈ 0.38 s and a
+ * trackpad flick in ≈ 0.25 s (0.12 took 0.77 s / 0.73 s and coasted on top of the OS momentum),
+ * and the page trails a spinning wheel by less: light, not floaty.
+ */
 const OPTIONS = {
   autoRaf: false,
-  lerp: 0.12,
+  lerp: 0.25,
   smoothWheel: true,
   syncTouch: false,
   anchors: { offset: -96 },
@@ -53,8 +61,11 @@ export function SmoothScroll() {
     const start = () => {
       if (running) return;
       running = true;
-      // Lenis measures the step from its last raf; after an idle gap, restart the clock.
-      lenis.time = performance.now();
+      // Lenis measures the step from its last raf; after an idle gap, restart the clock one frame
+      // back. Motion stamps frames with performance.now() at processing time, and wheel input is
+      // dispatched right before rAF, so a clock started "now" gave the first frame a ~0 ms step: the
+      // page only began to move a frame later (≈ +17 ms of input latency on every gesture).
+      lenis.time = performance.now() - FRAME_MS;
       frame.update(update, true);
     };
 

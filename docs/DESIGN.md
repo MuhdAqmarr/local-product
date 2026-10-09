@@ -54,7 +54,7 @@
 | 13 | Tab bar breakpoint | Tab bar **< 1024 px**; desktop header ≥ 1024 px. | iPad portrait gets thumb navigation. |
 | 14 | Header blur | **No `backdrop-filter` anywhere.** Solid `santan/96`. | Mobile GPUs. |
 | 15 | Dialogs / sheets / popovers | **Native `<dialog>` + `popover` + `@starting-style`** (C). Motion is not used for them. | Free focus trap, Esc, inert, zero animation JS. |
-| 16 | Reveals | **One `RevealObserver` + `data-reveal` CSS** (B) for generic fade-ups. Motion `whileInView` only for orchestrated pieces (rail cascade, tier stamps, explainer). | Cheapest; content visible without JS. |
+| 16 | Reveals | **One `RevealObserver` + `data-reveal` CSS** (B) for generic fade-ups. Motion `whileInView` only for orchestrated pieces (tier stamps, explainer); the rail cascade is a CSS transition (§6, Rails). | Cheapest; content visible without JS. |
 | 17 | Product photos | Plain `<img>` with `sizedImage`/`imageSrcSet` (no next/image optimiser). Plate = category tint. **Cover if 0.8 ≤ w/h ≤ 1.25, else contain + 8 % padding + `mix-blend-mode: multiply` + floor shadow.** Unknown size = contain. | Cohesive shelf look; blend only on the minority of images. |
 | 18 | Hero product stack | **Static fan, no autoplay cycling** (B/C). | No autoplay carousels, ever. |
 | 19 | Pagination | **"Muat lagi" button**, 24 per chunk, `?page=` in the URL. No infinite scroll. | Footer reachable, DOM bounded, Back works. |
@@ -524,7 +524,7 @@ State from `SiteStats.syncedAt` + `SiteStats.source` (site) or `feeds[slug]` (`F
 - **Track:** `grid grid-flow-col auto-cols-[var(--rail-col)] gap-3 overflow-x-auto overscroll-x-contain snap-x snap-mandatory no-scrollbar px-(--gutter) scroll-px-(--gutter) pt-3 pb-5` (padding keeps overhanging stickers unclipped), children `snap-start`, `data-lenis-prevent-horizontal`, `role="region" aria-label="{title}, skrol mendatar" tabIndex={0}`.
 - **Progress thumb:** 6 px `kapas` track (w-24, centred) with a `bg-kuih-lapis` thumb scaled by a **CSS scroll-driven animation** (`scroll-timeline: --rail x` on the track, `timeline-scope` on the section, `animation: grow-x linear both; animation-timeline: --rail`), inside `@supports (animation-timeline: scroll())`, hidden otherwise. Zero JS.
 - **End card:** a mangga sticker tile "Tengok semua **{n}** promo →" (pop, `--pop-offset:4px`).
-- **Cascade:** `RailStagger` (client) animates only the first 6 items with `slideInX` + `staggerContainer(gap.rail, 0.05)`, using the SSR-visible pattern (starts "show"; flips to "hidden" only if below the fold at hydration; returns to "show" in view).
+- **Cascade:** `RailStagger` (client) animates only the first 6 items with the `slideInX` values (opacity 0 → 1, `translate` 24 px → 0, 360 ms `--ease-out-soft`, delay 0.05 s + i × 0.045 s) as a **CSS transition** (`.rail-cascade[data-cascade]` in `rail.css`), using the SSR-visible pattern (starts "show"; flips to "hidden" only if below the fold at hydration; returns to "show" in view). Not Motion: rails arrive mid-scroll, and JS-driven `x` wrote 6 inline styles per frame on the thread Lenis scrolls.
 - **Swipe hint:** the first rail on Home, mobile only, once per session (`sessionStorage`): after the cascade, the track moves `x: [0, −28, 0]` (`nudgeX`).
 
 ### 6.12 Skeletons
@@ -606,8 +606,8 @@ Centred column, max 360 px, `py-12`: 160 px `bg-sunburst` disc at 60 % with Oyen
 
 | Engine | Owns |
 |---|---|
-| **CSS** (keyframes, transitions, `@starting-style`, scroll-driven) | Hero intro (pre-hydration), ambient loops (mesh, wau sway, Oyen blink, stamp ring), hover/press (pop, card lift), stickers, shimmer, odometers, marquee, live ping, dialogs/sheets/popovers, tab panels, rail progress, generic reveals (RevealObserver) |
-| **Motion** (`m.*` under `LazyMotion` async `domAnimation`, `strict`) | Rail cascade, section-accent pops, tier stamps, explainer steps, `AnimatePresence` (toasts, FAB, active-filter pills), springs (tab pill, segmented thumb, switch), save heart + fly-to-Simpan (`animate()` + `arc()`), scroll-linked values (`useScroll`/`useTransform`) |
+| **CSS** (keyframes, transitions, `@starting-style`, scroll-driven) | Rail cascade, hero intro (pre-hydration), ambient loops (mesh, wau sway, Oyen blink, stamp ring), hover/press (pop, card lift), stickers, shimmer, odometers, marquee, live ping, dialogs/sheets/popovers, tab panels, rail progress, generic reveals (RevealObserver) |
+| **Motion** (`m.*` under `LazyMotion` async `domAnimation`, `strict`) | Section-accent pops, tier stamps, explainer steps, `AnimatePresence` (toasts, FAB, active-filter pills), springs (tab pill, segmented thumb, switch), save heart + fly-to-Simpan (`animate()` + `arc()`), scroll-linked values (`useScroll`/`useTransform`) |
 | **View Transitions** (React 19.3 `<ViewTransition>`, `<Link transitionTypes>`) | Route slides/fades, Suspense skeleton → content, filtered-results crossfade, shared morphs (brand monogram, category icon). Replaces `layoutId`. |
 
 Tokens: Appendix B (`src/lib/motion.ts`) and the CSS mirror in Appendix A (`--dur-*`, `--ease-*`, `--animate-*`).
@@ -650,7 +650,7 @@ export function SmoothScroll({ reduce }: { reduce: boolean }) {
     return () => cancelFrame(update);
   }, []);
   return <ReactLenis root ref={ref} options={{
-    autoRaf: false, lerp: reduce ? 1 : 0.12, smoothWheel: !reduce, syncTouch: false, // phones keep native momentum
+    autoRaf: false, lerp: reduce ? 1 : 0.25, smoothWheel: !reduce, syncTouch: false, // phones keep native momentum
     anchors: { offset: -96 }, allowNestedScroll: true, stopInertiaOnNavigate: true, autoToggle: true, respectReducedMotion: true,
   }} />;
 }
@@ -658,6 +658,8 @@ export function SmoothScroll({ reduce }: { reduce: boolean }) {
 - `useMotionPref()` = `useSyncExternalStore` over `matchMedia("(prefers-reduced-motion: reduce)")` and `html[data-motion]`; returns `"always"` if either asks for less motion; server snapshot `"user"`.
 - A 3-line inline `<script>` in `<head>` (`MotionPrefScript`) sets `html[data-motion="reduce"]` from `localStorage["lokallah:motion"]` or `navigator.connection?.saveData`, and `html[data-intro="done"]` if `sessionStorage["lokallah:intro"]` exists, before first paint.
 - Keep the tree shape constant: the toggle changes Lenis options, never remounts the page.
+- **Lenis feel (measured, desktop):** `lerp: 0.25` = a wheel notch settles in ≈ 0.38 s, a trackpad flick in ≈ 0.25 s (0.12 took 0.77 / 0.73 s and coasted on top of the OS momentum: "berat"). When the loop starts from idle, set `lenis.time = performance.now() − 1 frame` so the first frame after the wheel already moves (Motion stamps frames with `performance.now()`; a clock started "now" gave a ~0 ms first step). No CSS `scroll-behavior: smooth` anywhere (double smoothing).
+- **Nested scrollers:** `lenis.css` sets `overscroll-behavior: contain` (both axes) on `[data-lenis-prevent-horizontal]`; globals.css resets the y axis (`overscroll-behavior-y: auto`). Without it, `allowNestedScroll` handed vertical wheels over a rail/chip row to the rail, the browser could not chain them to the page, and the page froze under the cursor (35–90 % of wheel input lost on Home and brand pages).
 - Never call `scrollTo(0)` on pathname change (Next + Activity restore scroll).
 - `RevealObserver` (client, mounted once in the layout): one IntersectionObserver (`rootMargin: "0px 0px -8% 0px"`, threshold .15) + a MutationObserver for streamed Suspense content; marks elements already within 92 % of the viewport `is-in` *before* adding `reveal-ready` to `<html>`, so nothing visible ever flickers; unobserves after reveal.
 - `useAmbientPause(ref)`: one shared IntersectionObserver that sets `data-paused` on ambient containers (`[data-ambient]`) when offscreen or `document.hidden`.
@@ -686,7 +688,7 @@ export function SmoothScroll({ reduce }: { reduce: boolean }) {
 | # | Moment | Engine | Spec | Job |
 |---|---|---|---|---|
 | 1 | Section header reveal | CSS (RevealObserver) | `data-reveal` rise 16 px, 420 ms; accent word then `animate-pop-in` (+120 ms); "Tengok semua" fades in (+200 ms via `--i`) | Guide: a new aisle |
-| 2 | Rail cascade | Motion | First 6 items `slideInX`, `stagger(0.045)`; rest static | Explain: more to the side |
+| 2 | Rail cascade | CSS | First 6 items `slideInX` values, 0.045 s stagger; rest static | Explain: more to the side |
 | 3 | Rail swipe hint | Motion | §6.11, mobile, once per session | Explain: swipeable |
 | 4 | Grids | CSS | **Items 0–7 never animate.** Items 8+ and "Muat lagi" batches: `data-reveal` with `--i = index % columns` (≤ 5 × 60 ms) | Guide |
 | 5 | Tier journey | Motion + scroll | Section progress (`useScroll({ target, offset: ["start 75%", "end 55%"] })`) drives a dashed connector's `scaleY` (mobile, vertical) / `scaleX` (desktop). Thresholds .15 / .5 / .85 flip `data-active` on stations 1–3 (3 state changes total). An activating station: its `cop-lg` does `stampIn` while an ink ring behind it scales .6 → 1.25 and fades .5 → 0 (420 ms); its tier icon then plays its micro (#6). Fully drawn under reduced motion | Explain: small grows big |

@@ -205,6 +205,12 @@
 @media (min-width: 640px)  { :root { --gutter: 24px; } }
 @media (min-width: 1024px) { :root { --header-h: 72px; --awning-h: 26px; --tabbar-h: 0px; --gutter: 32px; } }
 
+/* Lenis: lenis.css gives [data-lenis-prevent-horizontal] `overscroll-behavior: contain` on BOTH axes.
+   On a rail / chip row that made Lenis hand a vertical wheel to the rail (allowNestedScroll sees a
+   "contained" scroller at its edge) and the browser then refused to chain it to the page: the page
+   froze under the cursor. Contain only x (no swipe-back from a rail); y always reaches Lenis. */
+.lenis [data-lenis-prevent-horizontal] { overscroll-behavior-y: auto; }
+
 /* Category + tier scoping: set data-cat / data-tier on any wrapper, then use bg-(--cat-tint) etc. */
 [data-cat="beauty"]      { --cat-tint: var(--color-beauty-tint);      --cat-mid: var(--color-beauty-mid);      --cat-pop: var(--color-beauty-pop);      --cat-ink: var(--color-beauty-ink); }
 [data-cat="fashion"]     { --cat-tint: var(--color-fashion-tint);     --cat-mid: var(--color-fashion-mid);     --cat-pop: var(--color-fashion-pop);     --cat-ink: var(--color-fashion-ink); }

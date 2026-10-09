@@ -1,19 +1,15 @@
 "use client";
 
-import { Children, isValidElement, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import * as m from "motion/react-m";
-import { useInView, type Variants } from "motion/react";
-import { MAX_STAGGERED, dur, ease, gap, slideInX, staggerContainer } from "@/lib/motion";
+import { Children, isValidElement, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useInView } from "motion/react";
+import { MAX_STAGGERED, dur, ease, gap } from "@/lib/motion";
 import { prefersLessMotion } from "@/components/providers/motion-pref";
+import { cn } from "@/lib/utils";
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 const HINT_KEY = "lokallah:rail-hint";
-
-const container = staggerContainer(gap.rail, 0.05);
-const item: Variants = {
-  hidden: { ...(slideInX.hidden as object), transition: { duration: 0 } },
-  show: slideInX.show,
-};
+/** Cascade start delay (s); cell i waits CASCADE_START + i × gap.rail (= Motion `stagger(gap.rail, { startDelay })`). */
+const CASCADE_START = 0.05;
 
 export interface RailStaggerProps {
   /** Rail items, one child per track cell (cards, end card). */
@@ -36,6 +32,11 @@ export interface RailStaggerProps {
  * below the fold at hydration do the first 6 cells flip to "hidden" (instantly,
  * offscreen) and then slide in with a stagger when the rail scrolls into view.
  * The rest of the cells never animate.
+ *
+ * The cascade itself is a CSS transition (`.rail-cascade` in rail.css: opacity + `translate`, the
+ * `slideInX` values), not Motion: rails usually arrive while the page is being scrolled, and a
+ * JS-driven `x` wrote inline styles on 6 cells every frame on the main thread that Lenis scrolls.
+ * Same look; the browser runs it on the compositor.
  */
 export function RailStagger({ children, className, itemClassName, label, hint = false, style, id }: RailStaggerProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -87,31 +88,29 @@ export function RailStagger({ children, className, itemClassName, label, hint = 
   const cells = Children.toArray(children);
 
   return (
-    <m.div
+    <div
       ref={ref}
       id={id}
-      className={className}
+      className={cn("rail-cascade", className)}
       style={style}
       role="region"
       aria-label={label}
       tabIndex={0}
       data-lenis-prevent-horizontal=""
-      variants={container}
-      initial={false}
-      animate={state}
+      data-cascade={state}
     >
       {cells.map((child, index) => {
         const key = isValidElement(child) && child.key != null ? child.key : index;
         return index < MAX_STAGGERED ? (
-          <m.div key={key} className={itemClassName} variants={item}>
+          <div key={key} className={itemClassName} data-cascade-item="" style={{ "--cascade-delay": `${CASCADE_START + index * gap.rail}s` } as CSSProperties}>
             {child}
-          </m.div>
+          </div>
         ) : (
           <div key={key} className={itemClassName}>
             {child}
           </div>
         );
       })}
-    </m.div>
+    </div>
   );
 }
