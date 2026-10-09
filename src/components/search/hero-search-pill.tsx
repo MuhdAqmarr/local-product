@@ -9,7 +9,9 @@ import { preloadSearch, useSearch } from "./search-provider";
 
 /** The static label (also what screen readers get) and the cycling examples (DESIGN §9.1). */
 const PLACEHOLDER = "Cari jenama, produk, kategori…";
-const EXAMPLES = ["Cari “sambal bilis”…", "Cari “tudung bawal”…", "Cari “kopi tenom”…", "Cari “sunscreen”…", "Cari “kasut sekolah”…", "Cari “lilin wangi”…"];
+// Every example must return real results from the catalogue (each matches 8+ products across
+// 2+ brands in the current snapshot); re-check against /api/feed/search when the brand list changes.
+const EXAMPLES = ["Cari “baju kurung”…", "Cari “kopi”…", "Cari “sunscreen”…", "Cari “tudung”…", "Cari “serum”…", "Cari “telekung”…"];
 const START_MS = 1200;
 const EVERY_MS = 3000;
 

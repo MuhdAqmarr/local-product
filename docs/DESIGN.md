@@ -881,7 +881,7 @@ Every page wraps its content in `<ViewTransition enter={{ "nav-forward": "nav-fo
 - **H1 (final):** "Semua jenama **lokal**, sentiasa **up to date**."
 - Alternates (A/B tests only): "Dari kedai kecik sampai jenama **gempak**." · "Promo lokal? Kami dah **usha** dulu." · "Satu kedai runcit untuk **semua** jenama Malaysia." · "Sokong lokal, tapi jangan **terlepas** promo."
 - **Sub:** "Promo dan produk terbaru dari kedai rasmi {brands} jenama Malaysia, dari skincare sampai sambal. Auto-update setiap beberapa jam, so kau tak terlepas apa-apa."
-- **Search examples (cycling):** "Cari "sambal bilis"…" · "Cari "tudung bawal"…" · "Cari "kopi tenom"…" · "Cari "sunscreen"…" · "Cari "kasut sekolah"…" · "Cari "lilin wangi"…". Static placeholder: "Cari jenama, produk, kategori…"
+- **Search examples (cycling):** "Cari "baju kurung"…" · "Cari "kopi"…" · "Cari "sunscreen"…" · "Cari "tudung"…" · "Cari "serum"…" · "Cari "telekung"…" (each must return real results in the catalogue; re-check when the brand list changes). Static placeholder: "Cari jenama, produk, kategori…"
 - **Quick chips:** "Diskaun 40%+" · "Baru minggu ni" · "Cili Padi" · "Bawah RM30"
 - **Stat labels:** "jenama" · "promo live" · "baru"
 - **Gochi notes:** "psst… harga live!" · "sampai!" (beside the max-discount burst) · "jimat gila!"
