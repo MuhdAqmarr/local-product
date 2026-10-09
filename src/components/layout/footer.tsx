@@ -4,7 +4,8 @@ import { getStats } from "@/lib/catalog";
 import { BRANDS } from "@/lib/brands";
 import { formatClock, formatDate } from "@/lib/freshness";
 import { CATEGORIES } from "@/lib/taxonomy";
-import { REPO_URL } from "@/lib/site";
+/** Who built LokalLah! (credit shown in the footer bottom line). */
+const MAKER_URL = "https://maqmarx.vercel.app";
 import { FooterOyen } from "./footer-oyen";
 import { Logo } from "./logo";
 import { MotionToggle } from "./motion-toggle";
@@ -94,11 +95,6 @@ export async function Footer() {
                   </Link>
                 </li>
               ))}
-              <li>
-                <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className={linkClass}>
-                  Kod sumber (GitHub)
-                </a>
-              </li>
             </ul>
           </nav>
         </div>
@@ -120,7 +116,21 @@ export async function Footer() {
           </div>
           <div aria-hidden className="kuih-strip mt-8 rounded-full" />
           <div className="mt-6 flex flex-col gap-4 text-caption text-ink-dim lg:flex-row lg:items-center lg:justify-between">
-            <p>© 2026 LokalLah! · Direktori bebas · Dibuat dengan sayang di Malaysia</p>
+            <p>
+              © 2026 LokalLah! · Direktori bebas · Dibuat dengan{" "}
+              <span role="img" aria-label="bunga raya">
+                🌺
+              </span>{" "}
+              oleh{" "}
+              <a
+                href={MAKER_URL}
+                target="_blank"
+                rel="noopener"
+                className="font-semibold text-santan underline decoration-jambu decoration-2 underline-offset-4 hover:decoration-mangga"
+              >
+                MaqmarX<span className="sr-only"> (buka tab baru)</span>
+              </a>
+            </p>
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
               <p>
                 Sync terakhir:{" "}
