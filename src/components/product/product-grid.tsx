@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import type { Locale } from "@/i18n/config";
 import type { ProductCardData } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { ProductCard } from "./product-card";
@@ -8,6 +9,8 @@ export const PAGE_SIZE = 24;
 
 export interface ProductGridProps {
   products: ProductCardData[];
+  /** Page language (passed to every card). */
+  locale: Locale;
   syncedAt: string;
   /** Per-brand price check time (`feeds[brand].fetchedAt`), when the page has it. */
   checkedAt?: Record<string, string | undefined>;
@@ -40,6 +43,7 @@ const CHUNK_STYLE: CSSProperties = { contentVisibility: "auto", containIntrinsic
  */
 export function ProductGrid({
   products,
+  locale,
   syncedAt,
   checkedAt,
   startIndex = 0,
@@ -72,10 +76,11 @@ export function ProductGrid({
                 // segments hydrate, and React would report a className mismatch.
                 <li key={p.id} data-reveal={reveal ? "" : undefined} style={reveal ? ({ "--i": index % 4, minWidth: 0 } as CSSProperties) : MIN_W0}>
                   {view === "list" ? (
-                    <ProductRow product={p} syncedAt={syncedAt} checkedAt={checkedAt?.[p.brand]} eager={index < eagerCount} emphasis={emphasis} />
+                    <ProductRow product={p} locale={locale} syncedAt={syncedAt} checkedAt={checkedAt?.[p.brand]} eager={index < eagerCount} emphasis={emphasis} />
                   ) : (
                     <ProductCard
                       product={p}
+                      locale={locale}
                       syncedAt={syncedAt}
                       checkedAt={checkedAt?.[p.brand]}
                       priority={priorityFirst && index === 0}

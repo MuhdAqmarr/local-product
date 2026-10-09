@@ -1,7 +1,9 @@
 import { ViewTransition, type ReactNode } from "react";
 import { CategoryGlyph } from "@/components/product/category-glyph";
 import { Odometer } from "@/components/feedback/odometer";
-import { CATEGORY_BY_SLUG } from "@/lib/taxonomy";
+import { fmt, pluralForm, type Plural } from "@/i18n/format";
+import { getDictionary, getLocale } from "@/i18n/server";
+import { categoryBlurb, categoryName } from "@/lib/taxonomy";
 import type { CategorySlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -23,7 +25,8 @@ function Screw({ className }: { className: string }) {
   );
 }
 
-function Stat({ value, label }: { value: number; label: string }) {
+function Stat({ value, noun }: { value: number; noun: Plural }) {
+  const label = pluralForm(value, noun);
   return (
     <li className="flex items-baseline gap-1.5">
       <Odometer value={value} className="font-num text-[22px] text-ink md:text-[26px]" srText={`${value} ${label}`} />
@@ -37,11 +40,14 @@ function Stat({ value, label }: { value: number; label: string }) {
 /**
  * Category "papan tanda" hero (DESIGN §8.6): an enamel signboard in the category tint with batik
  * on the right half, a 2 px ink inner frame inset 8 px with four little screws, the 96 px
- * `--cat-mid` squircle (morph target `cat-ic-{slug}` from the category tiles), overline `nameMs`,
- * H1 `name`, `blurb` and a live stat row. Server Component; reads `data-cat` from itself.
+ * `--cat-mid` squircle (morph target `cat-ic-{slug}` from the category tiles), a "Category"
+ * overline, H1 name, blurb and a live stat row, all in the page language. Async Server Component
+ * (reads the locale itself); reads `data-cat` from itself.
  */
-export function CategoryHero({ slug, brands, promos, newLaunches, children, className }: CategoryHeroProps) {
-  const c = CATEGORY_BY_SLUG[slug];
+export async function CategoryHero({ slug, brands, promos, newLaunches, children, className }: CategoryHeroProps) {
+  const [locale, dict] = await Promise.all([getLocale(), getDictionary()]);
+  const t = dict.categories.hero;
+  const name = categoryName(slug, locale);
   return (
     <header
       data-cat={slug}
@@ -73,13 +79,13 @@ export function CategoryHero({ slug, brands, promos, newLaunches, children, clas
         </ViewTransition>
 
         <div className="min-w-0">
-          <p className="text-overline uppercase text-(--cat-ink)">{c.nameMs}</p>
-          <h1 className="mt-1 text-title-1 text-ink [overflow-wrap:anywhere]">{c.name}</h1>
-          <p className="mt-2 max-w-[48ch] text-body text-ink-2">{c.blurb}</p>
-          <ul className="mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-2" aria-label={`${c.nameMs} dalam angka`}>
-            <Stat value={brands} label="jenama" />
-            <Stat value={promos} label="promo" />
-            <Stat value={newLaunches} label="baru" />
+          <p className="text-overline uppercase text-(--cat-ink)">{t.overline}</p>
+          <h1 className="mt-1 text-title-1 text-ink [overflow-wrap:anywhere]">{name}</h1>
+          <p className="mt-2 max-w-[48ch] text-body text-ink-2">{categoryBlurb(slug, locale)}</p>
+          <ul className="mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-2" aria-label={fmt(t.stats, { name })}>
+            <Stat value={brands} noun={t.brands} />
+            <Stat value={promos} noun={t.promos} />
+            <Stat value={newLaunches} noun={t.new} />
           </ul>
           {children && <div className="mt-4 flex flex-wrap items-center gap-3">{children}</div>}
         </div>

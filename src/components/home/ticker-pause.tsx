@@ -8,7 +8,7 @@ import { Pause, Play } from "@/components/ui/lucide";
  * in React state and lands on `.marquee[data-paused]`, so it never fights the offscreen
  * auto-pause that RevealObserver puts on the outer `[data-ambient]` band.
  */
-export function TickerPause({ children, duration }: { children: ReactNode; duration: number }) {
+export function TickerPause({ children, duration, label }: { children: ReactNode; duration: number; /** "Pause ticker" in the page language (a toggle: the name stays, aria-pressed flips). */ label: string }) {
   const [paused, setPaused] = useState(false);
   return (
     <>
@@ -19,7 +19,7 @@ export function TickerPause({ children, duration }: { children: ReactNode; durat
         type="button"
         onClick={() => setPaused((p) => !p)}
         aria-pressed={paused}
-        aria-label="Jeda ticker"
+        aria-label={label}
         className="home-ticker-toggle relative grid size-8 shrink-0 place-items-center rounded-full border-[1.5px] border-ink-dim text-santan transition-colors duration-150 hover:bg-santan/10 before:absolute before:-inset-1.5 before:content-['']"
       >
         {paused ? <Play aria-hidden size={14} strokeWidth={2.5} /> : <Pause aria-hidden size={14} strokeWidth={2.5} />}

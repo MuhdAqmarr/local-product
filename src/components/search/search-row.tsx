@@ -9,10 +9,13 @@ import { PLATE_SIZES } from "@/components/product/plate-sizes";
 import { displayPrice } from "@/components/product/price-text";
 import type { SearchItem } from "@/lib/catalog";
 import { normalizeText } from "@/lib/search";
-import { CATEGORY_BY_SLUG, TIER_BY_SLUG } from "@/lib/taxonomy";
+import { useI18n } from "@/i18n/client";
+import { categoryLabel, TIER_BY_SLUG } from "@/lib/taxonomy";
 import type { Category } from "@/lib/taxonomy";
 import type { TierSlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
+
+/** Client-only (rendered inside the search dialog). */
 
 /** Search items may carry tier/state once the index includes them; rows show them when present. */
 export type SearchBrandExtras = { tier?: TierSlug; state?: string };
@@ -101,8 +104,9 @@ function Option({ id, active, onSelect, onHover, className, children }: OptionPr
 type RowBase = Omit<OptionProps, "children" | "className"> & { words: string[] };
 
 export function SearchBrandRow({ item, words, ...opt }: RowBase & { item: SearchItem & SearchBrandExtras }) {
-  const cat = CATEGORY_BY_SLUG[item.category];
-  const meta = [cat?.nameMs, item.state].filter(Boolean).join(" · ");
+  const { m, locale } = useI18n();
+  const t = m.search.row;
+  const meta = [item.category ? categoryLabel(item.category, locale) : null, item.state].filter(Boolean).join(" · ");
   return (
     <Option {...opt} className="min-h-14">
       <Monogram slug={item.brand} name={item.brandName} category={item.category} size={36} />
@@ -118,7 +122,7 @@ export function SearchBrandRow({ item, words, ...opt }: RowBase & { item: Search
             </>
           )}
         </span>
-        <span className="truncate text-caption text-ink-soft">{meta ? `Jenama · ${meta}` : "Jenama"}</span>
+        <span className="truncate text-caption text-ink-soft">{meta ? `${t.brand} · ${meta}` : t.brand}</span>
       </span>
       <ChevronRight aria-hidden="true" size={18} className="shrink-0 text-ink-soft transition-transform duration-150 group-data-[active]/opt:translate-x-0.5 group-data-[active]/opt:text-ink" />
     </Option>
@@ -126,6 +130,8 @@ export function SearchBrandRow({ item, words, ...opt }: RowBase & { item: Search
 }
 
 export function SearchProductRow({ item, words, ...opt }: RowBase & { item: SearchItem }) {
+  const { m, fmt } = useI18n();
+  const t = m.search.row;
   return (
     <Option {...opt} className="min-h-16">
       <span data-cat={item.category} className="plate size-12 shrink-0 rounded-thumb bg-(--cat-tint)">
@@ -146,9 +152,9 @@ export function SearchProductRow({ item, words, ...opt }: RowBase & { item: Sear
             {displayPrice(item.price, item.currency)}
           </span>
         )}
-        {item.discount ? <span className="sr-only">, diskaun {item.discount}%</span> : null}
+        {item.discount ? <span className="sr-only">{fmt(t.srDiscount, { percent: item.discount })}</span> : null}
         <ArrowUpRight aria-hidden="true" size={16} className="text-ink-soft" />
-        <span className="sr-only">, buka kedai rasmi {item.brandName} (tab baru)</span>
+        <span className="sr-only">{fmt(t.srOpen, { brand: item.brandName })}</span>
       </span>
     </Option>
   );
@@ -156,6 +162,7 @@ export function SearchProductRow({ item, words, ...opt }: RowBase & { item: Sear
 
 /** Category result: a chip-shaped option in the category tint. */
 export function SearchCategoryChip({ category, words, ...opt }: RowBase & { category: Category }) {
+  const { m, locale } = useI18n();
   return (
     <div
       id={opt.id}
@@ -173,9 +180,9 @@ export function SearchCategoryChip({ category, words, ...opt }: RowBase & { cate
         <CategoryGlyph category={category.slug} size={18} />
       </span>
       <span>
-        <Highlight text={category.nameMs} words={words} />
+        <Highlight text={categoryLabel(category, locale)} words={words} />
       </span>
-      <span className="sr-only">, kategori</span>
+      <span className="sr-only">{m.search.row.srCategory}</span>
     </div>
   );
 }

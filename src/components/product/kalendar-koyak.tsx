@@ -1,9 +1,16 @@
 import type { CSSProperties } from "react";
+import type { Locale } from "@/i18n/config";
+import { plural } from "@/i18n/format";
+import { commonFor } from "@/i18n/shared";
+import { MONTHS_SHORT } from "@/lib/freshness";
 import { cn } from "@/lib/utils";
 
 const TZ = "Asia/Kuala_Lumpur";
-const HARI = ["Ahad", "Isnin", "Selasa", "Rabu", "Khamis", "Jumaat", "Sabtu"] as const;
-const BULAN = ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ogo", "Sep", "Okt", "Nov", "Dis"] as const;
+/** Weekday names, Sunday first (hard-coded so server and browser always agree). */
+const WEEKDAYS: Record<Locale, readonly string[]> = {
+  en: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  ms: ["Ahad", "Isnin", "Selasa", "Rabu", "Khamis", "Jumaat", "Sabtu"],
+};
 
 interface DayParts {
   y: number;
@@ -29,21 +36,34 @@ export function myDayKey(iso: string): string {
   return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
 
-/** "Hari ni" / "Semalam" / "Khamis, 2 Okt", relative to `reference` (the catalog's syncedAt). */
-export function dayLabel(iso: string, reference: string): string {
+/** Days between `iso` and `reference` in Malaysia calendar days (0 = same day). */
+function dayDiff(iso: string, reference: string): number {
   const a = myDay(iso);
   const b = myDay(reference);
-  const diff = Math.round((Date.UTC(b.y, b.m, b.d) - Date.UTC(a.y, a.m, a.d)) / 86_400_000);
-  if (diff === 0) return "Hari ni";
-  if (diff === 1) return "Semalam";
-  return `${HARI[a.wd]}, ${a.d} ${BULAN[a.m]}${a.y !== b.y ? ` ${a.y}` : ""}`;
+  return Math.round((Date.UTC(b.y, b.m, b.d) - Date.UTC(a.y, a.m, a.d)) / 86_400_000);
+}
+
+/**
+ * "Today" / "Yesterday" / "Thursday, 2 Oct" (en) · "Hari ni" / "Semalam" / "Khamis, 2 Okt" (ms),
+ * relative to `reference` (the catalog's syncedAt).
+ */
+export function dayLabel(iso: string, reference: string, locale: Locale): string {
+  const a = myDay(iso);
+  const b = myDay(reference);
+  const diff = dayDiff(iso, reference);
+  const t = commonFor(locale).product;
+  if (diff === 0) return t.today;
+  if (diff === 1) return t.yesterday;
+  return `${WEEKDAYS[locale][a.wd]}, ${a.d} ${MONTHS_SHORT[locale][a.m]}${a.y !== b.y ? ` ${a.y}` : ""}`;
 }
 
 export interface KalendarKoyakProps {
   /** Any timestamp on that day (ISO). */
   date: string;
-  /** The catalog's syncedAt, for "Hari ni" / "Semalam". */
+  /** The catalog's syncedAt, for "Today" / "Yesterday". */
   reference: string;
+  /** Page language. */
+  locale: Locale;
   count?: number;
   /**
    * Omit: sticks flush under header + filter bar (opaque, with 8 px extra top padding so the calendar
@@ -58,12 +78,16 @@ const TORN = "conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #000
 
 /**
  * /new tear-off calendar day header (DESIGN §8.3, Appendix D #21): bandung binding with two
- * santan ring holes, Fredoka day number, caps month, Malay weekday, zig-zag torn bottom edge.
+ * santan ring holes, Fredoka day number, caps month, weekday, zig-zag torn bottom edge.
  */
-export function KalendarKoyak({ date, reference, count, stickyTop, className }: KalendarKoyakProps) {
+export function KalendarKoyak({ date, reference, locale, count, stickyTop, className }: KalendarKoyakProps) {
   const day = myDay(date);
-  const label = dayLabel(date, reference);
-  const full = `${HARI[day.wd]}, ${day.d} ${BULAN[day.m]} ${day.y}`;
+  const label = dayLabel(date, reference, locale);
+  const weekday = WEEKDAYS[locale][day.wd];
+  const month = MONTHS_SHORT[locale][day.m];
+  const full = `${weekday}, ${day.d} ${month} ${day.y}`;
+  const diff = dayDiff(date, reference);
+  const recent = diff === 0 || diff === 1;
 
   return (
     <h2
@@ -84,7 +108,7 @@ export function KalendarKoyak({ date, reference, count, stickyTop, className }: 
           </span>
           <span className="flex flex-1 flex-col items-center justify-center pb-1.5 leading-none">
             <span className="font-num text-[26px] leading-none text-ink">{day.d}</span>
-            <span className="mt-0.5 text-[10px] font-semibold tracking-[0.08em] text-ink-soft uppercase">{BULAN[day.m]}</span>
+            <span className="mt-0.5 text-[10px] font-semibold tracking-[0.08em] text-ink-soft uppercase">{month}</span>
           </span>
         </span>
       </span>
@@ -95,8 +119,8 @@ export function KalendarKoyak({ date, reference, count, stickyTop, className }: 
           </time>
         </span>
         <span className="text-caption text-ink-soft">
-          {label === "Hari ni" || label === "Semalam" ? `${HARI[day.wd]} · ` : ""}
-          {count != null ? `${count} produk` : full}
+          {recent ? `${weekday} · ` : ""}
+          {count != null ? plural(count, commonFor(locale).product.dayCount) : full}
         </span>
       </span>
     </h2>

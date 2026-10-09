@@ -2,17 +2,18 @@ import { ViewTransition } from "react";
 import { BrandLink as IntentLink } from "@/components/brand/brand-link";
 import { LayoutGrid } from "@/components/ui/lucide";
 import { CategoryGlyph } from "@/components/product/category-glyph";
-import { formatCount } from "@/lib/format";
-import { CATEGORY_BY_SLUG } from "@/lib/taxonomy";
+import { plural } from "@/i18n/format";
+import { getDictionary, getLocale } from "@/i18n/server";
+import { categoryLabel } from "@/lib/taxonomy";
 import type { CategorySlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export interface CategoryTileProps {
-  /** A category, or "all" for the "Semua jenama" tile (→ /brands). */
+  /** A category, or "all" for the "All brands" tile (→ /brands). */
   slug: CategorySlug | "all";
   /** Live promo count (`CategorySummary.promos`); the pill hides at 0. */
   promos?: number;
-  /** "{n} jenama" under the label (desktop). For "all": the total brand count. */
+  /** "{n} brands" under the label (desktop). For "all": the total brand count. */
   brands?: number;
   /** Compact (popover / sheet): 56 px squircle, no shelf contact shadow. */
   compact?: boolean;
@@ -25,13 +26,15 @@ export interface CategoryTileProps {
 
 /**
  * Category tile (DESIGN §6.5): one link wrapping a `--cat-mid` squircle with an ink icon, a
- * Fredoka promo-count pill and the Malay label. Hops off the shelf on hover, squashes on press.
+ * Fredoka promo-count pill and the label in the page language. Hops off the shelf on hover, squashes
+ * on press. Async (reads the page language): Server Components only.
  */
-export function CategoryTile({ slug, promos = 0, brands, compact, morph = true, onShelf, className }: CategoryTileProps) {
+export async function CategoryTile({ slug, promos = 0, brands, compact, morph = true, onShelf, className }: CategoryTileProps) {
+  const [locale, t] = await Promise.all([getLocale(), getDictionary()]);
+  const c = t.common.category;
   const all = slug === "all";
-  const cat = all ? null : CATEGORY_BY_SLUG[slug];
   const href = all ? "/brands" : `/categories/${slug}`;
-  const label = all ? "Semua jenama" : cat!.nameMs;
+  const label = all ? c.allBrands : categoryLabel(slug, locale);
   const box = compact ? "size-14" : "size-16 lg:size-20";
 
   const squircle = (
@@ -55,7 +58,7 @@ export function CategoryTile({ slug, promos = 0, brands, compact, morph = true, 
     </span>
   );
 
-  const srCount = [promos > 0 ? `${promos} promo` : null, brands != null ? `${brands} jenama` : null].filter(Boolean).join(", ");
+  const srCount = [promos > 0 ? plural(promos, c.promos) : null, brands != null ? plural(brands, c.brands) : null].filter(Boolean).join(", ");
 
   return (
     // Dense grid (QA F06): no viewport prefetch; IntentLink warms the route on hover / touch / focus.
@@ -89,7 +92,7 @@ export function CategoryTile({ slug, promos = 0, brands, compact, morph = true, 
         <span className="line-clamp-2 text-label-sm [overflow-wrap:anywhere] text-ink">{label}</span>
         {brands != null && (
           <span aria-hidden="true" className={cn("text-caption text-ink-soft", !compact && "hidden lg:block")}>
-            {formatCount(brands)} jenama
+            {plural(brands, c.brands)}
           </span>
         )}
         {srCount && <span className="sr-only">, {srCount}</span>}

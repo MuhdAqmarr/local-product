@@ -1,6 +1,7 @@
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import type { ReactNode } from "react";
 import { ArrowRight } from "@/components/ui/lucide";
+import { getDictionary } from "@/i18n/server";
 import { cn } from "@/lib/utils";
 
 /** The one accent word of a heading: gradient text that pops in after the header reveals. */
@@ -39,9 +40,11 @@ export interface SectionHeaderProps {
 
 /**
  * Section header row (DESIGN §6.11 / §7.5 #1): rises on reveal, accent word pops (+120 ms),
- * "Tengok semua →" fades in (+200 ms). Visible without JS.
+ * "See all →" / "Tengok semua →" fades in (+200 ms). Visible without JS. Async (default link label in
+ * the page language): Server Components only.
  */
-export function SectionHeader({ title, eyebrow, sub, meta, href, linkLabel = "Tengok semua", as: H = "h2", id, className, aside, noReveal }: SectionHeaderProps) {
+export async function SectionHeader({ title, eyebrow, sub, meta, href, linkLabel, as: H = "h2", id, className, aside, noReveal }: SectionHeaderProps) {
+  linkLabel ??= (await getDictionary()).common.rail.seeAll;
   return (
     <div data-reveal={noReveal ? undefined : ""} className={cn("section-header flex flex-wrap items-end justify-between gap-x-4 gap-y-2", className)}>
       <div className="min-w-0 max-w-[62ch]">

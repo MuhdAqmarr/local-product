@@ -1,8 +1,12 @@
 import { useId } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import { ArrowRight } from "@/components/ui/lucide";
 import type { FeedStatus } from "@/lib/types";
-import { brandSyncState, formatClock, formatDate, syncState, type SyncSource } from "@/lib/freshness";
+import type { Locale } from "@/i18n/config";
+import { fmt } from "@/i18n/format";
+import { getLocale } from "@/i18n/server";
+import { commonFor } from "@/i18n/shared";
+import { brandSyncState, formatDateTime, syncState, type SyncSource } from "@/lib/freshness";
 import { cn } from "@/lib/utils";
 import { LivePillFace } from "./live-pill-face";
 
@@ -27,9 +31,14 @@ export interface LivePillProps {
  * Live-sync indicator (DESIGN §6.10). Server Component: computes the state at age 0 (no clock on
  * the server), prints an absolute time; `LivePillFace` re-evaluates fresh/stale/old against the
  * real clock after mount. Tapping opens a native popover explaining how syncing works.
- * Renders a <div>: do not place it inside a <p>.
+ * Renders a <div>: do not place it inside a <p>. Async (reads the page language); Server Components only.
  */
-export function LivePill({ syncedAt, source, liveBrands, brands, brand, watch, promos, size = "md", className }: LivePillProps) {
+export async function LivePill(props: LivePillProps) {
+  return <LivePillView {...props} locale={await getLocale()} />;
+}
+
+function LivePillView({ syncedAt, source, liveBrands, brands, brand, watch, promos, size = "md", className, locale }: LivePillProps & { locale: Locale }) {
+  const t = commonFor(locale).live;
   const raw = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const id = `sync-${raw}`;
   const base = Date.parse(syncedAt);
@@ -43,7 +52,7 @@ export function LivePill({ syncedAt, source, liveBrands, brands, brand, watch, p
     initial = brandSyncState(brand.hasFeed, brand.status, syncedAt, Date.parse(iso ?? syncedAt));
   }
 
-  const when = iso ? `${formatDate(iso)}, ${formatClock(iso)}` : null;
+  const when = iso ? formatDateTime(iso, locale) : null;
   const ratio = liveBrands != null && brands ? Math.min(1, liveBrands / brands) : null;
 
   return (
@@ -55,13 +64,13 @@ export function LivePill({ syncedAt, source, liveBrands, brands, brand, watch, p
         style={{ ["anchorName" as string]: `--${id}` }}
       >
         <LivePillFace iso={iso} source={src} initialState={initial} size={size} watch={watch} promos={promos} />
-        <span className="sr-only"> (cara kami sync)</span>
+        <span className="sr-only"> {t.srHowWeSync}</span>
       </button>
       <div
         id={id}
         popover="auto"
         role="dialog"
-        aria-label="Cara kami sync"
+        aria-label={t.howWeSync}
         data-align="start"
         className="pop-panel anchored-panel w-[min(320px,calc(100vw-32px))] rounded-card-lg border-2 border-ink bg-putih p-4 text-left text-ink shadow-float"
         style={{ ["positionAnchor" as string]: `--${id}` }}
@@ -69,32 +78,34 @@ export function LivePill({ syncedAt, source, liveBrands, brands, brand, watch, p
         {brand ? (
           brand.hasFeed ? (
             <p className="text-body-sm text-ink-2">
-              Kami semak kedai rasmi {brand.name} lebih kurang setiap 3 jam.{when && <> Semakan terakhir: {when}.</>}
-              {brand.status?.status === "error" && <> Semakan terakhir tak berjaya, jadi data mungkin lapuk.</>}
+              {fmt(t.brand, { brand: brand.name })}
+              {when && <> {fmt(t.brandLast, { when })}</>}
+              {brand.status?.status === "error" && <> {t.brandError}</>}
             </p>
           ) : (
-            <p className="text-body-sm text-ink-2">Kedai jenama ni belum boleh di-sync automatik. Tengok terus kat kedai rasmi diorang.</p>
+            <p className="text-body-sm text-ink-2">{t.brandNoFeed}</p>
           )
         ) : (
           <>
             <p className="text-body-sm text-ink-2">
-              Kami semak kedai rasmi {liveBrands ?? "setiap"} jenama lebih kurang setiap 3 jam.{when && <> Sync terakhir: {when}.</>}
+              {liveBrands != null ? fmt(t.site, { count: liveBrands }) : t.siteNoCount}
+              {when && <> {fmt(t.siteLast, { when })}</>}
             </p>
-            {source === "snapshot" && <p className="mt-2 text-caption text-kunyit-pekat">Data ni dari salinan terakhir yang kami simpan, bukan bacaan live.</p>}
+            {source === "snapshot" && <p className="mt-2 text-caption text-kunyit-pekat">{t.snapshot}</p>}
             {ratio != null && (
               <div className="mt-3">
                 <div className="h-1.5 overflow-hidden rounded-full bg-kapas">
                   <div className="h-full origin-left rounded-full bg-live" style={{ transform: `scaleX(${ratio})` }} />
                 </div>
                 <p className="mt-1.5 text-caption text-ink-soft">
-                  {liveBrands} daripada {brands} jenama ada kedai yang boleh dibaca live.
+                  {fmt(t.ratio, { live: liveBrands ?? 0, total: brands ?? 0 })}
                 </p>
               </div>
             )}
           </>
         )}
         <Link href="/about#sync" className="group mt-3 inline-flex min-h-11 items-center gap-1 text-label text-telang">
-          Cara kami sync
+          {t.howWeSync}
           <ArrowRight aria-hidden size={16} className="transition-transform duration-200 group-hover:translate-x-[3px]" />
         </Link>
       </div>

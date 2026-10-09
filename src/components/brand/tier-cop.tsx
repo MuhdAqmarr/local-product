@@ -1,20 +1,18 @@
 import { useId } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import { ArrowRight } from "@/components/ui/lucide";
 import { TierIcon } from "@/components/art/tier-icon";
-import { TIER_BY_SLUG } from "@/lib/taxonomy";
+import type { Locale } from "@/i18n/config";
+import { fmt } from "@/i18n/format";
+import { commonFor } from "@/i18n/shared";
+import { tierCopy } from "@/lib/taxonomy";
 import type { TierSlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-/** Manglish tier lines (DESIGN §9.10). */
-export const TIER_COPY: Record<TierSlug, { line: string; ring: string }> = {
-  "cili-padi": { line: "Kecil-kecil cili padi. Home-grown, baru bertatih, tapi pedas!", ring: "KECIL-KECIL CILI PADI •" },
-  "naik-daun": { line: "Tengah naik daun. Makin ramai kenal, makin laju jalan.", ring: "TENGAH NAIK DAUN •" },
-  ikon: { line: "Nama yang satu Malaysia kenal. Kita membesar sama-sama.", ring: "JENAMA IKON MALAYSIA •" },
-};
-
 export interface TierCopProps {
   tier: TierSlug;
+  /** Page language (popover copy; the tier name itself stays). */
+  locale: Locale;
   /** `sm` = 24 px `.cop` (lists, cards) · `lg` = 36 px `.cop-lg` gradient sticker (hero, tier cards). */
   size?: "sm" | "lg";
   /** Tap opens a native popover explainer (default). `false` renders a static badge. */
@@ -24,11 +22,13 @@ export interface TierCopProps {
 
 /**
  * Tier "cop" rubber stamp (DESIGN §5.4, §6.9). Tapping opens a native `popover` with the kawaii
- * icon, tier name, Manglish tagline, criteria and "Kenali tier →". Zero JS: popovertarget + CSS.
+ * icon, tier name, playful line (`tierCopy().line`), criteria and "Meet the tiers →".
+ * Zero JS: popovertarget + CSS.
  */
-export function TierCop({ tier, size = "sm", explain = true, className }: TierCopProps) {
+export function TierCop({ tier, locale, size = "sm", explain = true, className }: TierCopProps) {
   const id = useId();
-  const t = TIER_BY_SLUG[tier];
+  const t = tierCopy(tier, locale);
+  const c = commonFor(locale).tier;
   const anchor = `--cop${id.replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const face = (
     <>
@@ -41,7 +41,7 @@ export function TierCop({ tier, size = "sm", explain = true, className }: TierCo
   if (!explain) {
     return (
       <span data-tier={tier} data-tier-trigger="" className={cn(copClass, className)}>
-        <span className="sr-only">Tier: </span>
+        <span className="sr-only">{fmt(c.sr, { name: "" })}</span>
         {face}
       </span>
     );
@@ -55,7 +55,7 @@ export function TierCop({ tier, size = "sm", explain = true, className }: TierCo
         data-tier={tier}
         data-tier-trigger=""
         popoverTarget={popId}
-        aria-label={`Tier: ${t.name}. Apa maksudnya?`}
+        aria-label={fmt(c.whatIs, { name: t.name })}
         className={cn(copClass, "cop-btn", "relative z-10", className)}
         style={{ anchorName: anchor }}
       >
@@ -67,17 +67,17 @@ export function TierCop({ tier, size = "sm", explain = true, className }: TierCo
             <TierIcon tier={tier} size={40} />
           </span>
           <div className="min-w-0">
-            <p className="text-overline text-(--tier-ink) uppercase">Saiz jenama</p>
+            <p className="text-overline text-(--tier-ink) uppercase">{c.size}</p>
             <p className="text-title-3 text-ink">{t.name}</p>
           </div>
         </div>
-        <p className="mt-3 text-body-sm text-ink-2">{TIER_COPY[tier].line}</p>
+        <p className="mt-3 text-body-sm text-ink-2">{t.line}</p>
         <p className="mt-1.5 text-caption text-ink-soft">{t.description}</p>
         <Link
           href="/about#tier"
           className="group mt-3 inline-flex min-h-11 items-center gap-1.5 text-label text-telang underline-offset-4 hover:underline"
         >
-          Kenali tier
+          {c.learn}
           <ArrowRight aria-hidden="true" size={16} className="transition-transform duration-200 group-hover:translate-x-[3px]" />
         </Link>
       </div>

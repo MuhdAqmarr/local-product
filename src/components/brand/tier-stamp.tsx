@@ -1,9 +1,12 @@
 import { useId } from "react";
 import { TierIcon } from "@/components/art/tier-icon";
-import { TIER_BY_SLUG } from "@/lib/taxonomy";
+import type { Locale } from "@/i18n/config";
+import { fmt } from "@/i18n/format";
+import { getLocale } from "@/i18n/server";
+import { commonFor } from "@/i18n/shared";
+import { tierCopy } from "@/lib/taxonomy";
 import type { TierSlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { TIER_COPY } from "./tier-cop";
 
 export interface TierStampProps {
   tier: TierSlug;
@@ -17,18 +20,22 @@ export interface TierStampProps {
 /**
  * 112 px rubber tier stamp (DESIGN §5.4 / Appendix D #13): tier-tint disc, 3 px ink ring,
  * dashed inner ring, Fredoka caps ring text on a circle path, kawaii icon in the centre.
- * Only the ring turns. Labelled "Tier: {name}".
+ * Only the ring turns. Labelled "Tier: {name}"; ring text in the page language. Server Components only.
  */
-export function TierStamp({ tier, size = 112, spin = true, className }: TierStampProps) {
+export async function TierStamp(props: TierStampProps) {
+  return <TierStampView {...props} locale={await getLocale()} />;
+}
+
+function TierStampView({ tier, size = 112, spin = true, className, locale }: TierStampProps & { locale: Locale }) {
   const pathId = `stamp${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
-  const t = TIER_BY_SLUG[tier];
+  const t = tierCopy(tier, locale);
   return (
     <span
       data-tier={tier}
       data-tier-trigger=""
       data-ambient=""
       role="img"
-      aria-label={`Tier: ${t.name}`}
+      aria-label={fmt(commonFor(locale).tier.sr, { name: t.name })}
       className={cn("relative inline-grid shrink-0 place-items-center drop-shadow-[0_3px_0_rgb(43_23_54_/_0.14)]", className)}
       style={{ width: size, height: size }}
     >
@@ -40,7 +47,7 @@ export function TierStamp({ tier, size = 112, spin = true, className }: TierStam
           <path id={pathId} d="M56 56m-40 0a40 40 0 1 1 80 0a40 40 0 1 1 -80 0" fill="none" />
           <text className="font-num" fontSize={11} fill="#2B1736" style={{ fontWeight: 600, letterSpacing: "0.08em" }}>
             <textPath href={`#${pathId}`} textLength={248} lengthAdjust="spacing">
-              {TIER_COPY[tier].ring}
+              {t.ring}
             </textPath>
           </text>
         </g>

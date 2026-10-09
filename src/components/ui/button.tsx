@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ComponentProps, ReactNode } from "react";
 import { ArrowRight, ArrowUpRight } from "@/components/ui/lucide";
 import { cn } from "@/lib/utils";

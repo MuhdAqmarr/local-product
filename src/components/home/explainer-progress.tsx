@@ -27,8 +27,8 @@ export interface ScrollStationsProps {
   connectorClassName: string;
   /** The drawn part of the connector (colour/pattern). */
   fillClassName?: string;
-  /** Show "Main semula" once everything has played. */
-  replay?: boolean;
+  /** Label of the replay button ("Play again" / "Main semula"), shown once everything has played. Omit for no replay. */
+  replay?: string;
   /** Extra attributes for every `<li>` (e.g. `data-tier-trigger` so tier icons play their micro on activation). */
   itemAttrs?: Record<`data-${string}`, string>;
 }
@@ -56,7 +56,7 @@ export function ScrollStations({ steps, label, className, itemClassName, connect
   const reduced = useMotionPref() === "always";
   const [armed, setArmed] = useState(false);
   const [active, setActive] = useState(steps.length);
-  /** "Main semula": stations re-played one by one, independent of scroll. */
+  /** Replay: stations re-played one by one, independent of scroll. */
   const [replayAt, setReplayAt] = useState<number | null>(null);
   const timers = useRef<number[]>([]);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 75%", "end 55%"] });
@@ -120,7 +120,7 @@ export function ScrollStations({ steps, label, className, itemClassName, connect
               className="inline-flex min-h-11 animate-[fade-in_200ms_ease-out_both] items-center gap-1.5 rounded-full px-3 text-label text-telang underline-offset-4 hover:underline"
             >
               <RotateCcw aria-hidden size={16} strokeWidth={2.25} />
-              Main semula
+              {replay}
             </button>
           )}
         </div>

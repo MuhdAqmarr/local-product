@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/feedback/empty-state";
 import { Odometer } from "@/components/feedback/odometer";
 import { ActiveFilters } from "@/components/filters/active-filters";
 import { FilterBar } from "@/components/filters/filter-bar";
-import { MasaControl, NOUN } from "@/components/filters/filter-controls";
+import { MasaControl } from "@/components/filters/filter-controls";
 import { FilterSidebar } from "@/components/filters/filter-sidebar";
 import { FilterUrlWatch } from "@/components/filters/filter-url-watch";
 import { useFilterUrl, type FilterUpdate } from "@/components/filters/use-filter-url";
@@ -33,11 +33,16 @@ import {
   isDefaultFilters,
   PAGE_SIZE,
   sortItems,
+  WEEK_DAYS,
   type Facets,
   type FilterState,
   type ListingKind,
 } from "./listing-model";
 import { useListingFeed } from "./use-listing-feed";
+import { useI18n } from "@/i18n/client";
+import { pluralForm } from "@/i18n/format";
+import { rich } from "@/i18n/rich";
+import { NEW_WINDOW_DAYS } from "@/lib/taxonomy";
 
 const importSheet = () => import("@/components/filters/filter-sheet");
 const FilterSheet = dynamic(importSheet, { ssr: false });
@@ -88,10 +93,12 @@ export interface ProductListingProps {
 }
 
 // Phones show icons only (the toolbar shares one row with the count); labels stay for screen readers.
-const VIEW_OPTIONS = [
-  { value: "grid" as const, label: <span className="max-sm:sr-only">Grid</span>, ariaLabel: "Grid", icon: <LayoutGrid aria-hidden strokeWidth={2.25} /> },
-  { value: "list" as const, label: <span className="max-sm:sr-only">Senarai</span>, ariaLabel: "Senarai", icon: <Rows3 aria-hidden strokeWidth={2.25} /> },
-];
+function viewOptions(t: { grid: string; list: string }) {
+  return [
+    { value: "grid" as const, label: <span className="max-sm:sr-only">{t.grid}</span>, ariaLabel: t.grid, icon: <LayoutGrid aria-hidden strokeWidth={2.25} /> },
+    { value: "list" as const, label: <span className="max-sm:sr-only">{t.list}</span>, ariaLabel: t.list, icon: <Rows3 aria-hidden strokeWidth={2.25} /> },
+  ];
+}
 
 /**
  * /promos and /new listing island (DESIGN §8.2, §8.3, §6.6). The server passes the first 24 items
@@ -99,6 +106,9 @@ const VIEW_OPTIONS = [
  * sorting, grouping and "Muat lagi" are all client-side with the URL as the source of truth.
  */
 export function ProductListing({ kind, endpoint, initial, total, initialGroupTotals, initialFacets, syncedAt, head, tone }: ProductListingProps) {
+  const { m, locale, fmt } = useI18n();
+  const t = m.listings;
+  const viewOpts = useMemo(() => viewOptions(t.view), [t.view]);
   const { filters, applied, page, ready, urlView, setFilters, setPage, reset, syncFromUrl } = useFilterUrl(kind);
   const needFull = ready && (!isDefaultFilters(filters, kind) || page > 1);
   const { items, state, load } = useListingFeed(endpoint, { eager: needFull });
@@ -110,7 +120,7 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
   /** Index of the first card a "Muat lagi" tap will reveal; focus moves there once it renders. */
   const focusFrom = useRef<number | null>(null);
   const lenis = useLenis();
-  const noun = NOUN[kind];
+  const noun = t.noun[kind];
 
   /* ---------------- derived ---------------- */
   const sorted = useMemo(() => (items ? sortItems(applyFilters(items, applied, syncedAt), applied.susun) : null), [items, applied, syncedAt]);
@@ -220,11 +230,13 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
           <div className="relative mt-5 flex max-w-[360px] flex-col gap-1.5" onPointerDownCapture={intent}>
             <MasaControl {...controls} className="bg-putih/70" />
             <p className="px-2 text-caption text-ink-2">
-              {filters.masa === "minggu" ? "7 hari terakhir" : "30 hari terakhir"}
+              {fmt(t.new.windowDays, { days: filters.masa === "minggu" ? WEEK_DAYS : NEW_WINDOW_DAYS })}
               {facets && (
                 <>
                   {" · "}
-                  <span className="font-num text-ink">{formatCount(facets.masa[filters.masa])}</span> produk
+                  {rich(pluralForm(facets.masa[filters.masa], t.new.windowCount), {
+                    count: <span className="font-num text-ink">{formatCount(facets.masa[filters.masa])}</span>,
+                  })}
                 </>
               )}
             </p>
@@ -238,12 +250,12 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
         <div className="container-page lg:grid lg:grid-cols-[248px_minmax(0,1fr)] lg:gap-8">
           <FilterSidebar {...controls} onReset={resetAll} onIntent={intent} />
 
-          <section aria-label={kind === "promos" ? "Senarai promo" : "Senarai produk baru"} className="min-w-0">
+          <section aria-label={kind === "promos" ? t.promos.region : t.new.region} className="min-w-0">
             <div ref={resultsTop} className="flex items-center justify-between gap-3 pb-3 pt-3 lg:pt-0">
               <p className="text-body text-ink-2" aria-live="polite" aria-atomic="true">
-                Jumpa <Odometer value={count} className="font-num text-title-3 text-ink" /> {noun}
+                {rich(pluralForm(count, t.found[kind]), { count: <Odometer value={count} className="font-num text-title-3 text-ink" /> })}
               </p>
-              <Segmented size="sm" label="Paparan" options={VIEW_OPTIONS} value={view} onChange={setView} className="w-[104px] shrink-0 sm:w-[216px]" />
+              <Segmented size="sm" label={t.view.label} options={viewOpts} value={view} onChange={setView} className="w-[104px] shrink-0 sm:w-[216px]" />
             </div>
 
             <ActiveFilters value={filters} onChange={(u) => change(u)} onReset={resetAll} className="pb-3" />
@@ -253,16 +265,14 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
                 <Sparkles aria-hidden size={20} className="shrink-0 text-telang" />
                 <p className="min-w-0 flex-1 text-body-sm text-ink" role="status">
                   {sinceCount == null ? (
-                    "Tengah kira produk baru sejak kau datang last…"
+                    t.new.sinceCounting
                   ) : (
-                    <>
-                      <span className="font-num text-[17px]">{formatCount(sinceCount)}</span> produk baru sejak kau datang last
-                    </>
+                    rich(pluralForm(sinceCount, t.new.sinceCount), { count: <span className="font-num text-[17px]">{formatCount(sinceCount)}</span> })
                   )}
                 </p>
                 <button
                   type="button"
-                  aria-label="Tutup dan tunjuk semua"
+                  aria-label={t.new.sinceClose}
                   onClick={() => change({ since: null })}
                   className="grid size-10 shrink-0 place-items-center rounded-full text-ink hover:bg-putih/70"
                 >
@@ -275,9 +285,9 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
               {waiting && state !== "error" && <div aria-hidden className="progress-indeterminate listing-progress" />}
               {state === "error" && waiting && (
                 <div role="alert" className="mb-3 flex flex-wrap items-center gap-3 rounded-card border-2 border-garis bg-mangga-tint px-4 py-3 text-body-sm text-ink">
-                  Alamak, senarai penuh tak dapat dimuat. Cuba lagi?
+                  {t.loadError}
                   <Button size="sm" variant="secondary" onClick={load}>
-                    Cuba lagi
+                    {m.common.feedback.retry}
                   </Button>
                 </div>
               )}
@@ -288,32 +298,32 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
                     kind === "promos" ? (
                       <EmptyState
                         mood="tidur"
-                        title="Takde promo buat masa ni."
-                        body="Oyen tengah jaga. Bila harga turun, keluar sini dulu."
-                        primary={{ label: "Tengok yang baru", href: "/new", trailing: "arrow" }}
+                        title={t.empty.promosTitle}
+                        body={t.empty.promosBody}
+                        primary={{ label: t.empty.promosAction, href: "/new", trailing: "arrow" }}
                       />
                     ) : (
                       <EmptyState
                         mood="tidur"
-                        title="Senyap je minggu ni."
-                        body="Jenama tengah masak produk baru. Check balik esok!"
-                        primary={{ label: "Tengok promo", href: "/promos", trailing: "arrow" }}
+                        title={t.empty.newTitle}
+                        body={t.empty.newBody}
+                        primary={{ label: t.empty.newAction, href: "/promos", trailing: "arrow" }}
                       />
                     )
                   ) : emptyFiltered ? (
                     <EmptyState
                       mood="cari"
-                      title="Takde yang padan semua tapisan ni."
-                      body="Buang satu dua tapisan, confirm jumpa."
-                      primary={{ label: "Reset tapisan", onClick: resetAll }}
+                      title={t.empty.filteredTitle}
+                      body={t.empty.filteredBody}
+                      primary={{ label: t.empty.filteredAction, onClick: resetAll }}
                     />
                   ) : (
                     <div className="flex flex-col gap-2">
                       {groups.map((g, gi) => (
                         <div key={g.key} className="flex flex-col gap-2">
-                          {g.kind === "deal" && <DealGroupHeader level={g.level} count={g.count} />}
-                          {g.kind === "day" && g.date && <KalendarKoyak date={g.date} reference={syncedAt} count={g.count} />}
-                          <ProductGrid
+                          {g.kind === "deal" && <DealGroupHeader locale={locale} level={g.level} count={g.count} />}
+                          {g.kind === "day" && g.date && <KalendarKoyak locale={locale} date={g.date} reference={syncedAt} count={g.count} />}
+                          <ProductGrid locale={locale}
                             products={g.items}
                             startIndex={g.start}
                             syncedAt={syncedAt}
@@ -388,23 +398,24 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
 }
 
 function ListEnd({ kind, count, filtered }: { kind: ListingKind; count: number; filtered: boolean }) {
-  const noun = NOUN[kind];
+  const { m, plural } = useI18n();
+  const t = m.listings;
   const text = filtered
-    ? `Dah habis! Kau dah tengok semua ${formatCount(count)} ${noun} yang padan.`
+    ? plural(count, t.end.filtered, { noun: pluralForm(count, t.noun[kind]) })
     : kind === "promos"
-      ? "Dah habis! Kau dah tengok semua promo hari ni."
-      : `Dah habis! Kau dah tengok semua ${formatCount(count)} produk baru.`;
+      ? t.end.promos
+      : plural(count, t.end.new);
   return (
     <div data-reveal="" className="listing-end flex flex-col items-center gap-2 pb-2 pt-10 text-center">
       <WauBulan size={44} className="listing-wau" />
       <p className="max-w-[34ch] text-body text-ink-2">{text}</p>
       {kind === "promos" ? (
         <Button variant="ghost" href="/new" trailing="arrow" transitionTypes={["nav-tab"]}>
-          Tengok yang baru sampai
+          {t.end.toNew}
         </Button>
       ) : (
         <Button variant="ghost" href="/promos" trailing="arrow" transitionTypes={["nav-tab"]}>
-          Tengok promo panas
+          {t.end.toPromos}
         </Button>
       )}
     </div>

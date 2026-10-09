@@ -1,0 +1,76 @@
+import type { Metadata } from "next";
+import { MessagesProvider } from "@/i18n/client";
+import { pluralForm } from "@/i18n/format";
+import { rich } from "@/i18n/rich";
+import { dictionaryFor, getLocale, messagesFor } from "@/i18n/server";
+import { pageMetadata } from "@/lib/site";
+import { Sparkles } from "@/components/ui/lucide";
+import { Sparkle } from "@/components/art/sparkle";
+import { WauBulan } from "@/components/art/wau-bulan";
+import { LivePill } from "@/components/feedback/live-pill";
+import { computeFacets, defaultFilters, groupTotals, PAGE_SIZE, sortItems } from "@/components/listing/listing-model";
+import { ProductListing } from "@/components/listing/product-listing";
+import { PageTransition } from "@/components/motion/page-transition";
+import { Accent } from "@/components/ui/section-header";
+import { getNewLaunches, getStats } from "@/lib/catalog";
+import { formatCount } from "@/lib/format";
+import { NEW_WINDOW_DAYS } from "@/lib/taxonomy";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const t = dictionaryFor(locale).listings.meta.new;
+  return pageMetadata({ locale, title: t.title, description: t.description, socialDescription: t.socialDescription, path: "/new" });
+}
+
+export default async function NewPage() {
+  const [locale, stats, launches] = await Promise.all([getLocale(), getStats(), getNewLaunches()]);
+  const t = dictionaryFor(locale).listings.new;
+  const defaults = defaultFilters("new");
+  const sorted = sortItems(launches, defaults.susun);
+  const brands = new Set(launches.map((p) => p.brand)).size;
+
+  const head = (
+    <div className="relative">
+      <div className="min-w-0 pr-[84px] md:pr-[180px]">
+        <p className="mb-2 flex items-center gap-1.5 text-overline uppercase text-ink">
+          <Sparkles aria-hidden size={16} /> {t.eyebrow}
+        </p>
+        <h1 className="text-title-1 text-ink">{rich(t.title, { accent: <Accent>{t.titleAccent}</Accent> })}</h1>
+        <p className="mt-2 max-w-[52ch] text-body text-ink-2">
+          {t.sub}{" "}
+          {rich(t.summary, {
+            products: rich(pluralForm(launches.length, t.products), { count: <span className="font-num text-ink">{formatCount(launches.length)}</span> }),
+            brands: rich(pluralForm(brands, t.brands), { count: <span className="font-num text-ink">{formatCount(brands)}</span> }),
+            days: NEW_WINDOW_DAYS,
+          })}
+        </p>
+      </div>
+      <div className="mt-4">
+        <LivePill syncedAt={stats.syncedAt} source={stats.source} liveBrands={stats.liveBrands} brands={stats.brands} watch />
+      </div>
+      <div aria-hidden className="pointer-events-none absolute -right-1 -top-2 md:right-6 md:-top-3">
+        <WauBulan size={76} className="md:hidden" />
+        <WauBulan size={124} className="hidden md:block" />
+        <Sparkle size={16} className="absolute -left-3 top-6 md:-left-6 md:top-10 md:size-6" />
+      </div>
+    </div>
+  );
+
+  return (
+    <PageTransition>
+      <MessagesProvider messages={messagesFor(locale, "listings")}>
+        <ProductListing
+          kind="new"
+          endpoint="/api/feed/new"
+          tone="cendol"
+          head={head}
+          initial={sorted.slice(0, PAGE_SIZE)}
+          total={sorted.length}
+          initialGroupTotals={groupTotals("new", sorted, defaults.susun)}
+          initialFacets={computeFacets(launches, defaults, stats.syncedAt)}
+          syncedAt={stats.syncedAt}
+        />
+      </MessagesProvider>
+    </PageTransition>
+  );
+}

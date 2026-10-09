@@ -1,6 +1,7 @@
 "use client";
 
 import { announce, toast } from "@/components/feedback/toast-store";
+import { useI18n } from "@/i18n/client";
 import { useSaved } from "@/lib/saved";
 import type { ProductCardData } from "@/lib/types";
 import { HeartToggle } from "./heart-toggle";
@@ -32,6 +33,8 @@ export interface SaveButtonProps {
  */
 export function SaveButton({ product, size, tone, className }: SaveButtonProps) {
   const { isSaved, toggle } = useSaved();
+  const { m, fmt, href } = useI18n();
+  const t = m.common.save;
   const saved = isSaved(product.id);
   const item = { kind: "product", id: product.id, product } as const;
 
@@ -41,17 +44,17 @@ export function SaveButton({ product, size, tone, className }: SaveButtonProps) 
       size={size}
       tone={tone}
       className={className}
-      label={{ save: `Simpan ${product.title}`, unsave: `Buang ${product.title} dari simpanan` }}
+      label={{ save: fmt(t.save, { title: product.title }), unsave: fmt(t.unsave, { title: product.title }) }}
       onToggle={() => toggle(item)}
       onChange={(now) => {
         if (now) {
           if (firstSaveOfSession()) {
-            toast({ message: "Masuk Simpan! Semua ada kat tab Simpan.", tone: "save", action: { label: "Tengok", href: "/saved" } });
+            toast({ message: t.firstSave, tone: "save", action: { label: t.view, href: href("/saved") } });
           } else {
-            announce("Disimpan");
+            announce(t.saved);
           }
         } else {
-          toast({ message: "Dah buang dari Simpan.", tone: "save", action: { label: "Undo", onClick: () => toggle(item) } });
+          toast({ message: t.removed, tone: "save", action: { label: t.undo, onClick: () => toggle(item) } });
         }
       }}
     />

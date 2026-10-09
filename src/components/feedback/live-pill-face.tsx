@@ -3,6 +3,7 @@
 import { startTransition, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { RefreshCwOff } from "@/components/ui/lucide";
+import { useI18n } from "@/i18n/client";
 import { timeAgo } from "@/lib/format";
 import { formatClock, syncState, SYNC_COPY, type SyncSource, type SyncState } from "@/lib/freshness";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,8 @@ export function LivePillFace({ iso, source, initialState, size = "md", watch = f
   const [pingKey, setPingKey] = useState(0);
   const lastIso = useRef(iso);
   const lastCheck = useRef(0);
+  const { m, locale, plural } = useI18n();
+  const copy = SYNC_COPY[locale];
 
   // A newer syncedAt arrived (after router.refresh()): ping 3 more times and say so.
   useEffect(() => {
@@ -45,9 +48,9 @@ export function LivePillFace({ iso, source, initialState, size = "md", watch = f
     lastIso.current = iso;
     setPingKey((k) => k + 1);
     if (watch && promos != null && lastSeenPromos != null && promos > lastSeenPromos) {
-      toast({ message: `Sync baru masuk: ${promos - lastSeenPromos} promo baru!`, tone: "success" });
+      toast({ message: plural(promos - lastSeenPromos, m.common.live.newSync), tone: "success" });
     }
-  }, [iso, watch, promos]);
+  }, [iso, watch, promos, m, plural]);
 
   useEffect(() => {
     if (watch && promos != null) lastSeenPromos = promos;
@@ -66,7 +69,7 @@ export function LivePillFace({ iso, source, initialState, size = "md", watch = f
   }, [watch, router]);
 
   const label =
-    state === "none" || !iso ? null : now == null ? formatClock(iso) : timeAgo(iso, now);
+    state === "none" || !iso ? null : now == null ? formatClock(iso, locale) : timeAgo(iso, now, locale);
 
   return (
     <span
@@ -90,13 +93,13 @@ export function LivePillFace({ iso, source, initialState, size = "md", watch = f
       )}
       {state === "fresh" ? (
         <span>
-          <span className="font-num text-[13px] tracking-wide">LIVE</span> · {SYNC_COPY.fresh} <time dateTime={iso}>{label}</time>
+          <span className="font-num text-[13px] tracking-wide">{m.common.live.tag}</span> · {copy.fresh} <time dateTime={iso}>{label}</time>
         </span>
       ) : state === "none" ? (
-        <span>{SYNC_COPY.none}</span>
+        <span>{copy.none}</span>
       ) : (
         <span>
-          {SYNC_COPY[state]} · <time dateTime={iso}>{label}</time>
+          {copy[state]} · <time dateTime={iso}>{label}</time>
         </span>
       )}
     </span>

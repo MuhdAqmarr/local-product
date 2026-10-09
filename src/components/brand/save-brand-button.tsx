@@ -2,6 +2,7 @@
 
 import { HeartToggle } from "@/components/product/heart-toggle";
 import { toast } from "@/components/feedback/toast-store";
+import { useI18n } from "@/i18n/client";
 import { brandSavedId, useSaved, type SavedBrand } from "@/lib/saved";
 
 export interface SaveBrandButtonProps {
@@ -16,6 +17,8 @@ export interface SaveBrandButtonProps {
 export function SaveBrandButton({ brand, tone = "float", size = "md", className }: SaveBrandButtonProps) {
   const { isSaved, toggle } = useSaved();
   const id = brandSavedId(brand.slug);
+  const { m, fmt, href } = useI18n();
+  const t = m.common.save;
 
   return (
     <HeartToggle
@@ -23,16 +26,16 @@ export function SaveBrandButton({ brand, tone = "float", size = "md", className 
       tone={tone}
       size={size}
       className={className}
-      label={{ save: `Simpan jenama ${brand.name}`, unsave: `Buang jenama ${brand.name} dari simpanan` }}
+      label={{ save: fmt(t.saveBrand, { name: brand.name }), unsave: fmt(t.unsaveBrand, { name: brand.name }) }}
       onToggle={() => toggle({ kind: "brand", id, brand })}
       onChange={(now) => {
         if (now) {
-          toast({ message: "Jenama disimpan. Senang nak check promo dia nanti.", tone: "save", action: { label: "Tengok", href: "/saved" } });
+          toast({ message: t.brandSaved, tone: "save", action: { label: t.view, href: href("/saved") } });
         } else {
           toast({
-            message: "Dah buang dari Simpan.",
+            message: t.removed,
             tone: "save",
-            action: { label: "Undo", onClick: () => toggle({ kind: "brand", id, brand }) },
+            action: { label: t.undo, onClick: () => toggle({ kind: "brand", id, brand }) },
           });
         }
       }}

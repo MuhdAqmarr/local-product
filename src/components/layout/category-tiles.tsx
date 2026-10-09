@@ -1,7 +1,10 @@
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import { LayoutGrid } from "@/components/ui/lucide";
 import { TierIcon } from "@/components/art/tier-icon";
 import { CategoryGlyph } from "@/components/product/category-glyph";
+import type { Locale } from "@/i18n/config";
+import { plural } from "@/i18n/format";
+import { commonFor } from "@/i18n/shared";
 import { TIERS } from "@/lib/taxonomy";
 import { cn } from "@/lib/utils";
 import type { NavCategory } from "./nav-data";
@@ -9,10 +12,11 @@ import type { NavCategory } from "./nav-data";
 /**
  * Compact category tiles for the Kategori popover (desktop) and sheet (mobile):
  * 11 categories + "Semua jenama", each squircle in the category's `mid` with an ink icon.
- * Hook-free: usable from the server popover and the client sheet.
+ * Hook-free: usable from the server popover and the client sheet (pass the page `locale`).
  */
-export function CategoryTiles({ categories, onNavigate, dense = false }: { categories: NavCategory[]; onNavigate?: () => void; dense?: boolean }) {
+export function CategoryTiles({ categories, locale, onNavigate, dense = false }: { categories: NavCategory[]; locale: Locale; onNavigate?: () => void; dense?: boolean }) {
   const total = categories.reduce((n, c) => n + c.brands, 0);
+  const t = commonFor(locale).kategori;
   return (
     <ul className={cn("grid gap-x-2 gap-y-3", dense ? "grid-cols-4" : "grid-cols-3")}>
       {categories.map((c) => (
@@ -26,8 +30,8 @@ export function CategoryTiles({ categories, onNavigate, dense = false }: { categ
             <span className="grid size-12 place-items-center rounded-[16px] border-2 border-ink bg-(--cat-mid) text-ink transition-transform duration-200 ease-pop group-hover:-translate-y-1 group-active:scale-x-105 group-active:scale-y-95">
               <CategoryGlyph category={c.slug} size={22} />
             </span>
-            <span className="text-label-sm leading-tight text-ink [overflow-wrap:anywhere]">{c.nameMs}</span>
-            <span className="text-caption leading-none text-ink-soft">{c.brands} jenama</span>
+            <span className="text-label-sm leading-tight text-ink [overflow-wrap:anywhere]">{c.label}</span>
+            <span className="text-caption leading-none text-ink-soft">{plural(c.brands, t.brandCount)}</span>
           </Link>
         </li>
       ))}
@@ -41,8 +45,8 @@ export function CategoryTiles({ categories, onNavigate, dense = false }: { categ
           <span className="grid size-12 place-items-center rounded-[16px] border-2 border-ink bg-mangga text-ink transition-transform duration-200 ease-pop group-hover:-translate-y-1">
             <LayoutGrid aria-hidden size={22} strokeWidth={2.25} />
           </span>
-          <span className="text-label-sm leading-tight text-ink">Semua jenama</span>
-          <span className="text-caption leading-none text-ink-soft">{total} jenama</span>
+          <span className="text-label-sm leading-tight text-ink">{t.allBrands}</span>
+          <span className="text-caption leading-none text-ink-soft">{plural(total, t.brandCount)}</span>
         </Link>
       </li>
     </ul>

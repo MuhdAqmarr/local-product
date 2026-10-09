@@ -5,13 +5,15 @@ import { Odometer } from "@/components/feedback/odometer";
 import { Button, Dots } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { applyFilters, computeFacets, defaultFilters, type FilterState, type ListingKind } from "@/components/listing/listing-model";
+import { useI18n } from "@/i18n/client";
+import { pluralForm } from "@/i18n/format";
+import { rich } from "@/i18n/rich";
 import type { ProductCardData } from "@/lib/types";
 import {
   CategoryGrid,
   DiscountControl,
   FilterSection,
   MasaControl,
-  NOUN,
   PriceChips,
   SortControl,
   TextFilter,
@@ -36,6 +38,8 @@ export interface FilterSheetProps {
  * computed client-side from the draft. Lazy-loaded on intent.
  */
 export default function FilterSheet({ open, onClose, kind, filters, items, syncedAt, onApply }: FilterSheetProps) {
+  const { m } = useI18n();
+  const t = m.listings.filters;
   const uid = useId();
   const [draft, setDraft] = useState(filters);
   const [wasOpen, setWasOpen] = useState(open);
@@ -48,19 +52,19 @@ export default function FilterSheet({ open, onClose, kind, filters, items, synce
   const facets = useMemo(() => (items ? computeFacets(items, draft, syncedAt) : null), [items, draft, syncedAt]);
   const count = useMemo(() => (items ? applyFilters(items, draft, syncedAt).length : null), [items, draft, syncedAt]);
   const props = { kind, value: draft, facets, onChange: (patch: Partial<FilterState>) => setDraft((d) => ({ ...d, ...patch })) };
-  const noun = NOUN[kind];
+  const noun = pluralForm(count ?? 2, m.listings.noun[kind]);
 
   return (
     <Sheet
       open={open}
       onClose={onClose}
-      title="Tapis"
-      description={kind === "promos" ? "Pilih apa yang kau nak usha." : "Cari launch yang kena dengan kau."}
+      title={t.filter}
+      description={kind === "promos" ? t.sheetPromos : t.sheetNew}
       id={`${uid}-tapis`}
       footer={
         <div className="flex items-center gap-3">
           <Button variant="ghost" onClick={() => setDraft(defaultFilters(kind))}>
-            Reset
+            {t.reset}
           </Button>
           <Button
             className="flex-1"
@@ -71,8 +75,10 @@ export default function FilterSheet({ open, onClose, kind, filters, items, synce
               onClose();
             }}
           >
-            Tunjuk{" "}
-            {count == null ? <Dots className="mx-1 inline-flex" /> : <Odometer value={count} className="font-num" />} {noun}
+            {rich(t.show, {
+              count: count == null ? <Dots className="mx-1 inline-flex" /> : <Odometer value={count} className="font-num" />,
+              noun,
+            })}
           </Button>
         </div>
       }
@@ -82,34 +88,34 @@ export default function FilterSheet({ open, onClose, kind, filters, items, synce
           id={`${uid}-q`}
           value={draft.q}
           onChange={(q) => setDraft((d) => ({ ...d, q }))}
-          placeholder="Tapis produk, jenama…"
+          placeholder={t.searchSheet}
         />
 
-        <FilterSection title="Susun">
+        <FilterSection title={t.sort}>
           <SortControl {...props} />
         </FilterSection>
 
         {kind === "new" && (
-          <FilterSection title="Bila launch">
+          <FilterSection title={t.whenLaunched}>
             <MasaControl {...props} />
           </FilterSection>
         )}
 
-        <FilterSection title="Kategori">
+        <FilterSection title={t.categories}>
           <CategoryGrid {...props} />
         </FilterSection>
 
-        <FilterSection title="Saiz jenama">
+        <FilterSection title={t.brandSize}>
           <TierCards {...props} />
         </FilterSection>
 
         {kind === "promos" && (
-          <FilterSection title="Diskaun">
+          <FilterSection title={t.discount}>
             <DiscountControl {...props} />
           </FilterSection>
         )}
 
-        <FilterSection title="Harga">
+        <FilterSection title={t.price}>
           <PriceChips {...props} />
         </FilterSection>
       </div>

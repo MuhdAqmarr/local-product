@@ -1,15 +1,20 @@
 import { ImageResponse } from "next/og";
-import { OG_ALT, OG_SIZE } from "@/lib/site";
+import type { Locale } from "@/i18n/config";
+import enMeta from "@/i18n/dictionaries/en/meta";
+import msMeta from "@/i18n/dictionaries/ms/meta";
+import { OG_SIZE, ogAlt } from "@/lib/site";
 
 /**
- * Social card (1200 × 630) for Home: the Kedai Oyen look in a self-contained ImageResponse
+ * Default social card (1200 × 630), headline in the page language: the Kedai Oyen look in a self-contained ImageResponse
  * (no fetches, no data, bundled font). Shared by opengraph-image.tsx and twitter-image.tsx.
  * Raw hex is fine here: this renders to a PNG, not to the page (values mirror the palette tokens).
  */
-export { OG_ALT, OG_SIZE };
+export { OG_SIZE, ogAlt };
 
 const INK = "#2B1736";
 const PETAL = "M50 50C34 46 22 30 30 17C35 9 45 10 50 18C55 10 65 9 70 17C78 30 66 46 50 50Z";
+/** Satori collapses edge spaces: keep the gaps between headline pieces. */
+const nb = (s: string) => s.replace(/ /g, "\u00a0");
 const BOLD = { WebkitTextStroke: `2px ${INK}` } as const;
 
 function Flower({ size, petal = "#FF6FB5", centre = "#FFD54F" }: { size: number; petal?: string; centre?: string }) {
@@ -46,7 +51,8 @@ function OyenHead({ size }: { size: number }) {
   );
 }
 
-export function ogImage() {
+export function ogImage(locale: Locale) {
+  const t = (locale === "ms" ? msMeta : enMeta).og;
   const stripes = Array.from({ length: 30 }, (_, i) => i);
   return new ImageResponse(
     (
@@ -90,20 +96,20 @@ export function ogImage() {
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", marginTop: 34, fontSize: 76, lineHeight: 1.06, letterSpacing: -2, ...BOLD }}>
-              <div style={{ display: "flex" }}>
-                <span>Semua jenama&nbsp;</span>
-                <span style={{ color: "#D61F66", WebkitTextStroke: "2px #D61F66" }}>lokal</span>
-                <span>,</span>
+              <div style={{ display: "flex"}}>
+                <span>{nb(t.line1[0])}</span>
+                <span style={{ color: "#D61F66", WebkitTextStroke: "2px #D61F66" }}>{t.line1[1]}</span>
+                <span>{nb(t.line1[2])}</span>
               </div>
-              <div style={{ display: "flex" }}>
-                <span>sentiasa&nbsp;</span>
-                <span style={{ display: "flex", background: "linear-gradient(transparent 58%, #FFD54F 58%, #FFD54F 94%, transparent 94%)" }}>up to date</span>
-                <span>.</span>
+              <div style={{ display: "flex"}}>
+                <span>{nb(t.line2[0])}</span>
+                <span style={{ display: "flex", background: "linear-gradient(transparent 58%, #FFD54F 58%, #FFD54F 94%, transparent 94%)" }}>{t.line2[1]}</span>
+                <span>{nb(t.line2[2])}</span>
               </div>
             </div>
 
             <div style={{ display: "flex", marginTop: 30, fontSize: 28, lineHeight: 1.4, color: "#4A3B5C", maxWidth: 640 }}>
-              Promo live dan launch baru, terus dari kedai rasmi jenama Malaysia. Dari Cili Padi sampai Jenama Ikon.
+              {t.sub}
             </div>
           </div>
 
@@ -128,7 +134,7 @@ export function ogImage() {
               ...BOLD,
             }}
           >
-            LIVE!
+            {t.live}
           </div>
           <div style={{ display: "flex", position: "absolute", right: 250, top: 150 }}>
             <Flower size={64} petal="#FF8FC8" centre="#C0136A" />

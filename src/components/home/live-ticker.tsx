@@ -1,6 +1,8 @@
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import { BungaRaya } from "@/components/art/bunga-raya";
 import { RelTime } from "@/components/product/rel-time";
+import { getDictionary } from "@/i18n/server";
+import type { HomeMessages } from "@/i18n/dictionaries/en/home";
 import type { ProductCardData } from "@/lib/types";
 import { TickerPause } from "./ticker-pause";
 
@@ -22,7 +24,7 @@ function interleave(promos: ProductCardData[], launches: ProductCardData[]): Tic
   return out.slice(0, 12);
 }
 
-function Items({ events, syncedAt, copy }: { events: TickerEvent[]; syncedAt: string; copy: 0 | 1 }) {
+function Items({ events, syncedAt, copy, t }: { events: TickerEvent[]; syncedAt: string; copy: 0 | 1; t: HomeMessages["ticker"] }) {
   return (
     <ul className={copy ? "home-ticker-dup flex shrink-0 items-center" : "flex shrink-0 items-center"} aria-hidden={copy ? true : undefined} inert={copy === 1}>
       {events.map(({ kind, product: p }) => (
@@ -38,12 +40,12 @@ function Items({ events, syncedAt, copy }: { events: TickerEvent[]; syncedAt: st
               <>
                 <span className="text-ink-dim">·</span>
                 <span className="max-w-[26ch] truncate">{p.title}</span>
-                <span className="text-ink-dim">sekarang</span>
+                <span className="text-ink-dim">{t.now}</span>
                 <span className="font-num text-[15px] text-mangga">−{p.discount}%</span>
               </>
             ) : (
               <>
-                <span className="text-ink-dim">launch</span>
+                <span className="text-ink-dim">{t.launched}</span>
                 <span className="max-w-[26ch] truncate">{p.title}</span>
                 {p.publishedAt && (
                   <>
@@ -62,24 +64,25 @@ function Items({ events, syncedAt, copy }: { events: TickerEvent[]; syncedAt: st
 }
 
 /**
- * "Papan tanda live" (DESIGN §6.19): full-bleed ink band with a LIVE tag, the latest 12 real
+ * Live board / "Papan tanda live" (DESIGN §6.19): full-bleed ink band with a LIVE tag, the latest 12 real
  * events (promos + launches, each linking to its brand), a Pause/Play toggle, and a static,
  * scrollable single copy under reduced motion. Never claims when a promo started.
  */
-export function LiveTicker({ promos, launches, syncedAt }: { promos: ProductCardData[]; launches: ProductCardData[]; syncedAt: string }) {
+export async function LiveTicker({ promos, launches, syncedAt }: { promos: ProductCardData[]; launches: ProductCardData[]; syncedAt: string }) {
   const events = interleave(promos, launches);
   if (!events.length) return null;
+  const t = (await getDictionary()).home.ticker;
   return (
-    <section aria-label="Papan tanda live: promo dan launch terkini" className="home-ticker on-ink mt-6 bg-ink md:mt-8" data-ambient="">
+    <section aria-label={t.label} className="home-ticker on-ink mt-6 bg-ink md:mt-8" data-ambient="">
       <div className="mx-auto flex h-11 max-w-[1600px] items-center gap-3 pr-3 pl-3 md:pr-6 md:pl-6">
         <span className="flex h-7 shrink-0 items-center gap-1.5 rounded-full border-[1.5px] border-santan bg-mangga px-2.5 font-num text-[13px] leading-none tracking-[0.06em] text-ink uppercase">
           <span className="live-dot" data-ping="" aria-hidden />
-          Live
+          {t.tag}
         </span>
-        <TickerPause duration={events.length * 4}>
+        <TickerPause duration={events.length * 4} label={t.pause}>
           <div className="marquee-track">
-            <Items events={events} syncedAt={syncedAt} copy={0} />
-            <Items events={events} syncedAt={syncedAt} copy={1} />
+            <Items events={events} syncedAt={syncedAt} copy={0} t={t} />
+            <Items events={events} syncedAt={syncedAt} copy={1} t={t} />
           </div>
         </TickerPause>
       </div>

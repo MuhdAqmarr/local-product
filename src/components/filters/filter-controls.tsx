@@ -3,11 +3,12 @@
 import { useRef, type KeyboardEvent, type ReactNode } from "react";
 import { Check, Search, X } from "@/components/ui/lucide";
 import { TierIcon } from "@/components/art/tier-icon";
-import { TIER_COPY } from "@/components/brand/tier-cop";
 import { CategoryChip } from "@/components/category/category-chip";
 import { CategoryGlyph } from "@/components/product/category-glyph";
 import { chipClasses } from "@/components/ui/chip";
 import { Segmented } from "@/components/ui/segmented";
+import { pluralForm } from "@/i18n/format";
+import { rich } from "@/i18n/rich";
 import {
   CATEGORY_SLUGS,
   DISCOUNT_STEPS,
@@ -25,7 +26,8 @@ import {
   type SortKey,
 } from "@/components/listing/listing-model";
 import { formatCount } from "@/lib/format";
-import { CATEGORY_BY_SLUG, TIER_BY_SLUG } from "@/lib/taxonomy";
+import { useI18n } from "@/i18n/client";
+import { categoryLabel, TIER_BY_SLUG, tierCopy } from "@/lib/taxonomy";
 import type { CategorySlug, TierSlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -35,8 +37,6 @@ export interface ControlProps {
   facets: Facets | null;
   onChange: (patch: Partial<FilterState>, options?: { animate?: boolean }) => void;
 }
-
-export const NOUN: Record<ListingKind, string> = { promos: "promo", new: "produk" };
 
 export function toggle<T>(list: T[], item: T): T[] {
   return list.includes(item) ? list.filter((x) => x !== item) : [...list, item];
@@ -141,6 +141,7 @@ export function CheckRow({
   name,
   dataCat,
   dataTier,
+  title,
 }: {
   checked: boolean;
   onChange: () => void;
@@ -151,12 +152,15 @@ export function CheckRow({
   name?: string;
   dataCat?: string;
   dataTier?: string;
+  /** Hover hint (e.g. the tier tagline that explains Cili Padi). */
+  title?: string;
 }) {
   const muted = count === 0 && !checked;
   return (
     <label
       data-cat={dataCat}
       data-tier={dataTier}
+      title={title}
       className={cn(
         "group/row -mx-2 flex min-h-10 cursor-pointer items-center gap-2.5 rounded-thumb px-2 text-body-sm text-ink transition-colors duration-150 hover:bg-kapas",
         muted && "text-ink-soft",
@@ -191,6 +195,7 @@ export function CheckRow({
 /* ------------------------------------------------------------------ */
 
 export function TextFilter({ id, value, onChange, placeholder, className }: { id: string; value: string; onChange: (q: string) => void; placeholder: string; className?: string }) {
+  const t = useI18n().m.listings.filters;
   return (
     <div className={cn("relative", className)}>
       <label htmlFor={id} className="sr-only">
@@ -213,7 +218,7 @@ export function TextFilter({ id, value, onChange, placeholder, className }: { id
       {value && (
         <button
           type="button"
-          aria-label="Kosongkan carian"
+          aria-label={t.clearSearch}
           onClick={() => onChange("")}
           className="absolute inset-y-0 right-1 my-auto grid size-10 place-items-center rounded-full text-ink-soft hover:bg-kapas hover:text-ink"
         >
@@ -229,11 +234,12 @@ export function TextFilter({ id, value, onChange, placeholder, className }: { id
 /* ------------------------------------------------------------------ */
 
 export function SortControl({ kind, value, onChange, dense }: ControlProps & { dense?: boolean }) {
+  const t = useI18n().m.listings.filters;
   return (
     <RadioPills<SortKey>
-      label="Susun"
+      label={t.sort}
       dense={dense}
-      options={SORT_OPTIONS[kind].map((o) => ({ value: o.value, label: o.label }))}
+      options={SORT_OPTIONS[kind].map((key) => ({ value: key, label: t.sortOptions[key] }))}
       value={value.susun}
       onChange={(susun) => onChange({ susun })}
     />
@@ -241,25 +247,26 @@ export function SortControl({ kind, value, onChange, dense }: ControlProps & { d
 }
 
 export function SortRows({ kind, value, onChange, name }: ControlProps & { name: string }) {
+  const t = useI18n().m.listings.filters;
   return (
-    <div role="radiogroup" aria-label="Susun" className="flex flex-col">
-      {SORT_OPTIONS[kind].map((o) => (
-        <CheckRow key={o.value} type="radio" name={name} checked={value.susun === o.value} onChange={() => onChange({ susun: o.value })}>
-          {o.label}
+    <div role="radiogroup" aria-label={t.sort} className="flex flex-col">
+      {SORT_OPTIONS[kind].map((key) => (
+        <CheckRow key={key} type="radio" name={name} checked={value.susun === key} onChange={() => onChange({ susun: key })}>
+          {t.sortOptions[key]}
         </CheckRow>
       ))}
     </div>
   );
 }
 
-const DISCOUNT_OPTIONS = DISCOUNT_STEPS.map((d) => ({ value: String(d), label: d === 0 ? "Semua" : `${d}%+`, ariaLabel: d === 0 ? "Semua diskaun" : `Diskaun ${d}% ke atas` }));
-
 export function DiscountControl({ value, onChange }: ControlProps) {
+  const { m, fmt } = useI18n();
+  const t = m.listings.filters;
   return (
     <Segmented
-      label="Diskaun minimum"
+      label={t.minDiscount}
       size="sm"
-      options={DISCOUNT_OPTIONS}
+      options={DISCOUNT_STEPS.map((d) => ({ value: String(d), label: discountLabel(d, t), ariaLabel: d === 0 ? t.discountAny : fmt(t.discountStep, { value: d }) }))}
       value={String(value.diskaun)}
       onChange={(v) => onChange({ diskaun: Number(v) })}
       className="[&_button]:px-0.5"
@@ -268,28 +275,28 @@ export function DiscountControl({ value, onChange }: ControlProps) {
 }
 
 export function DiscountPills({ value, onChange }: ControlProps) {
+  const t = useI18n().m.listings.filters;
   return (
     <RadioPills
-      label="Diskaun minimum"
+      label={t.minDiscount}
       dense
       check={false}
       className="grid grid-cols-3 [&>button]:justify-center [&>button]:px-1"
-      options={DISCOUNT_STEPS.map((d) => ({ value: String(d), label: discountLabel(d) }))}
+      options={DISCOUNT_STEPS.map((d) => ({ value: String(d), label: discountLabel(d, t) }))}
       value={String(value.diskaun)}
       onChange={(v) => onChange({ diskaun: Number(v) })}
     />
   );
 }
 
-const MASA_LABEL: Record<Masa, string> = { minggu: "Minggu ni", bulan: "Bulan ni" };
-
 export function MasaControl({ value, onChange, size = "md", className }: ControlProps & { size?: "md" | "sm"; className?: string }) {
+  const t = useI18n().m.listings.filters;
   return (
     <Segmented<Masa>
-      label="Tempoh launch"
+      label={t.launchWindow}
       size={size}
       className={className}
-      options={(["minggu", "bulan"] as const).map((m) => ({ value: m, label: MASA_LABEL[m] }))}
+      options={(["minggu", "bulan"] as const).map((key) => ({ value: key, label: t.masa[key] }))}
       value={value.masa}
       onChange={(masa) => onChange({ masa })}
     />
@@ -298,8 +305,9 @@ export function MasaControl({ value, onChange, size = "md", className }: Control
 
 /** 2-column chip grid with counts (Tapis sheet). */
 export function CategoryGrid({ value, onChange, facets }: ControlProps) {
+  const t = useI18n().m.listings.filters;
   return (
-    <div role="group" aria-label="Kategori" className="grid grid-cols-2 gap-2 [&_a]:w-full [&_button]:w-full [&_button]:justify-start [&_button>span:nth-child(2)]:flex-1 [&_button>span:nth-child(2)]:truncate [&_button>span:nth-child(2)]:text-left">
+    <div role="group" aria-label={t.categories} className="grid grid-cols-2 gap-2 [&_a]:w-full [&_button]:w-full [&_button]:justify-start [&_button>span:nth-child(2)]:flex-1 [&_button>span:nth-child(2)]:truncate [&_button>span:nth-child(2)]:text-left">
       {CATEGORY_SLUGS.map((slug) => (
         <CategoryChip
           key={slug}
@@ -314,8 +322,9 @@ export function CategoryGrid({ value, onChange, facets }: ControlProps) {
 }
 
 export function CategoryRows({ value, onChange, facets }: ControlProps) {
+  const { m, locale } = useI18n();
   return (
-    <div role="group" aria-label="Kategori" className="flex flex-col">
+    <div role="group" aria-label={m.listings.filters.categories} className="flex flex-col">
       {CATEGORY_SLUGS.map((slug: CategorySlug) => (
         <CheckRow
           key={slug}
@@ -325,7 +334,7 @@ export function CategoryRows({ value, onChange, facets }: ControlProps) {
           icon={<CategoryGlyph category={slug} size={18} />}
           count={facets ? (facets.kat[slug] ?? 0) : undefined}
         >
-          {CATEGORY_BY_SLUG[slug].nameMs}
+          {categoryLabel(slug, locale)}
         </CheckRow>
       ))}
     </div>
@@ -334,8 +343,10 @@ export function CategoryRows({ value, onChange, facets }: ControlProps) {
 
 /** Three tall toggle cards with the kawaii tier icon + tagline (Tapis sheet). */
 export function TierCards({ value, onChange, facets }: ControlProps) {
+  const { m, locale } = useI18n();
+  const labels = m.listings.filters;
   return (
-    <div role="group" aria-label="Saiz jenama" className="grid grid-cols-1 gap-2 min-[400px]:grid-cols-3">
+    <div role="group" aria-label={labels.brandSize} className="grid grid-cols-1 gap-2 min-[400px]:grid-cols-3">
       {TIER_SLUGS.map((t: TierSlug) => {
         const on = value.tier.includes(t);
         const count = facets ? (facets.tier[t] ?? 0) : undefined;
@@ -356,10 +367,10 @@ export function TierCards({ value, onChange, facets }: ControlProps) {
             <TierIcon tier={t} size={36} className="shrink-0" />
             <span className="flex min-w-0 flex-col">
               <span className="text-label text-ink">{TIER_BY_SLUG[t].name}</span>
-              <span className="line-clamp-2 text-caption text-ink-soft">{TIER_COPY[t].line.split(".")[0]}.</span>
+              <span className="line-clamp-2 text-caption text-ink-soft">{tierCopy(t, locale).line.split(".")[0]}.</span>
               {count != null && (
                 <span className="mt-0.5 text-caption text-ink-soft">
-                  <span className="font-num text-ink">{formatCount(count)}</span> item
+                  {rich(pluralForm(count, labels.tierCount), { count: <span className="font-num text-ink">{formatCount(count)}</span> })}
                 </span>
               )}
             </span>
@@ -376,8 +387,9 @@ export function TierCards({ value, onChange, facets }: ControlProps) {
 }
 
 export function TierRows({ value, onChange, facets }: ControlProps) {
+  const { m, locale } = useI18n();
   return (
-    <div role="group" aria-label="Saiz jenama" className="flex flex-col">
+    <div role="group" aria-label={m.listings.filters.brandSize} className="flex flex-col">
       {TIER_SLUGS.map((t) => (
         <CheckRow
           key={t}
@@ -386,8 +398,10 @@ export function TierRows({ value, onChange, facets }: ControlProps) {
           onChange={() => onChange({ tier: toggle(value.tier, t) })}
           icon={<TierIcon tier={t} size={20} />}
           count={facets ? (facets.tier[t] ?? 0) : undefined}
+          title={tierCopy(t, locale).tagline}
         >
           {TIER_BY_SLUG[t].name}
+          <span className="sr-only">, {tierCopy(t, locale).tagline}</span>
         </CheckRow>
       ))}
     </div>
@@ -403,18 +417,20 @@ export function priceOptions(current: PriceRange | null): PriceRange[] {
 
 /** Honesty note under the Harga control: RM bands never match US$ items, so say how many are left out. */
 function NonMyrNote({ value, facets }: Pick<ControlProps, "value" | "facets">) {
+  const { m, plural } = useI18n();
   const n = value.harga && facets ? facets.nonMyr : 0;
   if (!n) return null;
-  return <p className="mt-2 text-caption text-ink-2">Produk dalam US$ ({formatCount(n)}) tak termasuk dalam tapisan harga RM.</p>;
+  return <p className="mt-2 text-caption text-ink-2">{plural(n, m.listings.filters.nonMyr)}</p>;
 }
 
 export function PriceChips({ value, onChange, facets }: ControlProps) {
+  const t = useI18n().m.listings.filters;
   const active = value.harga ? priceId(value.harga) : "";
   return (
     <>
       <RadioPills
-        label="Harga"
-        options={[{ value: "", label: "Semua harga" }, ...priceOptions(value.harga).map((r) => ({ value: priceId(r), label: priceLabel(r), count: facets ? (facets.harga[priceId(r)] ?? 0) : undefined }))]}
+        label={t.price}
+        options={[{ value: "", label: t.priceAll }, ...priceOptions(value.harga).map((r) => ({ value: priceId(r), label: priceLabel(r, t), count: facets ? (facets.harga[priceId(r)] ?? 0) : undefined }))]}
         value={active}
         onChange={(id) => onChange({ harga: id ? (priceOptions(value.harga).find((r) => priceId(r) === id) ?? null) : null })}
       />
@@ -424,16 +440,17 @@ export function PriceChips({ value, onChange, facets }: ControlProps) {
 }
 
 export function PriceRows({ value, onChange, facets, name }: ControlProps & { name: string }) {
+  const t = useI18n().m.listings.filters;
   const active = value.harga ? priceId(value.harga) : "";
   return (
     <>
-      <div role="radiogroup" aria-label="Harga" className="flex flex-col">
+      <div role="radiogroup" aria-label={t.price} className="flex flex-col">
         <CheckRow type="radio" name={name} checked={active === ""} onChange={() => onChange({ harga: null })}>
-          Semua harga
+          {t.priceAll}
         </CheckRow>
         {priceOptions(value.harga).map((r) => (
           <CheckRow key={priceId(r)} type="radio" name={name} checked={active === priceId(r)} onChange={() => onChange({ harga: r })} count={facets ? (facets.harga[priceId(r)] ?? 0) : undefined}>
-            {priceLabel(r)}
+            {priceLabel(r, t)}
           </CheckRow>
         ))}
       </div>

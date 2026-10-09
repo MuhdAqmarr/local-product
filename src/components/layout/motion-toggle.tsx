@@ -3,12 +3,9 @@
 import { setMotionPref, useMotionPref, useSiteMotionReduced } from "@/components/providers/motion-pref";
 import { toast } from "@/components/feedback/toast-store";
 import { Switch } from "@/components/ui/switch";
+import { useI18n } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 
-function apply(reduce: boolean) {
-  setMotionPref(reduce);
-  toast({ message: reduce ? "Animasi dikurangkan." : "Animasi penuh dihidupkan.", tone: "success" });
-}
 
 /**
  * The site-wide "Kurangkan animasi" control (WCAG 2.2.2 pause mechanism). Persists in localStorage
@@ -20,6 +17,11 @@ export function MotionToggle({ variant = "footer", className }: { variant?: "swi
   const siteReduced = useSiteMotionReduced();
   const pref = useMotionPref();
   const osReduced = pref === "always" && !siteReduced;
+  const t = useI18n().m.common.motion;
+  const apply = (reduce: boolean) => {
+    setMotionPref(reduce);
+    toast({ message: reduce ? t.toastReduced : t.toastFull, tone: "success" });
+  };
 
   if (variant === "switch") {
     return (
@@ -27,19 +29,19 @@ export function MotionToggle({ variant = "footer", className }: { variant?: "swi
         className={className}
         checked={siteReduced}
         onCheckedChange={apply}
-        label="Kurangkan animasi"
-        description={osReduced ? "Peranti kau dah minta kurang animasi, kami ikut." : "Hentikan gerakan hiasan di seluruh laman."}
+        label={t.switchLabel}
+        description={osReduced ? t.switchOs : t.switchHelp}
       />
     );
   }
 
   return (
-    <div role="group" aria-label="Animasi" className={cn("inline-flex items-center gap-2", className)}>
-      <span className="text-caption text-ink-dim">Animasi:</span>
+    <div role="group" aria-label={t.group} className={cn("inline-flex items-center gap-2", className)}>
+      <span aria-hidden="true" className="text-caption text-ink-dim">{t.footerLabel}</span>
       <div className="inline-flex rounded-full border-[1.5px] border-ink-dim p-0.5">
         {[
-          { label: "Penuh", reduce: false },
-          { label: "Kurang", reduce: true },
+          { label: t.full, reduce: false },
+          { label: t.reduced, reduce: true },
         ].map((o) => {
           const pressed = siteReduced === o.reduce;
           return (

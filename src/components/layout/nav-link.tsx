@@ -2,12 +2,15 @@
 
 import { useLinkStatus } from "next/link";
 import { ShellLink } from "./shell-link";
-import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { Squiggle } from "@/components/art/squiggle";
+import { useLocalePath } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 
-/** True when `pathname` is `href` or a child of it ("/brands" matches "/brands/x"). "/" matches only itself. */
+/**
+ * True when `pathname` is `href` or a child of it ("/brands" matches "/brands/x"). "/" matches only itself.
+ * Compare language-neutral paths: pass `useLocalePath()`, not `usePathname()`.
+ */
 export function isActivePath(pathname: string | null, href: string) {
   if (!pathname) return false;
   if (href === "/") return pathname === "/";
@@ -46,9 +49,9 @@ export function NavSquiggle({ active }: { active: boolean }) {
   );
 }
 
-/** Desktop header nav item: ink label, pink squiggle when active, pending dots after the label. */
+/** Desktop header nav item: ink label, pink squiggle when active, pending dots after the label. `href` is language-neutral. */
 export function NavLink({ href, children, badge }: { href: string; children: ReactNode; badge?: ReactNode }) {
-  const pathname = usePathname();
+  const pathname = useLocalePath();
   const active = isActivePath(pathname, href);
   return (
     <ShellLink

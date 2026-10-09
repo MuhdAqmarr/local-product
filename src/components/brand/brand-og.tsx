@@ -3,17 +3,22 @@ import { getBrandSummaries } from "@/lib/catalog";
 import { getBrand } from "@/lib/brands";
 import { monogram } from "@/lib/monogram";
 import { OG_SIZE } from "@/lib/site";
-import { CATEGORY_BY_SLUG, TIER_BY_SLUG } from "@/lib/taxonomy";
+import type { Locale } from "@/i18n/config";
+import { plural } from "@/i18n/format";
+import { dictionaryFor } from "@/i18n/server";
+import { categoryLabel, TIER_BY_SLUG } from "@/lib/taxonomy";
 import type { CategorySlug, TierSlug } from "@/lib/types";
 
 /**
  * Per-brand social card (1200 × 630, QA F10): candy gradient in the category colours, the brand's
  * monogram shape, name, tier cop, category and live counts, plus the LokalLah! mark. Shared by
- * app/brands/[slug]/opengraph-image.tsx and twitter-image.tsx. Raw hex mirrors the palette tokens
- * (this renders to a PNG, not to the page).
+ * app/[lang]/brands/[slug]/opengraph-image.tsx and twitter-image.tsx. Raw hex mirrors the palette
+ * tokens (this renders to a PNG, not to the page). Small labels follow the page language; tier
+ * names never change.
  */
 export const BRAND_OG_SIZE = OG_SIZE;
-export const BRAND_OG_ALT = "Kad jenama LokalLah!: monogram, saiz jenama, kategori dan kiraan promo live dari kedai rasmi.";
+/** Static exports can't vary by language, so the alt is the English (default) one. */
+export const BRAND_OG_ALT = dictionaryFor("en").brands.og.alt;
 
 const INK = "#2B1736";
 const BOLD = { WebkitTextStroke: `2px ${INK}` } as const;
@@ -39,7 +44,8 @@ const TIER: Record<TierSlug, { tint: string; ink: string }> = {
   ikon: { tint: "#FFF0C4", ink: "#7A5300" },
 };
 
-export async function brandOgImage(slug: string) {
+export async function brandOgImage(slug: string, locale: Locale) {
+  const copy = dictionaryFor(locale).brands.og;
   const brand = getBrand(slug);
   const summary = brand ? (await getBrandSummaries()).find((b) => b.slug === slug) : undefined;
   const name = brand?.name ?? "LokalLah!";
@@ -48,14 +54,8 @@ export async function brandOgImage(slug: string) {
   const c = CAT[category];
   const t = TIER[tier];
   const mono = monogram(slug, name);
-  const parts = summary ? [summary.promoCount && `${summary.promoCount} promo`, summary.newCount && `${summary.newCount} baru`].filter(Boolean) : [];
-  const counts = parts.length
-    ? parts.join(" · ")
-    : summary?.live
-      ? "Kedai rasmi disemak live"
-      : summary?.hasFeed
-      ? "Rak online kosong buat masa ni"
-      : "Direktori jenama lokal";
+  const parts = summary ? [summary.promoCount && plural(summary.promoCount, copy.promos), summary.newCount && plural(summary.newCount, copy.new)].filter(Boolean) : [];
+  const counts = parts.length ? parts.join(" · ") : summary?.live ? copy.live : summary?.hasFeed ? copy.empty : copy.directory;
   const nameSize = name.length <= 12 ? 96 : name.length <= 20 ? 76 : name.length <= 28 ? 60 : 48;
   const stripes = Array.from({ length: 30 }, (_, i) => i);
 
@@ -125,7 +125,7 @@ export async function brandOgImage(slug: string) {
               >
                 {TIER_BY_SLUG[tier].name}
               </div>
-              <div style={{ display: "flex", fontSize: 30, color: c.ink }}>{CATEGORY_BY_SLUG[category].nameMs}</div>
+              <div style={{ display: "flex", fontSize: 30, color: c.ink }}>{categoryLabel(category, locale)}</div>
             </div>
             <div style={{ display: "flex", marginTop: 22, fontSize: nameSize, lineHeight: 1.05, letterSpacing: -2, ...BOLD }}>{name}</div>
             <div

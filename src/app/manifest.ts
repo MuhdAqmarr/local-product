@@ -1,11 +1,13 @@
 import type { MetadataRoute } from "next";
+import enMeta from "@/i18n/dictionaries/en/meta";
 
+/** English-first (the default language); the Malay site lives under /ms inside the same scope. */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "LokalLah! — Semua jenama lokal, sentiasa up to date",
+    name: enMeta.siteTitle,
     short_name: "LokalLah!",
-    description: "Direktori jenama Malaysia dengan promo live dan launch baru terus dari kedai rasmi mereka.",
-    lang: "ms-MY",
+    description: enMeta.description,
+    lang: "en-MY",
     start_url: "/",
     scope: "/",
     display: "standalone",

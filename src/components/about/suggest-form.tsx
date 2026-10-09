@@ -1,30 +1,41 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition, type FocusEvent, type FormEvent } from "react";
-import { ExternalLink, Send } from "@/components/ui/lucide";
+import { useEffect, useMemo, useRef, useState, useTransition, type FocusEvent, type FormEvent } from "react";
+import { Send } from "@/components/ui/lucide";
 import { Oyen } from "@/components/art/oyen";
 import { Particles } from "@/components/art/particles";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { suggestBrand } from "@/app/about/actions";
-import { LIMITS, validateSuggestion, type SuggestField, type SuggestResult } from "@/app/about/suggest-validate";
-import { CATEGORIES, STATES } from "@/lib/taxonomy";
+import { suggestBrand } from "@/app/[lang]/about/actions";
+import { LIMITS, validateSuggestion, type SuggestErrors, type SuggestField, type SuggestResult } from "@/app/[lang]/about/suggest-validate";
+import { useI18n } from "@/i18n/client";
+import { rich } from "@/i18n/rich";
+import { CATEGORIES, categoryName, STATES } from "@/lib/taxonomy";
 
 const EMPTY: Record<SuggestField, string> = { nama: "", link: "", kategori: "", negeri: "", kenapa: "", email: "" };
-const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ value: c.slug, label: c.nameMs }));
 const STATE_OPTIONS = STATES.map((s) => ({ value: s, label: s }));
 
 /**
  * "Cadang jenama" form (DESIGN §8.8 #6). Validates on blur and submit (shared rules with the
  * Server Action), prefills `?nama=` after mount, and is honest about where the suggestion goes:
  * - webhook configured → saved; Oyen `happy` + celebrate burst + thank-you (role=status)
- * - no webhook → nothing is stored here; we hand over a prefilled GitHub issue to submit.
+ * - email mode (no webhook, `SUGGEST_EMAIL` set) → nothing is stored here; we hand over a
+ *   prefilled email for the visitor to send from their own email app.
+ * The page doesn't render the form at all when neither is configured. Never link to the source repo.
+ * Validation returns codes; messages come from `about.form.errors` (needs the `about` namespace).
  */
-export function SuggestForm({ mode = "github" }: { mode?: "webhook" | "github" }) {
+export function SuggestForm({ mode = "email" }: { mode?: "webhook" | "email" }) {
+  const { m, locale } = useI18n();
+  const t = m.about.form;
+  const categoryOptions = useMemo(() => CATEGORIES.map((c) => ({ value: c.slug, label: categoryName(c, locale) })), [locale]);
   const [values, setValues] = useState(EMPTY);
-  const [errors, setErrors] = useState<Partial<Record<SuggestField, string>>>({});
+  const [errors, setErrors] = useState<SuggestErrors>({});
+  const errorText = (field: SuggestField) => {
+    const code = errors[field];
+    return code ? t.errors[code] : undefined;
+  };
   const [result, setResult] = useState<SuggestResult | null>(null);
   const [pending, startTransition] = useTransition();
   const [burst, setBurst] = useState(0);
@@ -39,7 +50,7 @@ export function SuggestForm({ mode = "github" }: { mode?: "webhook" | "github" }
   }, []);
 
   useEffect(() => {
-    if (result?.status === "sent" || result?.status === "github") doneRef.current?.focus();
+    if (result?.status === "sent" || result?.status === "email") doneRef.current?.focus();
   }, [result]);
 
   const set = (field: SuggestField) => (e: { target: { value: string } }) => {
@@ -64,7 +75,7 @@ export function SuggestForm({ mode = "github" }: { mode?: "webhook" | "github" }
     }
     const data = new FormData(event.currentTarget);
     startTransition(async () => {
-      const res = await suggestBrand(data).catch((): SuggestResult => ({ status: "error", message: "Alamak, tak jadi. Cuba lagi?" }));
+      const res = await suggestBrand(data).catch((): SuggestResult => ({ status: "error" }));
       if (res.status === "invalid") setErrors(res.errors);
       if (res.status === "sent") setBurst((b) => b + 1);
       setResult(res);
@@ -77,7 +88,7 @@ export function SuggestForm({ mode = "github" }: { mode?: "webhook" | "github" }
     setResult(null);
   };
 
-  if (result?.status === "sent" || result?.status === "github") {
+  if (result?.status === "sent" || result?.status === "email") {
     const sent = result.status === "sent";
     return (
       <div ref={doneRef} tabIndex={-1} role="status" className="flex flex-col items-center py-6 text-center outline-none animate-rise-in">
@@ -88,22 +99,21 @@ export function SuggestForm({ mode = "github" }: { mode?: "webhook" | "github" }
         </div>
         {sent ? (
           <>
-            <p className="mt-4 text-title-3 text-ink">Terima kasih! Oyen dah catat cadangan kau.</p>
-            <p className="mt-2 max-w-[40ch] text-body text-ink-2">Kami akan semak jenama ni. Kalau sesuai, dia akan naik rak LokalLah!.</p>
+            <p className="mt-4 text-title-3 text-ink">{t.sentTitle}</p>
+            <p className="mt-2 max-w-[40ch] text-body text-ink-2">{t.sentBody}</p>
           </>
         ) : (
           <>
-            <p className="mt-4 text-title-3 text-ink">Hampir siap! Tinggal satu tekan je.</p>
-            <p className="mt-2 max-w-[42ch] text-body text-ink-2">
-              Kami catat cadangan kat GitHub — tekan hantar kat sana ya. Borang isu dah siap diisi untuk kau (perlu akaun GitHub).
-            </p>
-            <Button className="mt-5" href={result.url} external variant="primary" trailing="outbound">
-              Buka GitHub &amp; hantar
+            <p className="mt-4 text-title-3 text-ink">{t.emailTitle}</p>
+            <p className="mt-2 max-w-[42ch] text-body text-ink-2">{t.emailBody}</p>
+            {/* mailto: opens the visitor's email app; no new tab. */}
+            <Button className="mt-5" href={result.url} external target="_self" variant="primary" icon={<Send aria-hidden="true" />}>
+              {t.emailCta}
             </Button>
           </>
         )}
         <Button className="mt-3" variant="ghost" size="sm" onClick={reset}>
-          Cadang satu lagi
+          {t.another}
         </Button>
       </div>
     );
@@ -114,60 +124,60 @@ export function SuggestForm({ mode = "github" }: { mode?: "webhook" | "github" }
       <Input
         id="cadang-nama"
         name="nama"
-        label="Nama jenama"
+        label={t.name}
         required
         maxLength={LIMITS.nama}
         autoComplete="off"
         value={values.nama}
         onChange={set("nama")}
         onBlur={blur("nama")}
-        error={errors.nama}
+        error={errorText("nama")}
         fieldClassName="sm:col-span-2"
       />
       <Input
         id="cadang-link"
         name="link"
-        label="Link kedai / Instagram"
+        label={t.link}
         required
         inputMode="url"
         autoComplete="off"
         autoCapitalize="none"
         spellCheck={false}
         maxLength={LIMITS.link}
-        placeholder="kedaijenama.com atau @jenama"
-        helper="Kedai online rasmi jenama ni (Shopify, WooCommerce, website) atau akaun Instagram."
+        placeholder={t.linkPlaceholder}
+        helper={t.linkHelper}
         value={values.link}
         onChange={set("link")}
         onBlur={blur("link")}
-        error={errors.link}
+        error={errorText("link")}
         fieldClassName="sm:col-span-2"
       />
       <Select
         id="cadang-kategori"
         name="kategori"
-        label="Kategori"
-        placeholder="Tak pasti"
-        options={CATEGORY_OPTIONS}
+        label={t.category}
+        placeholder={t.notSure}
+        options={categoryOptions}
         value={values.kategori}
         onChange={set("kategori")}
-        error={errors.kategori}
+        error={errorText("kategori")}
       />
       <Select
         id="cadang-negeri"
         name="negeri"
-        label="Negeri"
-        placeholder="Tak pasti"
+        label={t.state}
+        placeholder={t.notSure}
         options={STATE_OPTIONS}
         value={values.negeri}
         onChange={set("negeri")}
-        error={errors.negeri}
+        error={errorText("negeri")}
       />
       <Textarea
         id="cadang-kenapa"
         name="kenapa"
-        label="Kenapa best?"
+        label={t.why}
         maxLength={LIMITS.kenapa}
-        placeholder="Produk paling laku, kenapa kau suka, apa-apa je."
+        placeholder={t.whyPlaceholder}
         value={values.kenapa}
         onChange={set("kenapa")}
         fieldClassName="sm:col-span-2"
@@ -177,34 +187,35 @@ export function SuggestForm({ mode = "github" }: { mode?: "webhook" | "github" }
           id="cadang-email"
           name="email"
           type="email"
-          label="Email kau (tak wajib)"
+          label={t.email}
           inputMode="email"
           autoComplete="email"
           maxLength={LIMITS.email}
-          helper="Hanya untuk kami hubungi kau pasal cadangan ni."
+          helper={t.emailHelper}
           value={values.email}
           onChange={set("email")}
           onBlur={blur("email")}
-          error={errors.email}
+          error={errorText("email")}
           fieldClassName="sm:col-span-2"
         />
       )}
       {/* Honeypot: hidden from people and assistive tech. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
-        <label htmlFor="cadang-laman">Laman web (biar kosong)</label>
+        <label htmlFor="cadang-laman">{t.honeypot}</label>
         <input id="cadang-laman" name="laman" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
       </div>
+      {/* Lets the action label the prefilled issue in the visitor's language. */}
+      <input type="hidden" name="lang" value={locale} />
 
       {result?.status === "error" && (
         <div
           role="alert"
           className="flex flex-col gap-2 rounded-input border-[1.5px] border-sambal-pekat bg-sambal-tint p-3 text-body-sm text-sambal-pekat sm:col-span-2"
         >
-          <p className="font-semibold">{result.message}</p>
+          <p className="font-semibold">{result.url ? t.sendFailed : t.failed}</p>
           {result.url && (
-            <a href={result.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-telang underline underline-offset-4">
-              Hantar terus kat GitHub <ExternalLink aria-hidden="true" size={14} />
-              <span className="sr-only"> (tab baru)</span>
+            <a href={result.url} className="inline-flex items-center gap-1 text-telang underline underline-offset-4">
+              {t.sendDirect}
             </a>
           )}
         </div>
@@ -212,11 +223,10 @@ export function SuggestForm({ mode = "github" }: { mode?: "webhook" | "github" }
 
       <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
         <p id="cadang-note" className="text-caption text-ink-soft">
-          Medan bertanda <span className="text-bandung-pekat">*</span> wajib.{" "}
-          {mode === "github" ? "Cadangan dihantar sebagai isu GitHub awam, jadi jangan letak maklumat peribadi." : "Oyen catat, kami semak."}
+          {rich(t.required, { star: <span className="text-bandung-pekat">*</span> })} {mode === "email" ? t.noteEmail : t.noteWebhook}
         </p>
         <Button type="submit" variant="primary" loading={pending} icon={<Send aria-hidden="true" />} className="sm:shrink-0">
-          Hantar cadangan
+          {t.submit}
         </Button>
       </div>
     </form>

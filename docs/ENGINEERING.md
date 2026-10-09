@@ -79,7 +79,7 @@ graceful empty state, and brand pages must still look complete without products.
 
 - `useSaved()` (`@/lib/saved`) — localStorage "Simpan" list: `{ items, count, isSaved(id), toggle(item), remove(id), clear() }`. Brand ids: `brandSavedId(slug)`.
 - `prepareIndex()` / `search()` (`@/lib/search`) — search ranking over `SearchItem[]`.
-- `formatPrice(amount, currency)`, `timeAgo(iso, now)`, `formatCount(n)`, `outboundUrl(url)` (`@/lib/format`).
+- `formatPrice(amount, currency)`, `timeAgo(iso, now, locale)`, `formatCount(n)`, `outboundUrl(url)` (`@/lib/format`). Copy and links follow docs/I18N.md.
 - `sizedImage(src, width)`, `imageSrcSet(src)` (`@/lib/images`) — Shopify CDN resizing.
 
 ## Motion & scrolling

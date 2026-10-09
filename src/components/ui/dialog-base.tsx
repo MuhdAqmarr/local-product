@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, type ReactNode, type RefObject } from "react";
 import { X } from "@/components/ui/lucide";
+import { useI18n } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 
 export interface DialogBaseProps {
@@ -97,6 +98,7 @@ export function DialogShell({
 }: DialogBaseProps & { kind: "sheet" | "modal" }) {
   const ref = useNativeDialog(open, onClose, initialFocusRef);
   const titleId = `${id ?? kind}-title`;
+  const closeLabel = useI18n().m.common.feedback.close;
   return (
     <dialog
       ref={ref}
@@ -121,7 +123,7 @@ export function DialogShell({
         </div>
         <button
           type="button"
-          aria-label="Tutup"
+          aria-label={closeLabel}
           onClick={() => ref.current?.close()}
           className="relative -mr-1.5 -mt-0.5 grid size-11 shrink-0 place-items-center rounded-full text-ink transition-colors hover:bg-kapas"
         >

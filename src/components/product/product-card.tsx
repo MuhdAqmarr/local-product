@@ -1,8 +1,11 @@
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import { ArrowUpRight, Clock3, Sparkles } from "@/components/ui/lucide";
 import { TierIcon } from "@/components/art/tier-icon";
 import { Monogram } from "@/components/brand/monogram";
 import { dealLevel } from "@/lib/deal";
+import type { Locale } from "@/i18n/config";
+import { fmt } from "@/i18n/format";
+import { commonFor } from "@/i18n/shared";
 import { outboundUrl } from "@/lib/format";
 import { TIER_BY_SLUG } from "@/lib/taxonomy";
 import type { ProductCardData } from "@/lib/types";
@@ -18,6 +21,8 @@ import { SaveButton } from "./save-button";
 
 export interface ProductCardProps {
   product: ProductCardData;
+  /** Page language: `await getLocale()` on the server, `useI18n().locale` on the client. */
+  locale: Locale;
   /** Catalog `syncedAt` (ISO): the clock for "Baru" and the server-rendered relative times. */
   syncedAt: string;
   /** When this brand's prices were last checked (`FeedStatus.fetchedAt`); defaults to `syncedAt`. */
@@ -41,17 +46,18 @@ export interface ProductCardProps {
  * link (stretched link on the title) to the brand's official store; the brand name and the heart
  * are separate controls above it.
  */
-export function ProductCard({ product: p, syncedAt, checkedAt, priority, eager, context = "grid", emphasis, hideBrandLink, className }: ProductCardProps) {
+export function ProductCard({ product: p, locale, syncedAt, checkedAt, priority, eager, context = "grid", emphasis, hideBrandLink, className }: ProductCardProps) {
+  const t = commonFor(locale).product;
   const level = dealLevel(p.discount);
   const baru = baruKind(p.publishedAt, syncedAt);
   const showPromo = level != null && (emphasis !== "baru" || !baru);
   const tier = TIER_BY_SLUG[p.brandTier];
-  const alt = p.title || `Produk ${p.brandName}`;
+  const alt = p.title || fmt(t.photoAlt, { brand: p.brandName });
 
-  const labelParts = [p.title, priceSentence(p)];
-  if (baru) labelParts.push("baru dilancar");
-  if (!p.available) labelParts.push("habis stok");
-  labelParts.push(`buka kedai rasmi ${p.brandName} (tab baru)`);
+  const labelParts = [p.title, priceSentence(p, locale)];
+  if (baru) labelParts.push(t.srNew);
+  if (!p.available) labelParts.push(t.srSoldOut);
+  labelParts.push(fmt(t.srOpen, { brand: p.brandName }));
 
   return (
     <article
@@ -75,7 +81,7 @@ export function ProductCard({ product: p, syncedAt, checkedAt, priority, eager, 
             eager={eager}
             className={p.available ? undefined : "opacity-50"}
           />
-          {!p.available && <span className="habis absolute bottom-2 left-2 z-[2]">Habis</span>}
+          {!p.available && <span className="habis absolute bottom-2 left-2 z-[2]">{t.soldOut}</span>}
         </div>
 
         {showPromo ? (
@@ -89,7 +95,7 @@ export function ProductCard({ product: p, syncedAt, checkedAt, priority, eager, 
             )}
           />
         ) : (
-          baru && <BaruSticker publishedAt={p.publishedAt} syncedAt={syncedAt} className="pointer-events-none absolute top-2 left-2 z-[2]" />
+          baru && <BaruSticker publishedAt={p.publishedAt} syncedAt={syncedAt} locale={locale} className="pointer-events-none absolute top-2 left-2 z-[2]" />
         )}
 
         <div className="absolute top-1.5 right-1.5 z-10">
@@ -115,7 +121,7 @@ export function ProductCard({ product: p, syncedAt, checkedAt, priority, eager, 
             </Link>
           )}
           <TierIcon tier={p.brandTier} size={14} className="shrink-0" />
-          <span className="sr-only">Tier: {tier.name}</span>
+          <span className="sr-only">{fmt(t.tier, { name: tier.name })}</span>
         </div>
 
         <h3 className="line-clamp-2 min-h-[2.7em] text-body-sm [overflow-wrap:anywhere] text-ink-2 supports-[height:1lh]:min-h-[2lh]">
@@ -124,19 +130,21 @@ export function ProductCard({ product: p, syncedAt, checkedAt, priority, eager, 
           </a>
         </h3>
 
-        <Price price={p.price} compareAt={p.compareAt} discount={p.discount} currency={p.currency} announce={false} />
+        <Price price={p.price} compareAt={p.compareAt} discount={p.discount} currency={p.currency} locale={locale} announce={false} />
 
         <p className="mt-auto flex min-w-0 items-center gap-1 pt-0.5 text-caption text-ink-soft">
           {showPromo ? (
             <>
-              {baru && <span className="baru mr-0.5 h-[18px] px-1.5 text-[10px]">Baru</span>}
+              {baru && <span className="baru mr-0.5 h-[18px] px-1.5 text-[10px]">{t.new}</span>}
               <Clock3 size={12} strokeWidth={2.5} aria-hidden="true" className="shrink-0" />
               <RelTime iso={checkedAt ?? syncedAt} base={syncedAt} className="truncate" />
             </>
           ) : baru && p.publishedAt ? (
             <>
               <Sparkles size={12} strokeWidth={2.5} aria-hidden="true" className="shrink-0" />
-              <RelTime iso={p.publishedAt} base={syncedAt} prefix="Lancar " className="truncate" />
+              {/* Narrow cards (rails, 2-up mobile grids) drop the "Launched" prefix so the time isn't cut; the sparkle says "new". */}
+              <RelTime iso={p.publishedAt} base={syncedAt} template={t.launched} className="hidden truncate @[220px]:inline" />
+              <RelTime iso={p.publishedAt} base={syncedAt} className="truncate @[220px]:hidden" />
             </>
           ) : (
             <>

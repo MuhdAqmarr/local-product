@@ -11,7 +11,7 @@ export interface ShelfCategory {
 
 export interface CategoryShelfProps {
   categories: ShelfCategory[];
-  /** Total brands for the trailing "Semua jenama" tile; omit to hide that tile. */
+  /** Total brands for the trailing "All brands" tile; omit to hide that tile. */
   allBrands?: number;
   /** Morph tile icons into the category hero (only one shelf per page should). */
   morph?: boolean;
@@ -20,7 +20,7 @@ export interface CategoryShelfProps {
 
 /**
  * "Rak kategori" (DESIGN §6.5 / §8.1 #3): tiles standing on wooden planks, 4 × 3 on phones,
- * 6 × 2 on desktop, with "Semua jenama" as the 12th tile.
+ * 6 × 2 on desktop, with "All brands" as the 12th tile.
  */
 export function CategoryShelf({ categories, allBrands, morph = true, className }: CategoryShelfProps) {
   return (

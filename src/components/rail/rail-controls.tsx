@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "@/components/ui/lucide";
 import { prefersLessMotion } from "@/components/providers/motion-pref";
+import { useI18n } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 
 export interface RailControlsProps {
@@ -21,6 +22,7 @@ const BTN =
 export function RailControls({ trackId, className }: RailControlsProps) {
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  const t = useI18n().m.common.rail;
 
   useEffect(() => {
     const track = document.getElementById(trackId);
@@ -50,10 +52,10 @@ export function RailControls({ trackId, className }: RailControlsProps) {
 
   return (
     <div className={cn("hidden items-center gap-2 lg:flex", className)}>
-      <button type="button" className={BTN} onClick={() => go(-1)} disabled={atStart} aria-label="Skrol ke kiri" aria-controls={trackId}>
+      <button type="button" className={BTN} onClick={() => go(-1)} disabled={atStart} aria-label={t.left} aria-controls={trackId}>
         <ChevronLeft aria-hidden="true" size={20} strokeWidth={2.25} />
       </button>
-      <button type="button" className={BTN} onClick={() => go(1)} disabled={atEnd} aria-label="Skrol ke kanan" aria-controls={trackId}>
+      <button type="button" className={BTN} onClick={() => go(1)} disabled={atEnd} aria-label={t.right} aria-controls={trackId}>
         <ChevronRight aria-hidden="true" size={20} strokeWidth={2.25} />
       </button>
     </div>

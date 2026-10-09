@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { AnimatePresence } from "motion/react";
 import * as m from "motion/react-m";
 import { useLenis } from "lenis/react";
 import { ArrowUp } from "@/components/ui/lucide";
 import { fab } from "@/lib/motion";
 import { prefersLessMotion } from "@/components/providers/motion-pref";
+import { useI18n, useLocalePath } from "@/i18n/client";
 
 /** DESIGN §6.20: list pages and Home only (QA F22). */
 const LIST_PREFIXES = ["/promos", "/new", "/brands", "/categories/"];
-const allowed = (path: string | null) => path === "/" || LIST_PREFIXES.some((p) => path?.startsWith(p));
+const allowed = (path: string) => path === "/" || LIST_PREFIXES.some((p) => path.startsWith(p));
 
 /**
  * Back-to-top FAB (DESIGN §6.20): appears after 1.5 screens, Lenis glide to the top (native smooth
@@ -19,12 +19,13 @@ const allowed = (path: string | null) => path === "/" || LIST_PREFIXES.some((p) 
  * attach no listeners (QA F05).
  */
 export function BackToTop() {
-  const pathname = usePathname();
+  const pathname = useLocalePath();
   return allowed(pathname) ? <Fab key={pathname} /> : null;
 }
 
 function Fab() {
   const lenis = useLenis();
+  const label = useI18n().m.common.backToTop;
   const [past, setPast] = useState(false);
   const [footerIn, setFooterIn] = useState(false);
 
@@ -70,7 +71,7 @@ function Fab() {
         <m.button
           key="fab"
           type="button"
-          aria-label="Naik ke atas"
+          aria-label={label}
           onClick={toTop}
           variants={fab}
           initial="hidden"

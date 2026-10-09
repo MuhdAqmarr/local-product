@@ -1,3 +1,4 @@
+import type { Locale } from "@/i18n/config";
 import type { FeedStatus } from "./types";
 
 /**
@@ -44,35 +45,67 @@ export function brandSyncState(
   return syncState(status.fetchedAt ?? fallbackIso, status.status, now);
 }
 
-/** Pill copy prefix per state (DESIGN §9.9). The relative time is appended by the caller. */
-export const SYNC_COPY: Record<SyncState, string> = {
-  fresh: "dikemas kini",
-  stale: "Sync lambat sikit",
-  old: "Data mungkin lapuk",
-  none: "Kedai ni belum boleh disync",
+/** Pill copy prefix per state and language (DESIGN §9.9). The relative time is appended by the caller. */
+export const SYNC_COPY: Record<Locale, Record<SyncState, string>> = {
+  en: {
+    fresh: "updated",
+    stale: "Sync running late",
+    old: "Data may be outdated",
+    none: "This store can't sync yet",
+  },
+  ms: {
+    fresh: "dikemas kini",
+    stale: "Sync lambat sikit",
+    old: "Data mungkin lapuk",
+    none: "Kedai ni belum boleh disync",
+  },
 };
 
 const TZ = "Asia/Kuala_Lumpur";
 
-/** "3:40 PTG" — deterministic on server and client (fixed time zone). */
-export function formatClock(iso: string): string {
+/** Malaysia-time parts, deterministic on server and client (fixed time zone, numeric parts only). */
+function myParts(iso: string) {
   const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  const parts = new Intl.DateTimeFormat("en-GB", { hour: "numeric", minute: "2-digit", hour12: false, timeZone: TZ }).formatToParts(d);
-  const h = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
-  const min = parts.find((p) => p.type === "minute")?.value ?? "00";
-  const h12 = h % 12 === 0 ? 12 : h % 12;
-  const suffix = h < 12 ? "PG" : h < 14 ? "TGH" : h < 19 ? "PTG" : "MLM";
-  return `${h12}:${min} ${suffix}`;
+  if (Number.isNaN(d.getTime())) return null;
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: TZ,
+  }).formatToParts(d);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "0";
+  return { day: Number(get("day")), month: Number(get("month")), year: Number(get("year")), hour: Number(get("hour")) % 24, minute: get("minute") };
 }
 
-const MONTHS = ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ogo", "Sep", "Okt", "Nov", "Dis"];
+/**
+ * Clock time in Malaysia: "3:40 PM" (en) / "3:40 PTG" (ms: PG, TGH, PTG, MLM).
+ * Built from numeric parts, so server and browser always agree (no ICU differences).
+ */
+export function formatClock(iso: string, locale: Locale): string {
+  const p = myParts(iso);
+  if (!p) return "";
+  const h12 = p.hour % 12 === 0 ? 12 : p.hour % 12;
+  const suffix = locale === "ms" ? (p.hour < 12 ? "PG" : p.hour < 14 ? "TGH" : p.hour < 19 ? "PTG" : "MLM") : p.hour < 12 ? "AM" : "PM";
+  return `${h12}:${p.minute} ${suffix}`;
+}
 
-/** "9 Okt 2026" in Malaysia time. */
-export function formatDate(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  const parts = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "numeric", year: "numeric", timeZone: TZ }).formatToParts(d);
-  const get = (t: string) => Number(parts.find((p) => p.type === t)?.value ?? 0);
-  return `${get("day")} ${MONTHS[get("month") - 1]} ${get("year")}`;
+export const MONTHS_SHORT: Record<Locale, readonly string[]> = {
+  en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  ms: ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ogo", "Sep", "Okt", "Nov", "Dis"],
+};
+
+/** "9 Oct 2026" (en) / "9 Okt 2026" (ms), in Malaysia time. */
+export function formatDate(iso: string, locale: Locale): string {
+  const p = myParts(iso);
+  if (!p) return "";
+  return `${p.day} ${MONTHS_SHORT[locale][p.month - 1]} ${p.year}`;
+}
+
+/** "9 Oct 2026, 3:40 PM" / "9 Okt 2026, 3:40 PTG". */
+export function formatDateTime(iso: string, locale: Locale): string {
+  const date = formatDate(iso, locale);
+  return date ? `${date}, ${formatClock(iso, locale)}` : "";
 }

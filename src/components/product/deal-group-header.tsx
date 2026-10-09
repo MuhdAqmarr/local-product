@@ -1,10 +1,16 @@
-import { DEAL_GROUPS, type DealLevel } from "@/lib/deal";
+import type { Locale } from "@/i18n/config";
+import { pluralForm } from "@/i18n/format";
+import { rich } from "@/i18n/rich";
 import { formatCount } from "@/lib/format";
+import { commonFor } from "@/i18n/shared";
+import { DEAL_GROUPS, dealGroupLabel, type DealLevel } from "@/lib/deal";
 import { cn } from "@/lib/utils";
 import { DealSticker } from "./deal-sticker";
 
 export interface DealGroupHeaderProps {
   level: DealLevel;
+  /** Page language. */
+  locale: Locale;
   count?: number;
   /**
    * Omit: sticks under header + filter bar and moves with the header stack (`.sticky-sub`).
@@ -19,9 +25,10 @@ const STICKER_LABEL: Record<DealLevel, string> = { 3: "40%+", 2: "20%+", 1: "5%+
 
 /**
  * /promos sticky 32 px sub-header that uses the sticker itself as the legend (DESIGN §8.2):
- * L3 burst mini + "≥ 40% · Jimat gila", L2 pill + "20–39% · Berbaloi", L1 pill + "5–19% · Ada la sikit".
+ * L3 burst mini + "≥ 40% · Crazy savings / Jimat gila", L2 pill + "20–39% · Worth it / Berbaloi",
+ * L1 pill + "5–19% · Every bit helps / Ada la sikit".
  */
-export function DealGroupHeader({ level, count, stickyTop, id, className }: DealGroupHeaderProps) {
+export function DealGroupHeader({ level, locale, count, stickyTop, id, className }: DealGroupHeaderProps) {
   const g = DEAL_GROUPS[level];
   return (
     <h2
@@ -37,13 +44,14 @@ export function DealGroupHeader({ level, count, stickyTop, id, className }: Deal
         <DealSticker level={level} label={STICKER_LABEL[level]} size="mini" className={level === 3 ? "text-[11px]" : undefined} />
       </span>
       <span className="truncate">
-        <span className="font-num">{g.range}</span> · {g.label}
+        <span className="font-num">{g.range}</span> · {dealGroupLabel(level, locale)}
       </span>
       {count != null && (
         <span className="ml-auto shrink-0 text-caption text-ink-soft">
-          <span className="font-num text-ink">{formatCount(count)}</span> promo
+          {rich(pluralForm(count, commonFor(locale).product.groupCount), { count: <span className="font-num text-ink">{formatCount(count)}</span> })}
         </span>
       )}
     </h2>
   );
 }
+

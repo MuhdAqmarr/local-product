@@ -1,9 +1,12 @@
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import { MapPin } from "@/components/ui/lucide";
 import { CategoryGlyph } from "@/components/product/category-glyph";
 import { PlateImage } from "@/components/product/plate-image";
 import { PLATE_SIZES } from "@/components/product/plate-sizes";
-import { CATEGORY_BY_SLUG } from "@/lib/taxonomy";
+import type { Locale } from "@/i18n/config";
+import { fmt, pluralForm } from "@/i18n/format";
+import { commonFor } from "@/i18n/shared";
+import { categoryLabel } from "@/lib/taxonomy";
 import type { CategorySlug, TierSlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { BrandLink } from "./brand-link";
@@ -18,6 +21,7 @@ export interface BrandCardData {
   name: string;
   category: CategorySlug;
   tier: TierSlug;
+  /** In the page language: localise on the server with `brandDescription(brand, locale)`. */
   description: string;
   state?: string;
   /** We can read this brand's store (it may still list zero products right now). */
@@ -31,6 +35,8 @@ export interface BrandCardData {
 
 export interface BrandCardProps {
   brand: BrandCardData;
+  /** Page language. */
+  locale: Locale;
   /**
    * `card` (default): the kedai card at every width (rails, spotlight).
    * `auto`: one DOM that renders as the compact brand row below 480 px and as the kedai card from
@@ -44,37 +50,38 @@ export interface BrandCardProps {
   className?: string;
 }
 
-/** "{n} promo · {m} baru" counts + live dot (shared by card and row). */
+/** "{n} promos · {m} new" counts + live dot (shared by card and row). */
 export function BrandCounts({
   brand,
+  locale,
   className,
 }: {
   brand: Pick<BrandCardData, "promoCount" | "newCount" | "live"> & { hasFeed?: boolean };
+  locale: Locale;
   className?: string;
 }) {
+  const t = commonFor(locale).brand;
   if (!brand.live && !brand.promoCount && !brand.newCount) {
-    return (
-      <p className={cn("text-caption text-ink-soft", className)}>
-        {brand.hasFeed ? "Rak online kosong buat masa ni" : "Kedai ni belum boleh disync"}
-      </p>
-    );
+    return <p className={cn("text-caption text-ink-soft", className)}>{brand.hasFeed ? t.emptyShelf : t.noFeed}</p>;
   }
   return (
     <p className={cn("flex flex-wrap items-center gap-1.5", className)}>
       {brand.promoCount > 0 && (
         <span className="kedai-promo inline-flex h-6 items-center rounded-full bg-bandung-tint px-2.5 text-label-sm text-bandung-pekat">
-          <span className="font-num mr-1 text-[13px] leading-none">{brand.promoCount}</span>promo
+          <span className="font-num mr-1 text-[13px] leading-none">{brand.promoCount}</span>
+          {pluralForm(brand.promoCount, t.promos)}
         </span>
       )}
       {brand.newCount > 0 && (
         <span className="inline-flex h-6 items-center rounded-full bg-pandan-tint px-2.5 text-label-sm text-pandan-pekat">
-          <span className="font-num mr-1 text-[13px] leading-none">{brand.newCount}</span>baru
+          <span className="font-num mr-1 text-[13px] leading-none">{brand.newCount}</span>
+          {pluralForm(brand.newCount, t.new)}
         </span>
       )}
       {brand.live && (
         <span className="inline-flex h-6 items-center gap-1.5 px-1 text-label-sm text-pandan-pekat">
           <span className="live-dot" aria-hidden="true" />
-          Live
+          {t.live}
         </span>
       )}
     </p>
@@ -89,21 +96,24 @@ export function BrandCollage({
   previews,
   category,
   name,
+  locale,
   sizes = PLATE_SIZES.collage,
   className,
 }: {
   previews: string[];
   category: CategorySlug;
   name: string;
+  locale: Locale;
   sizes?: string;
   className?: string;
 }) {
+  const alt = fmt(commonFor(locale).brand.photoAlt, { brand: name });
   return (
     <ul className={cn("grid shrink-0 grid-cols-3 gap-1.5", className)} aria-hidden="true">
       {[0, 1, 2].map((i) => (
         <li key={i} className="plate rounded-thumb">
           {previews[i] ? (
-            <PlateImage src={unpackPreview(previews[i])} alt={`Produk ${name}`} category={category} sizes={sizes} glyph={22} />
+            <PlateImage src={unpackPreview(previews[i])} alt={alt} category={category} sizes={sizes} glyph={22} />
           ) : (
             <span className="absolute inset-0 grid place-items-center text-(--cat-ink) opacity-40">
               <CategoryGlyph category={category} size={22} />
@@ -121,8 +131,7 @@ export function BrandCollage({
  * /brands/{slug} via a stretched link on the name; heart and cop are separate controls.
  * `layout="auto"` turns the same DOM into the compact brand row below 480 px (QA F03).
  */
-export function BrandCard({ brand: b, layout = "card", morph, prefetch, className }: BrandCardProps) {
-  const cat = CATEGORY_BY_SLUG[b.category];
+export function BrandCard({ brand: b, locale, layout = "card", morph, prefetch, className }: BrandCardProps) {
   const auto = layout === "auto";
   const href = `/brands/${b.slug}`;
   const linkClass = cn("stretched-link", "kedai-link");
@@ -160,11 +169,11 @@ export function BrandCard({ brand: b, layout = "card", morph, prefetch, classNam
               )}
             </h3>
             <div className={cn("flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5", "kedai-meta")}>
-              <TierCop tier={b.tier} className="max-w-full" />
+              <TierCop tier={b.tier} locale={locale} className="max-w-full" />
               <span className="inline-flex max-w-full min-w-0 items-center gap-1 text-caption text-ink-soft">
                 <MapPin aria-hidden="true" size={14} strokeWidth={2.5} className="shrink-0" />
                 <span className="truncate">
-                  {cat.nameMs}
+                  {categoryLabel(b.category, locale)}
                   {b.state ? ` · ${b.state}` : ""}
                 </span>
               </span>
@@ -175,10 +184,11 @@ export function BrandCard({ brand: b, layout = "card", morph, prefetch, classNam
             previews={b.previews}
             category={b.category}
             name={b.name}
+            locale={locale}
             sizes={auto ? AUTO_SIZES : PLATE_SIZES.collage}
             className="kedai-collage"
           />
-          <BrandCounts brand={b} className="kedai-counts mt-auto pt-0.5" />
+          <BrandCounts brand={b} locale={locale} className="kedai-counts mt-auto pt-0.5" />
         </div>
       </div>
     </article>

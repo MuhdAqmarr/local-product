@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link } from "@/i18n/link";
+import { useI18n, useLocaleRouter } from "@/i18n/client";
+import type { SearchMessages } from "@/i18n/dictionaries/en/search";
 import { useDeferredValue, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { useLenis } from "lenis/react";
 import { Clock3, Flame, Search, Sparkles, X } from "@/components/ui/lucide";
@@ -11,9 +12,11 @@ import { SearchRowSkeleton } from "@/components/skeletons/search-row-skeleton";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import type { SearchItem } from "@/lib/catalog";
+import { fmt } from "@/i18n/format";
 import { outboundUrl } from "@/lib/format";
 import { normalizeText, prepareIndex, search, type PreparedItem } from "@/lib/search";
-import { CATEGORIES, CATEGORY_BY_SLUG, type Category } from "@/lib/taxonomy";
+import { CATEGORIES, categoryLabel, type Category } from "@/lib/taxonomy";
+import type { Locale } from "@/i18n/config";
 import type { CategorySlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { loadSearchIndex, type SearchDialogProps } from "./search-provider";
@@ -36,7 +39,8 @@ function loadPrepared(): Promise<PreparedItem[]> {
   return preparing;
 }
 
-const CATEGORY_INDEX = CATEGORIES.map((c) => ({ c, hay: normalizeText(`${c.nameMs} ${c.name} ${c.blurb}`) }));
+/** Categories match in either language ("kopi" and "coffee" both find Drinks). */
+const CATEGORY_INDEX = CATEGORIES.map((c) => ({ c, hay: normalizeText(`${c.nameMs} ${c.name} ${c.nameShort} ${c.blurb} ${c.blurbMs}`) }));
 
 /* ------------------------------------------------------------------ */
 /* Recent searches (guarded localStorage)                               */
@@ -62,8 +66,7 @@ function writeRecent(list: string[]) {
   }
 }
 
-/** Example queries offered when the box is empty (same terms as the hero pill); only ones with 3+ product hits are shown. */
-const EXAMPLES = ["baju kurung", "kopi", "sunscreen", "tudung", "serum", "telekung", "batik", "lilin"];
+/** Example queries (per language, `search.examples`) are offered only when they have 3+ product hits. */
 const EXAMPLE_MIN_PRODUCTS = 3;
 
 const PRODUCTS_STEP = 8;
@@ -84,7 +87,9 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
   const ref = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const silent = useRef(false);
-  const router = useRouter();
+  const router = useLocaleRouter();
+  const { m, locale, plural } = useI18n();
+  const t = m.search;
   const lenis = useLenis();
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const listboxId = `${uid}-listbox`;
@@ -193,8 +198,8 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
   }, [index]);
   // A brand-name hit alone (e.g. "sambal" → Sambal Nyet) is not a useful example: require product hits.
   const examples = useMemo(
-    () => (index ? EXAMPLES.filter((e) => search(index, e, 20).filter((hit) => hit.kind === "product").length >= EXAMPLE_MIN_PRODUCTS).slice(0, 6) : []),
-    [index],
+    () => (index ? t.examples.filter((e) => search(index, e, 20).filter((hit) => hit.kind === "product").length >= EXAMPLE_MIN_PRODUCTS).slice(0, 6) : []),
+    [index, t.examples],
   );
 
   /* ---- actions ---- */
@@ -274,7 +279,7 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
     <dialog
       ref={ref}
       data-search-dialog=""
-      aria-label="Cari jenama atau produk"
+      aria-label={t.label}
       onClose={() => {
         if (silent.current) silent.current = false;
         else onClose();
@@ -299,7 +304,7 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
           aria-controls={listboxId}
           aria-autocomplete="list"
           aria-activedescendant={active >= 0 ? optionId(active) : undefined}
-          aria-label="Cari jenama atau produk"
+          aria-label={t.label}
           enterKeyHint="search"
           autoComplete="off"
           autoCorrect="off"
@@ -307,13 +312,13 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="Cari jenama, produk, kategori…"
+          placeholder={t.placeholder}
           className="h-[52px] min-w-0 flex-1 bg-transparent text-[16px] text-ink outline-none placeholder:text-ink-soft focus-visible:outline-none sm:h-16 sm:text-[18px]"
         />
         {query && (
           <button
             type="button"
-            aria-label="Padam carian"
+            aria-label={t.clear}
             onClick={() => runQuery("")}
             className="grid size-11 shrink-0 place-items-center rounded-full text-ink transition-colors hover:bg-white/60"
           >
@@ -322,12 +327,12 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
         )}
         <Kbd className="hidden shrink-0 sm:inline-flex">Esc</Kbd>
         <button type="button" onClick={close} className="h-11 shrink-0 rounded-full px-3 text-label text-telang sm:hidden">
-          Batal
+          {t.cancel}
         </button>
       </div>
 
       <p className="sr-only" aria-live="polite">
-        {status === "ready" && q ? (resultCount ? `${resultCount} hasil untuk ${q}` : `Tiada hasil untuk ${q}`) : ""}
+        {status === "ready" && q ? (resultCount ? plural(resultCount, t.results, { query: q }) : fmt(t.noResultsSr, { query: q })) : ""}
       </p>
 
       {/* Body */}
@@ -335,8 +340,8 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
         {status === "error" ? (
           <div className="flex flex-col items-center px-6 py-10 text-center">
             <Oyen mood="terkejut" size={64} />
-            <p className="mt-3 text-title-3 text-ink">Alamak, carian tak dapat dimuat.</p>
-            <p className="mt-1 max-w-[34ch] text-body-sm text-ink-soft">Internet merajuk kot. Bukan salah kau.</p>
+            <p className="mt-3 text-title-3 text-ink">{t.error.title}</p>
+            <p className="mt-1 max-w-[34ch] text-body-sm text-ink-soft">{t.error.body}</p>
             <Button
               className="mt-5"
               variant="secondary"
@@ -346,21 +351,21 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
                 setAttempt((a) => a + 1);
               }}
             >
-              Cuba lagi
+              {t.error.retry}
             </Button>
           </div>
         ) : status === "loading" ? (
           <div aria-busy="true" className="px-2 py-3">
-            <span className="sr-only">Sedang dimuatkan…</span>
+            <span className="sr-only">{t.loading}</span>
             {showLoading && [0, 1, 2].map((i) => <SearchRowSkeleton key={i} i={i} />)}
           </div>
         ) : !q ? (
-          <EmptyQuery recent={recent} hot={hot} examples={examples} onRun={runQuery} onForget={forget} onNavigate={close} />
+          <EmptyQuery t={t} locale={locale} recent={recent} hot={hot} examples={examples} onRun={runQuery} onForget={forget} onNavigate={close} />
         ) : hasResults ? (
-          <div id={listboxId} role="listbox" aria-label="Hasil carian" className="flex flex-col gap-1 px-2 py-2">
+          <div id={listboxId} role="listbox" aria-label={t.listbox} className="flex flex-col gap-1 px-2 py-2">
             {brands.length > 0 && (
               <div role="group" aria-labelledby={`${uid}-g-brand`}>
-                <GroupLabel id={`${uid}-g-brand`}>Jenama</GroupLabel>
+                <GroupLabel id={`${uid}-g-brand`}>{t.groups.brands}</GroupLabel>
                 {brands.map((item, i) => (
                   <SearchBrandRow
                     key={item.id}
@@ -376,7 +381,7 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
             )}
             {categories.length > 0 && (
               <div role="group" aria-labelledby={`${uid}-g-cat`}>
-                <GroupLabel id={`${uid}-g-cat`}>Kategori</GroupLabel>
+                <GroupLabel id={`${uid}-g-cat`}>{t.groups.categories}</GroupLabel>
                 <div className="flex flex-wrap gap-2 px-3 pb-2 pt-1">
                   {categories.map((category, i) => (
                     <SearchCategoryChip
@@ -395,7 +400,7 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
             {products.length > 0 && (
               <div role="group" aria-labelledby={`${uid}-g-prod`}>
                 <GroupLabel id={`${uid}-g-prod`} count={products.length}>
-                  Produk
+                  {t.groups.products}
                 </GroupLabel>
                 {shownProducts.map((item, i) => (
                   <SearchProductRow
@@ -417,14 +422,14 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
                   onClick={() => setMore({ q, n: productLimit + PRODUCTS_STEP * 2 })}
                   className="inline-flex min-h-11 items-center gap-1 text-label text-telang underline-offset-4 hover:underline"
                 >
-                  Tunjuk lagi produk ({products.length - shownProducts.length})
+                  {fmt(t.showMore, { count: products.length - shownProducts.length })}
                 </button>
               </div>
             )}
-            <p className="px-3 pt-2 text-caption text-ink-soft">Harga boleh berubah. Confirm kat kedai rasmi sebelum bayar ya.</p>
+            <p className="px-3 pt-2 text-caption text-ink-soft">{t.priceNote}</p>
           </div>
         ) : (
-          <NoResults query={q} hot={hot} onNavigate={close} />
+          <NoResults t={t} locale={locale} query={q} hot={hot} onNavigate={close} />
         )}
       </div>
 
@@ -432,15 +437,15 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
       <div className="hidden shrink-0 items-center justify-end gap-3 border-t-2 border-garis bg-santan px-4 py-2 text-caption text-ink-soft sm:flex">
         <span className="inline-flex items-center gap-1">
           <Kbd>↑</Kbd>
-          <Kbd>↓</Kbd> pilih
+          <Kbd>↓</Kbd> {t.keys.move}
         </span>
         <span aria-hidden="true">·</span>
         <span className="inline-flex items-center gap-1">
-          <Kbd>Enter</Kbd> buka
+          <Kbd>Enter</Kbd> {t.keys.open}
         </span>
         <span aria-hidden="true">·</span>
         <span className="inline-flex items-center gap-1">
-          <Kbd>Esc</Kbd> tutup
+          <Kbd>Esc</Kbd> {t.keys.close}
         </span>
       </div>
     </dialog>
@@ -456,12 +461,12 @@ function GroupLabel({ id, children, count }: { id: string; children: string; cou
   );
 }
 
-function HotChips({ hot, onNavigate }: { hot: CategorySlug[]; onNavigate: () => void }) {
+function HotChips({ t, locale, hot, onNavigate }: { t: SearchMessages; locale: Locale; hot: CategorySlug[]; onNavigate: () => void }) {
   if (!hot.length) return null;
   return (
     <section aria-labelledby="search-hot" className="px-5 pt-4">
       <h3 id="search-hot" className="flex items-center gap-1.5 text-overline uppercase text-ink-soft">
-        <Flame aria-hidden="true" size={14} strokeWidth={2.5} /> Tengah hangat
+        <Flame aria-hidden="true" size={14} strokeWidth={2.5} /> {t.empty.hot}
       </h3>
       <ul className="mt-2 flex flex-wrap gap-2">
         {hot.map((slug) => (
@@ -474,7 +479,7 @@ function HotChips({ hot, onNavigate }: { hot: CategorySlug[]; onNavigate: () => 
               <span aria-hidden="true" className="text-(--cat-ink)">
                 <CategoryGlyph category={slug} size={18} />
               </span>
-              {CATEGORY_BY_SLUG[slug].nameMs}
+              {categoryLabel(slug, locale)}
             </Link>
           </li>
         ))}
@@ -484,6 +489,8 @@ function HotChips({ hot, onNavigate }: { hot: CategorySlug[]; onNavigate: () => 
 }
 
 function EmptyQuery({
+  t,
+  locale,
   recent,
   hot,
   examples,
@@ -491,6 +498,8 @@ function EmptyQuery({
   onForget,
   onNavigate,
 }: {
+  t: SearchMessages;
+  locale: Locale;
   recent: string[];
   hot: CategorySlug[];
   examples: string[];
@@ -503,15 +512,15 @@ function EmptyQuery({
       <div className="flex items-center gap-3 px-5 pt-5">
         <Oyen mood="idle" size={64} className="shrink-0 animate-pop-in" />
         <div>
-          <p className="text-title-3 text-ink">Nak cari apa, bos?</p>
-          <p className="text-body-sm text-ink-soft">Jenama, produk atau kategori. Taip je.</p>
+          <p className="text-title-3 text-ink">{t.empty.title}</p>
+          <p className="text-body-sm text-ink-soft">{t.empty.body}</p>
         </div>
       </div>
 
       {recent.length > 0 && (
         <section aria-labelledby="search-recent" className="px-5 pt-5">
           <h3 id="search-recent" className="flex items-center gap-1.5 text-overline uppercase text-ink-soft">
-            <Clock3 aria-hidden="true" size={14} strokeWidth={2.5} /> Carian terkini
+            <Clock3 aria-hidden="true" size={14} strokeWidth={2.5} /> {t.empty.recent}
           </h3>
           <ul className="mt-1 flex flex-col">
             {recent.map((r) => (
@@ -522,7 +531,7 @@ function EmptyQuery({
                 </button>
                 <button
                   type="button"
-                  aria-label={`Buang "${r}" dari carian terkini`}
+                  aria-label={fmt(t.empty.forget, { query: r })}
                   onClick={() => onForget(r)}
                   className="grid size-11 shrink-0 place-items-center rounded-full text-ink-soft hover:text-ink"
                 >
@@ -534,12 +543,12 @@ function EmptyQuery({
         </section>
       )}
 
-      <HotChips hot={hot} onNavigate={onNavigate} />
+      <HotChips t={t} locale={locale} hot={hot} onNavigate={onNavigate} />
 
       {examples.length > 0 && (
         <section aria-labelledby="search-try" className="px-5 pt-5">
           <h3 id="search-try" className="flex items-center gap-1.5 text-overline uppercase text-ink-soft">
-            <Sparkles aria-hidden="true" size={14} strokeWidth={2.5} /> Cuba cari
+            <Sparkles aria-hidden="true" size={14} strokeWidth={2.5} /> {t.empty.tryThese}
           </h3>
           <ul className="mt-2 flex flex-wrap gap-2">
             {examples.map((e) => (
@@ -560,18 +569,18 @@ function EmptyQuery({
   );
 }
 
-function NoResults({ query, hot, onNavigate }: { query: string; hot: CategorySlug[]; onNavigate: () => void }) {
+function NoResults({ t, locale, query, hot, onNavigate }: { t: SearchMessages; locale: Locale; query: string; hot: CategorySlug[]; onNavigate: () => void }) {
   return (
     <div className="pb-4">
       <div className="flex flex-col items-center px-6 pt-8 text-center">
         <Oyen mood="cari" size={64} className="animate-pop-in" />
-        <p className="mt-3 text-title-3 text-ink [overflow-wrap:anywhere]">Alamak, &ldquo;{query}&rdquo; tak jumpa.</p>
-        <p className="mt-1 max-w-[36ch] text-body-sm text-ink-soft">Cuba ejaan lain, atau cari ikut kategori. Jenama ni belum ada?</p>
+        <p className="mt-3 text-title-3 text-ink [overflow-wrap:anywhere]">{fmt(t.noResults.title, { query })}</p>
+        <p className="mt-1 max-w-[36ch] text-body-sm text-ink-soft">{t.noResults.body}</p>
         <Button className="mt-5" variant="secondary" size="sm" trailing="arrow" href={`/about?nama=${encodeURIComponent(query)}#cadang`} onClick={onNavigate}>
-          Cadang jenama ni
+          {t.noResults.suggest}
         </Button>
       </div>
-      <HotChips hot={hot} onNavigate={onNavigate} />
+      <HotChips t={t} locale={locale} hot={hot} onNavigate={onNavigate} />
     </div>
   );
 }

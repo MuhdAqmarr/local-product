@@ -1,7 +1,10 @@
 import { Children, type ReactNode } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import { ArrowRight } from "@/components/ui/lucide";
 import { RailStagger } from "@/components/motion/rail-stagger";
+import { fmt, pluralForm, type MaybePlural } from "@/i18n/format";
+import { rich } from "@/i18n/rich";
+import { getDictionary, getLocale } from "@/i18n/server";
 import { formatCount } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { RailControls } from "./rail-controls";
@@ -14,15 +17,15 @@ export interface RailProps {
   /** Plain-text title for the scroll region's accessible name (when `title` has markup). */
   titleText?: string;
   sub?: ReactNode;
-  /** Small overline above the title ("MINGGU NI"). */
+  /** Small overline above the title ("THIS WEEK"). */
   eyebrow?: ReactNode;
   /** Decoration beside the title (e.g. a small wau). */
   art?: ReactNode;
-  /** Live count in the header row ("38 promo"). */
+  /** Live count in the header row ("38 promos"). */
   count?: number;
-  /** Noun for the count and end card ("promo", "produk baru"). */
-  noun?: string;
-  /** "Tengok semua →" target; also renders the end card. */
+  /** Noun for the count and end card: `{ one: "promo", other: "promos" }` or one string (default: products). */
+  noun?: MaybePlural;
+  /** "See all →" target (language-neutral); also renders the end card. */
   href?: string;
   /** Once-per-session mobile swipe hint (first rail on Home only). */
   hint?: boolean;
@@ -37,11 +40,16 @@ export interface RailProps {
  * arrows), a snap track (`data-lenis-prevent-horizontal`, focusable region, SSR-visible cascade
  * of the first 6 cells), a CSS scroll-driven progress thumb and an end card.
  * Cells are `clamp(148px, 42vw, 188px)` on phones (≈ 2.3 visible) and 216 px on desktop.
+ * Async (reads the page language): Server Components only.
  */
-export function Rail({ id, title, titleText, sub, eyebrow, art, count, noun = "produk", href, hint, as: H = "h2", children, className }: RailProps) {
+export async function Rail({ id, title, titleText, sub, eyebrow, art, count, noun, href, hint, as: H = "h2", children, className }: RailProps) {
+  const [locale, t] = await Promise.all([getLocale(), getDictionary()]);
+  const r = t.common.rail;
+  const nounForms = noun ?? r.nounProducts;
+  const word = pluralForm(count ?? 2, nounForms);
   const trackId = `${id}-track`;
   const headingId = `${id}-title`;
-  const label = `${titleText ?? (typeof title === "string" ? title : noun)}, skrol mendatar`;
+  const label = fmt(r.region, { title: titleText ?? (typeof title === "string" ? title : word) });
   const cells = Children.toArray(children);
 
   return (
@@ -60,7 +68,7 @@ export function Rail({ id, title, titleText, sub, eyebrow, art, count, noun = "p
         <div className="flex shrink-0 items-center gap-3 pb-0.5">
           {count != null && (
             <span className="hidden text-caption text-ink-2 sm:inline">
-              <span className="font-num text-[15px] text-ink">{formatCount(count)}</span> {noun}
+              {rich("{count} {noun}", { count: <span className="font-num text-[15px] text-ink">{formatCount(count)}</span>, noun: word })}
             </span>
           )}
           {href && (
@@ -69,7 +77,7 @@ export function Rail({ id, title, titleText, sub, eyebrow, art, count, noun = "p
               transitionTypes={["nav-forward"]}
               className="group inline-flex min-h-11 items-center gap-1 text-label whitespace-nowrap text-telang underline-offset-4 hover:underline"
             >
-              Tengok semua
+              {r.seeAll}
               <ArrowRight aria-hidden="true" size={18} strokeWidth={2.25} className="transition-transform duration-200 group-hover:translate-x-[3px]" />
             </Link>
           )}
@@ -95,7 +103,7 @@ export function Rail({ id, title, titleText, sub, eyebrow, art, count, noun = "p
         itemClassName="snap-start min-w-0"
       >
         {cells}
-        {href && <RailEndCard key="rail-end" href={href} count={count} noun={noun} />}
+        {href && <RailEndCard key="rail-end" href={href} count={count} noun={word} locale={locale} />}
       </RailStagger>
 
       <div className={cn("rail-progress", "mx-auto -mt-1 h-1.5 w-24 overflow-hidden rounded-full bg-kapas")} aria-hidden="true">

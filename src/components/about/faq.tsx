@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import { ChevronDown } from "@/components/ui/lucide";
-import { formatClock, formatDate } from "@/lib/freshness";
-import { REPO_URL } from "@/lib/site";
+import { formatDateTime } from "@/lib/freshness";
+import { getDictionary, getLocale } from "@/i18n/server";
+import { rich } from "@/i18n/rich";
 
 interface Item {
   q: string;
@@ -13,66 +14,18 @@ interface Item {
  * FAQ (DESIGN §8.8 #5): native exclusive accordion (`<details name="faq">`), chevron rotates, the
  * answer fades in. Facts are limited to what is true of the product today (sync, honesty, links).
  */
-export function Faq({ syncedAt }: { syncedAt: string }) {
+export async function Faq({ syncedAt }: { syncedAt: string }) {
+  const [locale, dict] = await Promise.all([getLocale(), getDictionary()]);
+  const t = dict.about.faq;
   const items: Item[] = [
-    {
-      q: "Data harga dan promo ni datang dari mana?",
-      a: (
-        <>
-          Terus dari kedai online rasmi setiap jenama. Kami baca senarai produk kedai tu, kira diskaun dari harga asal vs harga sekarang, dan tandakan produk
-          yang baru dilancar. Jenama yang kedainya belum boleh dibaca automatik tetap disenaraikan, dengan link rasmi diorang.
-        </>
-      ),
-    },
-    {
-      q: "Berapa kerap data dikemas kini?",
-      a: (
-        <>
-          Lebih kurang setiap 3 jam di belakang tabir, dan sekali lagi setiap hari sekitar pukul 6 pagi. Sync terakhir:{" "}
-          <time dateTime={syncedAt}>
-            {formatDate(syncedAt)}, {formatClock(syncedAt)}
-          </time>
-          . Setiap kad produk tunjuk bila harganya disemak.
-        </>
-      ),
-    },
-    {
-      q: "Harga kat sini confirm sama dengan kat kedai?",
-      a: "Harga dan stok boleh berubah bila-bila masa, termasuk antara dua sync. Sila sahkan harga akhir kat kedai rasmi jenama sebelum bayar.",
-    },
-    {
-      q: "LokalLah! ada kaitan dengan jenama-jenama ni?",
-      a: "Tak ada. LokalLah! ialah direktori bebas. Kami tak bergabung dengan, ditaja atau disahkan oleh mana-mana jenama yang disenaraikan. Kami tak ambil komisen, dan tak ada tempat berbayar: susunan jenama dan produk bukan untuk dijual.",
-    },
-    {
-      q: "Kenapa link keluar ada utm_source=lokallah?",
-      a: "Supaya jenama boleh nampak dalam analitik diorang yang lawatan tu datang dari LokalLah!. Ini bukan link affiliate dan kami tak dapat apa-apa bila kau beli.",
-    },
-    {
-      q: "Apa beza Cili Padi, Naik Daun dan Jenama Ikon?",
-      a: (
-        <>
-          Tier ni cerita saiz jenama: Cili Padi untuk pembuat kecil dan home-grown, Naik Daun untuk jenama yang tengah makin dikenali, Jenama Ikon untuk nama
-          yang satu Malaysia kenal. <Link href="#tier">Tengok tier</Link>.
-        </>
-      ),
-    },
-    {
-      q: "Simpanan aku disimpan kat mana?",
-      a: "Dalam browser kau je (localStorage). Tak perlu login dan kami tak nampak apa yang kau simpan. Clear data browser, hilanglah dia.",
-    },
-    {
-      q: "Aku pemilik jenama. Nak betulkan info atau keluar dari senarai?",
-      a: (
-        <>
-          Boleh. Guna <Link href="#cadang">borang cadangan</Link> kat bawah, atau buka isu terus kat{" "}
-          <a href={`${REPO_URL}/issues`} target="_blank" rel="noopener noreferrer">
-            GitHub kami<span className="sr-only"> (tab baru)</span>
-          </a>
-          . Bagitahu nama jenama dan apa yang perlu diubah.
-        </>
-      ),
-    },
+    t.source,
+    { q: t.frequency.q, a: rich(t.frequency.a, { when: <time dateTime={syncedAt}>{formatDateTime(syncedAt, locale)}</time> }) },
+    t.prices,
+    t.affiliation,
+    t.utm,
+    { q: t.tiers.q, a: rich(t.tiers.a, { link: <Link href="#tier">{t.tiers.link}</Link> }) },
+    t.saved,
+    { q: t.owners.q, a: rich(t.owners.a, { link: <Link href="#cadang">{t.owners.link}</Link> }) },
   ];
 
   return (

@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { CategorySlug } from "@/lib/types";
+import { LoadingLabel } from "@/components/feedback/loading-label";
 import { LoadingLine } from "@/components/feedback/loading-line";
 import { cn } from "@/lib/utils";
 
@@ -19,14 +20,14 @@ export function Bone({ className, i = 0, style }: { className?: string; i?: numb
 }
 
 /**
- * Wrapper for a loading region: `aria-busy`, one sr-only "Sedang dimuatkan…", and optionally the
- * rotating Gochi loading line under the first group.
+ * Wrapper for a loading region: `aria-busy`, one sr-only "Loading…" (page language; override with
+ * `label`), and optionally the rotating Gochi loading line under the first group.
  */
-export function SkeletonRegion({ children, className, line = true, label = "Sedang dimuatkan…" }: { children: ReactNode; className?: string; line?: boolean; label?: string }) {
+export function SkeletonRegion({ children, className, line = true, label }: { children: ReactNode; className?: string; line?: boolean; label?: string }) {
   return (
     <div aria-busy="true" className={className}>
       <span className="sr-only" role="status">
-        {label}
+        {label ?? <LoadingLabel />}
       </span>
       {children}
       {line && (

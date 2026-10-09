@@ -1,6 +1,8 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { useLocale } from "@/i18n/client";
+import { fmt } from "@/i18n/format";
 import { timeAgo } from "@/lib/format";
 
 /**
@@ -44,12 +46,17 @@ export function useNow(fallback: number): number {
   return value || fallback;
 }
 
-export function RelTime({ iso, base, prefix = "", className }: { iso: string; base: string; prefix?: string; className?: string }) {
+/**
+ * Relative time in the page language. `template` wraps it ("Launched {time}" → "Launched 3 days ago");
+ * `prefix` is a plain string in front (kept for older callers).
+ */
+export function RelTime({ iso, base, prefix = "", template, className }: { iso: string; base: string; prefix?: string; template?: string; className?: string }) {
   const at = useNow(Date.parse(base));
+  const ago = timeAgo(iso, at, useLocale());
   return (
     <time dateTime={iso} className={className} suppressHydrationWarning>
       {prefix}
-      {timeAgo(iso, at)}
+      {template ? fmt(template, { time: ago }) : ago}
     </time>
   );
 }

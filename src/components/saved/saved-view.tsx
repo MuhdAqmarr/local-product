@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type MouseEvent } from "react";
 import { BadgePercent, CircleAlert, Heart, Info, Store, TrendingDown, TrendingUp, Trash2 } from "@/components/ui/lucide";
 import { Monogram } from "@/components/brand/monogram";
@@ -22,11 +22,14 @@ import { Modal } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
 import { panelId, tabId, Tabs } from "@/components/ui/tabs";
 import type { SearchItem } from "@/lib/catalog";
-import { formatCount, outboundUrl, timeAgo } from "@/lib/format";
+import { outboundUrl, timeAgo } from "@/lib/format";
 import { useSaved, type SavedBrand, type SavedItem, type SavedProduct } from "@/lib/saved";
-import { CATEGORY_BY_SLUG } from "@/lib/taxonomy";
+import { categoryLabel } from "@/lib/taxonomy";
 import type { ProductCardData } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/i18n/client";
+import { fmt, plural, pluralForm } from "@/i18n/format";
+import { rich } from "@/i18n/rich";
 
 const STORE_KEY = "lokallah:saved:v1";
 const TABS_BASE = "simpan";
@@ -34,11 +37,6 @@ const TABS_BASE = "simpan";
 type Tab = "produk" | "jenama";
 type Sort = "baru" | "turun" | "diskaun";
 
-const SORTS = [
-  { value: "baru", label: "Baru disimpan" },
-  { value: "turun", label: "Harga turun dulu" },
-  { value: "diskaun", label: "Diskaun terbesar" },
-] as const;
 
 type Fresh =
   | { kind: "drop"; amount: number }
@@ -129,6 +127,16 @@ function heartIn(el: Element | null | undefined): HTMLElement | null {
 }
 
 export function SavedView({ syncedAt }: { syncedAt: string }) {
+  const { m, locale } = useI18n();
+  const t = m.saved;
+  const sorts = useMemo(
+    () => [
+      { value: "baru" as const, label: t.sort.newest },
+      { value: "turun" as const, label: t.sort.drops },
+      { value: "diskaun" as const, label: t.sort.discount },
+    ],
+    [t],
+  );
   const mounted = useMounted();
   const { items, count, clear, toggle, remove } = useSaved();
   const itemsRef = useRef(items);
@@ -189,11 +197,11 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
     remove(item.id);
     requestAnimationFrame(() => nextFocus?.focus({ preventScroll: false }));
     toast({
-      message: `Dah buang ${title}. Tekan Undo dalam notifikasi untuk batal.`,
+      message: fmt(t.toast.removed, { title }),
       tone: "save",
       duration: event.detail === 0 ? 12_000 : undefined,
       action: {
-        label: "Undo",
+        label: t.toast.undo,
         onClick: () => {
           reinsert(item, itemsRef.current, toggle);
           // Back on the restored card's heart once it has re-rendered.
@@ -207,7 +215,7 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
     const snapshot = items;
     clear();
     setConfirm(false);
-    toast({ message: "Simpanan dah dikosongkan.", tone: "info", action: { label: "Undo", onClick: () => restore(snapshot, toggle) } });
+    toast({ message: t.toast.cleared, tone: "info", action: { label: t.toast.undo, onClick: () => restore(snapshot, toggle) } });
   };
 
   return (
@@ -216,19 +224,19 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
           <div className="min-w-0">
             <p className="flex items-center gap-1.5 text-overline uppercase text-ink-2">
-              <Heart aria-hidden="true" size={14} strokeWidth={2.5} /> Simpan
+              <Heart aria-hidden="true" size={14} strokeWidth={2.5} /> {t.eyebrow}
             </p>
             <h1 id="saved-title" className="mt-1 flex flex-wrap items-baseline gap-x-3 text-title-1 text-ink">
-              Simpanan kau
+              {t.title}
               <span className={cn("transition-opacity duration-200", mounted ? "opacity-100" : "opacity-0")}>
-                <Odometer value={mounted ? count : 0} className="font-num text-ink-2" srText={`${count} item`} />
+                <Odometer value={mounted ? count : 0} className="font-num text-ink-2" srText={plural(count, t.srCount)} />
               </span>
             </h1>
-            <p className="mt-2 max-w-[48ch] text-body text-ink-2">Disimpan dalam phone ni je, tak perlu login.</p>
+            <p className="mt-2 max-w-[48ch] text-body text-ink-2">{t.sub}</p>
           </div>
           {mounted && count > 0 && (
             <Button variant="ghost" size="sm" icon={<Trash2 aria-hidden="true" />} onClick={() => setConfirm(true)}>
-              Kosongkan semua
+              {t.clearAll}
             </Button>
           )}
         </div>
@@ -245,20 +253,20 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
                   <TrendingDown aria-hidden="true" size={18} strokeWidth={2.5} />
                 </span>
                 <p className="text-body text-ink">
-                  <span className="font-semibold">Psst!</span> <span className="font-num">{drops}</span> barang simpanan kau turun harga.
+                  <span className="font-semibold">{t.dropsLead}</span> {rich(pluralForm(drops, t.drops), { count: <span className="font-num">{drops}</span> })}
                 </p>
               </div>
             )}
 
             <Tabs
               base={TABS_BASE}
-              label="Jenis simpanan"
+              label={t.tabs.label}
               value={tab}
               onChange={setTab}
               className="max-w-[420px]"
               items={[
-                { value: "produk", label: "Produk", count: savedProducts.length },
-                { value: "jenama", label: "Jenama", count: savedBrands.length },
+                { value: "produk", label: t.tabs.products, count: savedProducts.length },
+                { value: "jenama", label: t.tabs.brands, count: savedBrands.length },
               ]}
             />
 
@@ -266,10 +274,10 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
               {entries.length === 0 ? (
                 <EmptyState
                   mood="tidur"
-                  title="Simpanan kau kosong lagi."
-                  body="Tekan ♥ kat mana-mana produk, nanti Oyen simpankan sini (dalam phone kau je)."
-                  primary={{ label: "Jom usha promo", href: "/promos", trailing: "arrow" }}
-                  secondary={{ label: "Tengok yang baru", href: "/new" }}
+                  title={t.emptyProducts.title}
+                  body={t.emptyProducts.body}
+                  primary={{ label: t.emptyProducts.primary, href: "/promos", trailing: "arrow" }}
+                  secondary={{ label: t.emptyProducts.secondary, href: "/new" }}
                 />
               ) : (
                 <>
@@ -277,11 +285,11 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
                     <p className="text-body-sm text-ink-2" aria-live="polite">
                       {map ? (
                         <>
-                          Harga disemak dengan sync terakhir. <span className="text-ink-soft">Confirm kat kedai rasmi sebelum bayar ya.</span>
+                          {t.status.checked} <span className="text-ink-soft">{t.status.confirm}</span>
                         </>
                       ) : error ? (
                         <span className="inline-flex items-center gap-1.5 text-kunyit-pekat">
-                          <CircleAlert aria-hidden="true" size={16} /> Tak dapat semak harga terkini. Harga ni masa kau simpan.
+                          <CircleAlert aria-hidden="true" size={16} /> {t.status.error}
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-2 text-ink-soft">
@@ -290,29 +298,29 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
                             <i />
                             <i />
                           </span>
-                          Tengah semak harga terkini…
+                          {t.status.checking}
                         </span>
                       )}
                     </p>
                     <Select
                       id="saved-sort"
-                      aria-label="Susun"
+                      aria-label={t.sort.label}
                       value={sort}
                       onChange={(e) => setSort(e.target.value as Sort)}
-                      options={SORTS}
+                      options={sorts}
                       className="h-11 w-auto min-w-[200px] text-body-sm"
                     />
                   </div>
-                  <h2 className="sr-only">Produk disimpan</h2>
+                  <h2 className="sr-only">{t.srProducts}</h2>
                   <ul role="list" className={gridColumns()}>
                     {entries.map((e) => (
                       <li
                         key={e.saved.id}
                         data-saved-id={e.saved.id}
                         className="flex min-w-0 flex-col gap-1.5"
-                        onClickCapture={(ev) => removeFrom(ev, e.saved, e.saved.product.title || "produk ni", tabId(TABS_BASE, "produk"))}
+                        onClickCapture={(ev) => removeFrom(ev, e.saved, e.saved.product.title || t.thisProduct, tabId(TABS_BASE, "produk"))}
                       >
-                        <ProductCard product={e.product} syncedAt={syncedAt} className="h-auto flex-1" />
+                        <ProductCard locale={locale} product={e.product} syncedAt={syncedAt} className="h-auto flex-1" />
                         <SavedMeta fresh={e.fresh} saved={e.saved.product} savedAt={e.saved.savedAt} now={now} currency={e.product.currency} />
                       </li>
                     ))}
@@ -325,13 +333,13 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
               {savedBrands.length === 0 ? (
                 <EmptyState
                   mood="tidur"
-                  title="Belum ada jenama kegemaran."
-                  body="Simpan jenama yang kau suka, senang nak check promo dia nanti."
-                  primary={{ label: "Jelajah jenama", href: "/brands", trailing: "arrow" }}
+                  title={t.emptyBrands.title}
+                  body={t.emptyBrands.body}
+                  primary={{ label: t.emptyBrands.primary, href: "/brands", trailing: "arrow" }}
                 />
               ) : (
                 <>
-                <h2 className="sr-only">Jenama disimpan</h2>
+                <h2 className="sr-only">{t.srBrands}</h2>
                 <ul role="list" className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {[...savedBrands]
                     .sort((a, b) => b.savedAt - a.savedAt)
@@ -340,7 +348,7 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
                         key={b.id}
                         data-saved-id={b.id}
                         className="min-w-0"
-                        onClickCapture={(ev) => removeFrom(ev, b, `jenama ${b.brand.name}`, tabId(TABS_BASE, "jenama"))}
+                        onClickCapture={(ev) => removeFrom(ev, b, fmt(t.brandName, { name: b.brand.name }), tabId(TABS_BASE, "jenama"))}
                       >
                         <SavedBrandRow item={b} promos={map ? (promoByBrand.get(b.brand.slug) ?? 0) : null} now={now} />
                       </li>
@@ -350,7 +358,7 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
               )}
             </div>
 
-            <p className="mt-10 max-w-[70ch] text-caption text-ink-soft">Simpanan disimpan dalam browser ni je. Clear data browser, hilanglah dia.</p>
+            <p className="mt-10 max-w-[70ch] text-caption text-ink-soft">{t.storageNote}</p>
           </>
         )}
       </div>
@@ -358,20 +366,20 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
       <Modal
         open={confirm}
         onClose={() => setConfirm(false)}
-        title="Kosongkan semua simpanan?"
-        description={`${formatCount(count)} produk dan jenama akan dibuang dari phone ni.`}
+        title={t.confirm.title}
+        description={plural(count, t.confirm.description)}
         footer={
           <div className="flex flex-wrap justify-end gap-3">
             <Button variant="secondary" size="sm" onClick={() => setConfirm(false)}>
-              Batal
+              {t.confirm.cancel}
             </Button>
             <Button variant="danger" size="sm" onClick={clearAll}>
-              Kosongkan semua
+              {t.confirm.confirm}
             </Button>
           </div>
         }
       >
-        <p className="text-body text-ink-2">Lepas kosongkan, kau masih boleh tekan Undo sekejap.</p>
+        <p className="text-body text-ink-2">{t.confirm.body}</p>
       </Modal>
     </>
   );
@@ -391,50 +399,53 @@ function SavedMeta({
   now: number | null;
   currency: string;
 }) {
+  const { m, locale } = useI18n();
+  const t = m.saved.fresh;
   return (
     <div className="flex min-h-[44px] flex-col items-start gap-1 px-1">
       {fresh?.kind === "drop" && (
         <span className="inline-flex animate-wiggle items-center gap-1 rounded-full border-[1.5px] border-pandan-pekat bg-pandan-tint px-2 py-0.5 text-[12px] font-semibold leading-tight text-pandan-pekat">
           <TrendingDown aria-hidden="true" size={14} strokeWidth={2.5} className="shrink-0" />
-          Turun lagi {displayPrice(fresh.amount, currency)} sejak kau simpan!
+          {fmt(t.drop, { amount: displayPrice(fresh.amount, currency) })}
         </span>
       )}
       {fresh?.kind === "up" && (
         <span className="inline-flex items-center gap-1 text-caption text-ink-soft">
-          <TrendingUp aria-hidden="true" size={13} strokeWidth={2.5} /> Naik {displayPrice(fresh.amount, currency)} sejak kau simpan
+          <TrendingUp aria-hidden="true" size={13} strokeWidth={2.5} /> {fmt(t.up, { amount: displayPrice(fresh.amount, currency) })}
         </span>
       )}
       {fresh?.kind === "ended" && (
         <span className="inline-flex items-center gap-1 text-caption text-ink-soft">
-          <BadgePercent aria-hidden="true" size={13} strokeWidth={2.5} /> Promo dah tamat
+          <BadgePercent aria-hidden="true" size={13} strokeWidth={2.5} /> {t.ended}
         </span>
       )}
       {fresh?.kind === "unknown" && (
         <span className="text-caption text-ink-soft">
           <Info aria-hidden="true" size={13} strokeWidth={2.5} className="mr-1 inline align-[-2px]" />
-          Tak dapat semak harga terkini. Harga masa simpan: <span className="font-num">{displayPrice(saved.price, saved.currency)}</span>.{" "}
+          {rich(t.unknown, { price: <span className="font-num">{displayPrice(saved.price, saved.currency)}</span> })}{" "}
           <a
             href={outboundUrl(saved.url)}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`Tengok ${saved.title || "produk ni"} kat kedai rasmi (tab baru)`}
+            aria-label={fmt(t.viewLabel, { title: saved.title || m.saved.thisProduct })}
             className="font-semibold text-ink underline decoration-2 underline-offset-2 hover:decoration-jambu"
           >
-            Tengok kat kedai rasmi ↗
+            {t.view}
           </a>
         </span>
       )}
       <span className="text-caption text-ink-soft">
         <Heart aria-hidden="true" size={11} strokeWidth={2.5} className="mr-1 inline align-[-1px]" />
-        Disimpan {now == null ? "" : timeAgo(new Date(savedAt).toISOString(), now)}
+        {now == null ? fmt(t.savedAgo, { time: "" }).trim() : fmt(t.savedAgo, { time: timeAgo(new Date(savedAt).toISOString(), now, locale) })}
       </span>
     </div>
   );
 }
 
 function SavedBrandRow({ item, promos, now }: { item: SavedBrand; promos: number | null; now: number | null }) {
+  const { m, locale } = useI18n();
+  const t = m.saved;
   const b = item.brand;
-  const cat = CATEGORY_BY_SLUG[b.category];
   return (
     <article data-cat={b.category} className="card relative flex min-h-[96px] items-center gap-3 rounded-card border-2 border-garis bg-putih p-3 shadow-card">
       <Monogram slug={b.slug} name={b.name} category={b.category} size={56} tier={b.tier} />
@@ -445,21 +456,21 @@ function SavedBrandRow({ item, promos, now }: { item: SavedBrand; promos: number
           </Link>
         </h3>
         <div className="relative z-10 flex flex-wrap items-center gap-1.5">
-          <TierCop tier={b.tier} />
+          <TierCop locale={locale} tier={b.tier} />
           {promos != null &&
             (promos > 0 ? (
               <InfoPill tone="promo" icon={<BadgePercent aria-hidden="true" />}>
-                {promos} promo sekarang
+                {plural(promos, t.brandRow.promos)}
               </InfoPill>
             ) : (
               <InfoPill tone="neutral" icon={<Store aria-hidden="true" />}>
-                Takde promo sekarang
+                {t.brandRow.noPromos}
               </InfoPill>
             ))}
         </div>
         <p className="truncate text-caption text-ink-soft">
-          {cat?.nameMs}
-          {now != null && ` · Disimpan ${timeAgo(new Date(item.savedAt).toISOString(), now)}`}
+          {categoryLabel(b.category, locale)}
+          {now != null && ` · ${fmt(t.fresh.savedAgo, { time: timeAgo(new Date(item.savedAt).toISOString(), now, locale) })}`}
         </p>
       </div>
       <div className="relative z-10 shrink-0">

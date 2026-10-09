@@ -6,18 +6,19 @@ import { useSaved } from "@/lib/saved";
 import { popStyle } from "@/components/ui/pop";
 import { CountBubble } from "@/components/ui/count-bubble";
 import { isActivePath } from "./nav-link";
-import { usePathname } from "next/navigation";
+import { useI18n, useLocalePath } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 
 /** Desktop header "Simpan" heart (44 px pop), count bubble, and the fly-to-Simpan target on desktop. */
 export function SavedLink() {
   const { count } = useSaved();
-  const active = isActivePath(usePathname(), "/saved");
+  const { m, plural } = useI18n();
+  const active = isActivePath(useLocalePath(), "/saved");
   return (
     <ShellLink
       href="/saved"
       transitionTypes={["nav-tab"]}
-      aria-label={count ? `Simpan, ${count} item` : "Simpan"}
+      aria-label={count ? plural(count, m.common.nav.savedCount) : m.common.nav.saved}
       aria-current={active ? "page" : undefined}
       data-saved-target=""
       className="pop relative shrink-0"

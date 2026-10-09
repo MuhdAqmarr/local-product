@@ -1,7 +1,7 @@
 "use client";
 
 import { startTransition, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useI18n, useLocaleRouter } from "@/i18n/client";
 import { Dices } from "@/components/ui/lucide";
 import { prefersLessMotion } from "@/components/providers/motion-pref";
 import { Button, type ButtonSize, type ButtonVariant } from "@/components/ui/button";
@@ -17,11 +17,12 @@ export interface RandomBrandButtonProps {
 }
 
 /**
- * "Jenama rawak" (DESIGN §7.5 #26): the dice rotates 360° (400 ms, ease-out) to say "random",
+ * "Random brand" / "Jenama rawak" (DESIGN §7.5 #26): the dice rotates 360° (400 ms, ease-out) to say "random",
  * then we navigate. Under reduced motion it navigates straight away.
  */
 export function RandomBrandButton({ slugs, exclude, variant = "secondary", size = "md", className }: RandomBrandButtonProps) {
-  const router = useRouter();
+  const router = useLocaleRouter();
+  const { m } = useI18n();
   const iconRef = useRef<HTMLSpanElement>(null);
   const busy = useRef(false);
 
@@ -57,7 +58,7 @@ export function RandomBrandButton({ slugs, exclude, variant = "secondary", size 
         </span>
       }
     >
-      Jenama rawak
+      {m.common.footer.randomBrand}
     </Button>
   );
 }

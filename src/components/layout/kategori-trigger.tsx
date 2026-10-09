@@ -1,13 +1,13 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useI18n, useLocalePath } from "@/i18n/client";
 import { ChevronDown } from "@/components/ui/lucide";
 import { NavSquiggle } from "./nav-link";
 
 /** Desktop "Kategori ▾" button: opens the native popover; squiggle when browsing a category. */
 export function KategoriTrigger({ target }: { target: string }) {
-  const pathname = usePathname();
-  const active = Boolean(pathname?.startsWith("/categories/"));
+  const { m } = useI18n();
+  const active = useLocalePath().startsWith("/categories/");
   return (
     <button
       type="button"
@@ -16,7 +16,7 @@ export function KategoriTrigger({ target }: { target: string }) {
       style={{ ["anchorName" as string]: `--${target}` }}
     >
       <span className="relative">
-        Kategori
+        {m.common.kategori.button}
         <NavSquiggle active={active} />
       </span>
       <ChevronDown aria-hidden size={18} strokeWidth={2.25} className="kategori-chev transition-transform duration-200" />

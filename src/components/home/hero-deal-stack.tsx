@@ -5,6 +5,7 @@ import { WauBulan } from "@/components/art/wau-bulan";
 import { ProductCard } from "@/components/product/product-card";
 import type { ProductCardData } from "@/lib/types";
 import { HeroParallax } from "./hero-parallax";
+import { getDictionary, getLocale } from "@/i18n/server";
 
 /**
  * Resting fan: rotation, placement and intro delay per card (DESIGN §7.4: −6° / 3° / −2°, 360/440/520 ms).
@@ -23,7 +24,9 @@ const FAN = [
  * the wau that "brings the deals" with its string trailing down to them, a bunga raya behind and
  * the static "100% Buatan Malaysia" seal. Hidden below 1024 px (its images never load on phones).
  */
-export function HeroDealStack({ deals, kind, syncedAt }: { deals: ProductCardData[]; kind: "promo" | "baru"; syncedAt: string }) {
+export async function HeroDealStack({ deals, kind, syncedAt }: { deals: ProductCardData[]; kind: "promo" | "baru"; syncedAt: string }) {
+  const [locale, dict] = await Promise.all([getLocale(), getDictionary()]);
+  const t = dict.home.hero;
   return (
     <div className="relative hidden h-[540px] self-center lg:col-span-5 lg:block">
       <BungaRaya size={96} className="intro-slap absolute -top-2 right-[-18px]"
@@ -33,11 +36,11 @@ export function HeroDealStack({ deals, kind, syncedAt }: { deals: ProductCardDat
         <div className="absolute inset-0 rounded-panel border-2 border-ink bg-putih/75 shadow-pop" />
         <h2 className="absolute top-4 right-6 flex items-center gap-2 text-overline text-ink-2 uppercase">
           <span className="live-dot" aria-hidden />
-          {kind === "promo" ? "Rak promo live" : "Baru sampai, live"}
+          {kind === "promo" ? t.stackPromo : t.stackNew}
         </h2>
         {deals.length > 0 && (
           <ul
-            aria-label={kind === "promo" ? "Promo paling besar sekarang" : "Launch terbaru"}
+            aria-label={kind === "promo" ? t.stackPromoList : t.stackNewList}
             // --cw: card width, ≥150 px (titles never break mid-word) and ≤208 px; the fan itself
             // is capped at 640 px and centred so wide screens keep an overlapping fan.
             className="absolute inset-x-6 top-12 bottom-0 mx-auto max-w-[640px] [--cw:clamp(150px,44%,208px)] xl:[--cw:clamp(150px,34%,208px)]"
@@ -54,7 +57,7 @@ export function HeroDealStack({ deals, kind, syncedAt }: { deals: ProductCardDat
               } as CSSProperties;
               return (
                 <li key={p.id} className={`intro-slap absolute w-(--cw) ${f.pos}`} style={style}>
-                  <ProductCard product={p} syncedAt={syncedAt} context="rail" emphasis={kind} />
+                  <ProductCard locale={locale} product={p} syncedAt={syncedAt} context="rail" emphasis={kind} />
                 </li>
               );
             })}

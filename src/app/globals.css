@@ -14,7 +14,7 @@
 @import "../components/home/home.css";
 @import "../components/rail/rail.css";
 @import "../components/listing/listing.css";
-@import "./categories/[slug]/scope.css";
+@import "./[lang]/categories/[slug]/scope.css";
 @import "../components/about/about.css";
 
 /* =====================================================================

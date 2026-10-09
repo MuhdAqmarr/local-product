@@ -5,7 +5,8 @@ import { ArrowUpDown, BadgePercent, CalendarDays, Check, SlidersHorizontal, Wall
 import { CategoryChip } from "@/components/category/category-chip";
 import { Chip } from "@/components/ui/chip";
 import { CountBubble } from "@/components/ui/count-bubble";
-import { CATEGORY_SLUGS, DEFAULT_SORT, priceId, SORT_OPTIONS, activeCount } from "@/components/listing/listing-model";
+import { CATEGORY_SLUGS, DEFAULT_SORT, discountLabel, priceId, priceLabel, SORT_OPTIONS, activeCount } from "@/components/listing/listing-model";
+import { useI18n } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 import { toggle, type ControlProps } from "./filter-controls";
 
@@ -26,6 +27,8 @@ const QUICK_PRICE = { min: 0, max: 50 };
  * once the bar is stuck.
  */
 export function FilterBar({ kind, value, facets, onChange, onOpenSheet, onIntent, className }: FilterBarProps) {
+  const { m, fmt, plural } = useI18n();
+  const t = m.listings.filters;
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const sortId = `sort-${uid}`;
   const sentinel = useRef<HTMLDivElement>(null);
@@ -67,20 +70,20 @@ export function FilterBar({ kind, value, facets, onChange, onOpenSheet, onIntent
               onClick={onOpenSheet}
               onPointerEnter={onIntent}
               aria-haspopup="dialog"
-              aria-label={n > 0 ? `Tapis, ${n} tapisan aktif` : "Tapis"}
+              aria-label={n > 0 ? plural(n, t.filterActive) : t.filter}
               className="pop group relative shrink-0"
               style={{ ["--pop-offset" as string]: "2px" }}
             >
               <span className="pop-face h-9 gap-1.5 bg-putih pl-2.5 pr-3 text-label text-ink">
                 <SlidersHorizontal aria-hidden size={18} strokeWidth={2.25} />
-                Tapis
+                {t.filter}
               </span>
               <CountBubble count={n} className="absolute -right-1.5 -top-1.5 z-10" />
             </button>
 
             <div
               role="group"
-              aria-label="Tapis pantas"
+              aria-label={t.quick}
               data-lenis-prevent-horizontal=""
               className="no-scrollbar edge-fade flex min-w-0 flex-1 snap-x snap-proximity items-center gap-2 overflow-x-auto px-1 py-1 [--fade:16px] *:snap-start"
             >
@@ -91,7 +94,7 @@ export function FilterBar({ kind, value, facets, onChange, onOpenSheet, onIntent
                   selected={quickDiscount}
                   onClick={() => onChange({ diskaun: quickDiscount ? 0 : QUICK_DISCOUNT })}
                 >
-                  Diskaun 40%+
+                  {fmt(t.discountPill, { value: discountLabel(QUICK_DISCOUNT, t) })}
                 </Chip>
               ) : (
                 <Chip
@@ -101,11 +104,11 @@ export function FilterBar({ kind, value, facets, onChange, onOpenSheet, onIntent
                   count={facets?.masa.minggu}
                   onClick={() => onChange({ masa: value.masa === "minggu" ? "bulan" : "minggu" })}
                 >
-                  Minggu ni
+                  {t.masa.minggu}
                 </Chip>
               )}
               <Chip dense icon={<Wallet strokeWidth={2.25} />} selected={quickPrice} onClick={() => onChange({ harga: quickPrice ? null : QUICK_PRICE })}>
-                Bawah RM50
+                {priceLabel(QUICK_PRICE, t)}
               </Chip>
               <span aria-hidden className="mx-0.5 h-5 w-px shrink-0 bg-garis-kuat" />
               {CATEGORY_SLUGS.map((slug) => (
@@ -123,7 +126,7 @@ export function FilterBar({ kind, value, facets, onChange, onOpenSheet, onIntent
             <button
               type="button"
               popoverTarget={sortId}
-              aria-label={`Susun: ${SORT_OPTIONS[kind].find((o) => o.value === value.susun)?.label ?? ""}`}
+              aria-label={fmt(t.sortCurrent, { label: t.sortOptions[value.susun] })}
               className="relative grid size-10 shrink-0 place-items-center rounded-full border-[1.5px] border-garis-kuat bg-putih text-ink transition-transform active:scale-[.92]"
               style={{ ["anchorName" as string]: `--${sortId}` }}
             >
@@ -134,23 +137,23 @@ export function FilterBar({ kind, value, facets, onChange, onOpenSheet, onIntent
               id={sortId}
               popover="auto"
               role="dialog"
-              aria-label="Susun"
+              aria-label={t.sort}
               data-align="end"
               className="pop-panel anchored-panel w-[min(280px,calc(100vw-32px))] rounded-card-lg border-2 border-ink bg-putih p-2 text-ink shadow-float"
               style={{ ["positionAnchor" as string]: `--${sortId}` }}
             >
-              <p className="px-3 pb-1 pt-2 text-overline uppercase text-ink-soft">Susun ikut</p>
-              <div role="radiogroup" aria-label="Susun">
-                {SORT_OPTIONS[kind].map((o) => {
-                  const on = o.value === value.susun;
+              <p className="px-3 pb-1 pt-2 text-overline uppercase text-ink-soft">{t.sortBy}</p>
+              <div role="radiogroup" aria-label={t.sort}>
+                {SORT_OPTIONS[kind].map((key) => {
+                  const on = key === value.susun;
                   return (
                     <button
-                      key={o.value}
+                      key={key}
                       type="button"
                       role="radio"
                       aria-checked={on}
                       onClick={() => {
-                        onChange({ susun: o.value });
+                        onChange({ susun: key });
                         document.getElementById(sortId)?.hidePopover?.();
                       }}
                       className={cn(
@@ -161,7 +164,7 @@ export function FilterBar({ kind, value, facets, onChange, onOpenSheet, onIntent
                       <span aria-hidden className="grid size-5 shrink-0 place-items-center">
                         {on && <Check size={18} strokeWidth={2.5} className="animate-pop-in" />}
                       </span>
-                      {o.label}
+                      {t.sortOptions[key]}
                     </button>
                   );
                 })}

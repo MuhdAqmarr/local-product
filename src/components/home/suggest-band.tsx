@@ -2,12 +2,14 @@ import { Megaphone } from "@/components/ui/lucide";
 import { Oyen } from "@/components/art/oyen";
 import { Band } from "@/components/ui/band";
 import { Button } from "@/components/ui/button";
+import { getDictionary } from "@/i18n/server";
 
 /**
- * "Kenal jenama lokal yang best?" (DESIGN §8.1 #10): bandung-fizz CTA band, Oyen (happy) holding a
+ * "Know a great local brand?" / "Kenal jenama lokal yang best?" (DESIGN §8.1 #10): bandung-fizz CTA band, Oyen (happy) holding a
  * megaphone, one ink button to the suggest form on /about.
  */
-export function SuggestBand() {
+export async function SuggestBand() {
+  const t = (await getDictionary()).home.suggest;
   return (
     <Band tone="bandung-fizz" labelledBy="cadang-band-title" className="[contain-intrinsic-size:auto_320px] [content-visibility:auto] md:px-12 md:py-10">
       <div className="flex flex-col items-center gap-5 text-center md:flex-row md:gap-8 md:text-left">
@@ -19,9 +21,9 @@ export function SuggestBand() {
         </span>
         <div className="min-w-0 flex-1">
           <h2 id="cadang-band-title" className="text-title-2 text-ink">
-            Kenal jenama lokal yang best?
+            {t.title}
           </h2>
-          <p className="mt-2 text-lead text-ink">Cadang la. Oyen catat, kami semak.</p>
+          <p className="mt-2 text-lead text-ink">{t.sub}</p>
         </div>
         <Button
           href="/about#cadang"
@@ -31,7 +33,7 @@ export function SuggestBand() {
           className="shrink-0"
           style={{ ["--pop-offset" as string]: "4px", ["--pop-color" as string]: "var(--color-putih)" }}
         >
-          Cadang jenama
+          {t.cta}
         </Button>
       </div>
     </Band>

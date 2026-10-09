@@ -62,7 +62,8 @@ Rebuild the brand list from research files (and re-detect store platforms):
 | --- | --- | --- |
 | `CRON_SECRET` | Vercel (production) | Protects `/api/cron/refresh` (Vercel Cron sends it) |
 | `NEXT_PUBLIC_SITE_URL` | Vercel (production) | Canonical URL for metadata, sitemap, OG |
-| `SUGGEST_WEBHOOK_URL` | optional | Where "Cadang jenama" suggestions are POSTed; without it the form opens a prefilled GitHub issue |
+| `SUGGEST_WEBHOOK_URL` | optional | Where "Cadang jenama" suggestions are POSTed |
+| `SUGGEST_EMAIL` | optional | Without a webhook, the form hands the visitor a prefilled email to this address; with neither, the About page shows a "suggestions open soon" note instead of the form |
 | `LOKAL_LIVE` | local, optional | `1` reads stores live at runtime, `0` forces the snapshot |
 
 ## Project map
@@ -79,4 +80,4 @@ LokalLah! is an independent directory, not affiliated with the brands, with no p
 or commission. Product names, prices and photos belong to their brands and come from their
 public stores; prices can change, so always confirm on the brand's store. Outbound links carry
 `utm_source=lokallah` so brands can see the visits. Brand owners can ask for corrections or
-removal through the suggest form or a GitHub issue.
+removal through the suggest form on the About page.

@@ -40,6 +40,11 @@ C components, but must pass only serialisable props (no functions).
    and adds `noindex`. This is documented behaviour, and the 404 UI still renders.
 9. **Honesty.** Don't invent facts. Copy must never claim "all Malaysian brands", partnerships or ratings.
    Near prices, say they can change and link to the brand's store with `outboundUrl()`.
+10. **Two languages (docs/I18N.md, "How to").** Pages live in `src/app/[lang]/`. No hard-coded copy:
+   server `await getDictionary()`, client `useI18n()`. Links: `Link` from `@/i18n/link` with
+   language-neutral hrefs (`/promos`), it adds `/ms` itself. Components marked **L** below take a
+   required `locale: Locale` prop; components marked **A** are async Server Components that read the
+   locale themselves (never import them into client code).
 
 ---
 
@@ -137,24 +142,25 @@ reduced motion (Lenis is mounted only for a fine pointer with full motion), so e
 
 | Component | Kind | Props |
 |---|---|---|
-| `LivePill` (`live-pill.tsx`) | S | Site mode: `syncedAt`, `source`, `liveBrands?`, `brands?`, `watch?` (refresh on focus and toast new syncs), `promos?`. Brand mode: `syncedAt` + `brand: {name, hasFeed, status?: FeedStatus}`. Also `size?: "md"\|"sm"`, `className?`. Includes the "how syncing works" popover. **Renders a div.** |
-| `LiveTime` | C | `iso`, `initial?`, `className?`. The server prints the clock time; after mount it shows relative time, updated every 60 s. Also `useNow(intervalMs?)`. |
+| `LivePill` (`live-pill.tsx`) | S · A | Site mode: `syncedAt`, `source`, `liveBrands?`, `brands?`, `watch?` (refresh on focus and toast new syncs), `promos?`. Brand mode: `syncedAt` + `brand: {name, hasFeed, status?: FeedStatus}`. Also `size?: "md"\|"sm"`, `className?`. Includes the "how syncing works" popover. **Renders a div.** |
+| `LiveTime` | C | `iso`, `initial?`, `className?`. The server prints the clock time; after mount it shows relative time in the page language, updated every 60 s. Also `useNow(intervalMs?)`. |
 | `Odometer` | S | `value`, `prefix?`, `suffix?`, `roll?: "intro"\|"reveal"\|"none"`, `srText?`. `reveal` needs a `data-reveal` ancestor that starts below the fold. |
 | `toast`, `useToast`, `announce`, `dismissToast` (`toast-region.tsx` or `toast-store.ts`) | C | `toast({ message, tone?: "save"\|"success"\|"error"\|"offline"\|"info", action?: {label, onClick?\|href?}, duration? })`. `announce(text)` = screen-reader only. `ToastRegion` is already mounted; auto-dismiss pauses while hovered **or** while focus is inside the toast (tracked separately), and resumes with at least 1.5 s left. |
 | `EmptyState` | S | `mood?` (Oyen), `title`, `body?`, `primary?`/`secondary?: {label, href?, external?, onClick?, trailing?}`, `note?` (Gochi), `as?`, `children?`. |
 | `ErrorFrame` | S | `mood`, `title`, `body`, `children?`, `kite?`. Used by 404 and error pages. |
-| `LoadingLine` | C | `start?`, `className?`. Rotating Gochi lines (`LOADING_LINES`). Text renders on the client only (prerendered fallbacks never show it, and it kept Gochi Hand off the first paint). |
+| `LoadingLine` | C | `start?`, `className?`. Rotating Gochi lines (`common.feedback.loadingLines`). Text renders on the client only (prerendered fallbacks never show it, and it kept Gochi Hand off the first paint). |
 
 Freshness (`@/lib/freshness`): `syncState(iso, source, now)` → `"fresh"|"stale"|"old"|"none"`
-(4 h / 24 h), `brandSyncState(hasFeed, status, fallbackIso, now)`, `SYNC_COPY`, `formatClock(iso)`
-("3:40 PTG"), `formatDate(iso)` ("9 Okt 2026"). On the server, pass `now = Date.parse(syncedAt)`.
+(4 h / 24 h), `brandSyncState(hasFeed, status, fallbackIso, now)`, `SYNC_COPY[locale][state]`,
+`formatClock(iso, locale)` ("3:40 PM" / "3:40 PTG"), `formatDate(iso, locale)` ("9 Oct 2026" / "9 Okt 2026"),
+`formatDateTime(iso, locale)`, `MONTHS_SHORT[locale]`. On the server, pass `now = Date.parse(syncedAt)`.
 
 ---
 
 ## 5. Skeletons — `@/components/skeletons`
 
-`Bone({ className?, i?, style? })`, `SkeletonRegion({ children, line?, label? })` (aria-busy +
-LoadingLine), `plateTint(i, category?)`, `ProductCardSkeleton({ i?, category? })`,
+`Bone({ className?, i?, style? })`, `SkeletonRegion({ children, line?, label? })` (aria-busy + sr-only
+"Loading…" in the page language unless `label` is given + LoadingLine), `plateTint(i, category?)`, `ProductCardSkeleton({ i?, category? })`,
 `ProductRowSkeleton`, `BrandCardSkeleton({ i? })`, `BrandRowSkeleton`,
 `GridSkeleton({ count?, category?, sidebar?, view?, line? })`,
 `RailSkeleton({ count?, category?, header?, line? })`, `TileGridSkeleton({ count?, line? })`,
@@ -173,26 +179,26 @@ doesn't flash).
 
 | Component | Kind | Props |
 |---|---|---|
-| `ProductCard` | S | `product: ProductCardData`, `syncedAt`, `checkedAt?`, `priority?` (LCP), `eager?`, `context?: "grid"\|"rail"`, `emphasis?: "promo"\|"baru"`, `hideBrandLink?` (brand pages: brand name as plain text), `className?`. The brand link has a 44 px tall tap target (padding + negative margin). |
-| `ProductRow` | S | `product`, `syncedAt`, `checkedAt?`, `eager?`, `emphasis?`. "Senarai" list row. |
-| `ProductGrid` | S | `products`, `syncedAt`, `checkedAt?: Record<brandSlug, iso>`, `startIndex?`, `sidebar?` (max 4 columns), `view?: "grid"\|"list"`, `emphasis?`, `eagerCount?`, `priorityFirst?` (false when below the fold). Also `PAGE_SIZE` (24) and `gridColumns(sidebar?)`. |
-| `ProductFeedMore` (`load-more.tsx`) | C | `endpoint` ("/api/feed/promos" \| "/api/feed/new"), `initialCount?`, `total`, `syncedAt`, `checkedAt?`, `sidebar?`, `view?`, `emphasis?`, `noun?`, `end?`. Place it directly under a server `ProductGrid` that shows the first `initialCount` items **in the same order as the feed** (`getPromos()` / `getNewLaunches()` with the same options). Syncs `?page=`. |
-| `LoadMore`, `usePageParam()`, `loadFeed(endpoint)` | C | For client-filtered lists. `LoadMore({ shown, total, onMore, pending?, noun?, error?, onNear? })`. `error` shows the inline "Alamak, tak jadi. Cuba lagi?" alert and turns the button into "Cuba lagi" (the caller's `onMore` retries **without** advancing `?page=`). `onNear` prefetch: fires once when the button is within 800 px, armed only after the first user scroll, skipped on Save-Data. The "Kau dah tengok N daripada M" line is not a live region (the result count announces). `loadFeed` fetches, decodes (`feed-codec.ts`) and memoises a feed once per visit. |
+| `ProductCard` | S · L | `product: ProductCardData`, `locale`, `syncedAt`, `checkedAt?`, `priority?` (LCP), `eager?`, `context?: "grid"\|"rail"`, `emphasis?: "promo"\|"baru"`, `hideBrandLink?` (brand pages: brand name as plain text), `className?`. The brand link has a 44 px tall tap target (padding + negative margin). |
+| `ProductRow` | S · L | `product`, `locale`, `syncedAt`, `checkedAt?`, `eager?`, `emphasis?`. "Senarai" list row. |
+| `ProductGrid` | S · L | `products`, `locale`, `syncedAt`, `checkedAt?: Record<brandSlug, iso>`, `startIndex?`, `sidebar?` (max 4 columns), `view?: "grid"\|"list"`, `emphasis?`, `eagerCount?`, `priorityFirst?` (false when below the fold). Also `PAGE_SIZE` (24) and `gridColumns(sidebar?)`. |
+| `ProductFeedMore` (`load-more.tsx`) | C | `endpoint` ("/api/feed/promos" \| "/api/feed/new"), `initialCount?`, `total`, `syncedAt`, `checkedAt?`, `sidebar?`, `view?`, `emphasis?`, `noun?: MaybePlural` (`{ one, other }`), `end?`. Place it directly under a server `ProductGrid` that shows the first `initialCount` items **in the same order as the feed** (`getPromos()` / `getNewLaunches()` with the same options). Syncs `?page=`. |
+| `LoadMore`, `usePageParam()`, `loadFeed(endpoint)` | C | For client-filtered lists. `LoadMore({ shown, total, onMore, pending?, noun?: MaybePlural, error?, onNear? })`. `error` shows the inline "Oops, that didn't work. Try again?" / "Alamak, tak jadi. Cuba lagi?" alert and turns the button into "Try again" / "Cuba lagi" (the caller's `onMore` retries **without** advancing `?page=`). `onNear` prefetch: fires once when the button is within 800 px, armed only after the first user scroll, skipped on Save-Data. The "You've seen N of M" / "Kau dah tengok N daripada M" line is not a live region (the result count announces). `loadFeed` fetches, decodes (`feed-codec.ts`) and memoises a feed once per visit. |
 | `PlateImage` | C | The only product `<img>` (ENGINEERING's "ProductImage"): `src?`, `alt`, `width?`, `height?`, `category`, `sizes?` (`PLATE_SIZES.grid\|rail\|row\|collage\|thumb\|search`), `priority?`, `eager?`, `glyph?`. Handles fit, srcset (96–800w, `IMAGE_WIDTHS`), fade-in and the missing-photo fallback. Always pass the `sizes` of the rendered slot: a 44 px thumb with `PLATE_SIZES.thumb` picks 96w/160w at DPR 2–3. |
 | `SaveButton` | C | `product`, `size?: "md"\|"lg"`, `tone?: "float"\|"solid"`. Full "Masuk Simpan" reward: pop, ring, `<Particles>`, flight to `[data-saved-target]` for the first 3 saves of a session, bump, toast on the first save, Undo on unsave. |
 | `HeartToggle` | C | Low-level heart: `saved`, `onToggle(): boolean`, `onChange?`, `label: {save, unsave}`, `size?`, `tone?`. ONE `svg.heart-ic` (lucide heart path); `.heart-on` fills it bandung in CSS (save-button.css), pop class on the same svg. |
 | `DealSticker` | S | `discount?`, `size?: "card"\|"lg"\|"mini"`, `level?`, `label?`. L1/L2/L3 from `dealLevel()`. |
-| `BaruSticker`, `baruKind(publishedAt, syncedAt)` | S | `publishedAt?`, `syncedAt`, `calm?`. "Baru je" ≤ 3 days, "Baru" ≤ 30 days, measured against `syncedAt`. |
-| `Price`, `priceSentence`, `displayPrice`, `jimatText` | S | `price`, `compareAt?`, `discount?`, `currency`, `size?: "md"\|"lg"`, `jimat?: "auto"\|"always"\|"never"`, `announce?`. Use `displayPrice()` instead of `formatPrice()` when a price can exceed RM999 (it adds thousands separators). |
-| `DealGroupHeader` | S | `level`, `count?`, `stickyTop?` (omit = `.sticky-sub`; string = custom top; `null` = static), `id?`. |
-| `KalendarKoyak`, `dayLabel`, `myDay`, `myDayKey` | S | `date`, `reference` (= syncedAt), `count?`, `stickyTop?` (same modes). Group /new by `myDayKey(publishedAt)` (Malaysia time). |
-| `RelTime` | C | `iso`, `base` (syncedAt), `prefix?`. Server text uses `base`; updates after mount. |
+| `BaruSticker`, `baruKind(publishedAt, syncedAt)` | S · L | `publishedAt?`, `syncedAt`, `locale`, `calm?`. "Just in"/"Baru je" ≤ 3 days, "New"/"Baru" ≤ 30 days, measured against `syncedAt`. |
+| `Price`, `priceSentence(p, locale)`, `displayPrice`, `jimatText(p, locale)` | S · L | `price`, `compareAt?`, `discount?`, `currency`, `locale`, `size?: "md"\|"lg"`, `jimat?: "auto"\|"always"\|"never"`, `announce?`. Use `displayPrice()` instead of `formatPrice()` when a price can exceed RM999 (it adds thousands separators). |
+| `DealGroupHeader` | S · L | `level`, `locale`, `count?`, `stickyTop?` (omit = `.sticky-sub`; string = custom top; `null` = static), `id?`. |
+| `KalendarKoyak`, `dayLabel(iso, ref, locale)`, `myDay`, `myDayKey` | S · L | `date`, `reference` (= syncedAt), `locale`, `count?`, `stickyTop?` (same modes). Group /new by `myDayKey(publishedAt)` (Malaysia time). |
+| `RelTime` | C | `iso`, `base` (syncedAt), `template?` ("Launched {time}"), `prefix?`. Page language; server text uses `base`; updates after mount. |
 | `CategoryGlyph`, `CATEGORY_ICONS` | S | `category`, `size?`. |
 
 ```tsx
 const [stats, promos] = await Promise.all([getStats(), getPromos({ limit: PAGE_SIZE })]);
-<ProductGrid products={promos} syncedAt={stats.syncedAt} />
-<ProductFeedMore endpoint="/api/feed/promos" initialCount={promos.length} total={stats.promos} syncedAt={stats.syncedAt} noun="promo"
+<ProductGrid products={promos} locale={locale} syncedAt={stats.syncedAt} />
+<ProductFeedMore endpoint="/api/feed/promos" initialCount={promos.length} total={stats.promos} syncedAt={stats.syncedAt} noun={t.listings.promoNoun}
   end={<p className="pt-6 text-center text-body text-ink-2">Dah habis! Kau dah tengok semua promo hari ni.</p>} />
 ```
 
@@ -210,12 +216,12 @@ never on load or idle. After a "Muat lagi" append, focus moves to the first new 
 
 | Component | Kind | Props |
 |---|---|---|
-| `BrandCard` | S | `brand: BrandCardData` (any `BrandSummary` fits; needs `hasFeed`), `layout?: "card"\|"auto"`, `morph?` (monogram view-transition, only where the brand appears once on the page), `prefetch?` (`true` = viewport prefetch; default prefetches on intent via `BrandLink`). `layout="auto"` (directory and category grids) is ONE DOM that renders as the compact brand row below 480 px (name in 2 lines, cop on its own line, 2 thumbs < 400 px / 3 from 400 px / none < 340 px, promo pill) and as the kedai card from 480 px (brand.css `.kedai-auto`). Never render a second component per breakpoint. Also `BrandCounts` (no products: "Rak online kosong buat masa ni" when `hasFeed`, else "Kedai ni belum boleh disync"), `BrandCollage({ previews, sizes? })`. |
-| `BrandLink` | C | Drop-in `next/link` for dense link grids: `prefetch={false}` plus `router.prefetch(href)` on pointer enter, touch start and focus (skipped under Save-Data). |
+| `BrandCard` | S · L | `brand: BrandCardData` (any `BrandSummary` fits; needs `hasFeed`; `description` already localized with `brandDescription(brand, locale)` on the server), `locale`, `layout?: "card"\|"auto"`, `morph?` (monogram view-transition, only where the brand appears once on the page), `prefetch?` (`true` = viewport prefetch; default prefetches on intent via `BrandLink`). `layout="auto"` (directory and category grids) is ONE DOM that renders as the compact brand row below 480 px (name in 2 lines, cop on its own line, 2 thumbs < 400 px / 3 from 400 px / none < 340 px, promo pill) and as the kedai card from 480 px (brand.css `.kedai-auto`). Never render a second component per breakpoint. Also `BrandCounts({ brand, locale })` (no products: "Online shelf is empty right now" / "Rak online kosong buat masa ni" when `hasFeed`, else "This store can't sync yet" / "Kedai ni belum boleh disync"), `BrandCollage({ previews, category, name, locale, sizes? })`. |
+| `BrandLink` | C | Locale-aware drop-in `next/link` for dense link grids: `prefetch={false}` plus `router.prefetch(href)` on pointer enter, touch start and focus (skipped under Save-Data). |
 | `packPreview` / `unpackPreview` | lib | `brand/preview-url.ts`: strip / restore the `https://cdn.shopify.com/s/files/` prefix of preview photos in client payloads. `BrandCard` unpacks itself. `letterOf(name)` (A–Z rail letter) is in `brand/directory-letter.ts`. |
 | `Monogram` | S | `slug`, `name`, `category`, `size?: 20\|36\|56\|96`, `tier?` (badge), `morph?` (VT name `brand-av-{slug}`). |
-| `TierCop`, `TIER_COPY` | S | `tier`, `size?: "sm"\|"lg"`, `explain?` (popover explainer, default true). |
-| `TierStamp` | S | `tier`, `size?` (112), `spin?`. |
+| `TierCop` | S · L | `tier`, `locale`, `size?: "sm"\|"lg"`, `explain?` (popover explainer, default true). Copy from `tierCopy(tier, locale)` (`@/lib/taxonomy`; `TIER_COPY` is gone). |
+| `TierStamp` | S · A | `tier`, `size?` (112), `spin?`. Ring text in the page language. |
 | `BrandLinks` | S | `brand: Pick<Brand,"name"\|"website"\|"instagram"\|"tiktok"\|"shopee">`, `primary?`, `size?`. Adds UTM-tagged outbound links. |
 | `SaveBrandButton` | C | `brand: {slug,name,category,tier}`, `tone?`, `size?`. |
 
@@ -228,17 +234,17 @@ Lib: `monogram(slug,name)`, `initials`, `fnv1a`, `MONO_SHAPES` (`@/lib/monogram`
 
 | Component | Kind | Props |
 |---|---|---|
-| `CategoryTile` | S | `slug: CategorySlug\|"all"`, `promos?`, `brands?`, `compact?`, `morph?` (VT `cat-ic-{slug}`, once per page), `onShelf?`. Links through `BrandLink` (no viewport prefetch, prefetch on intent). |
+| `CategoryTile` | S · A | `slug: CategorySlug\|"all"`, `promos?`, `brands?`, `compact?`, `morph?` (VT `cat-ic-{slug}`, once per page), `onShelf?`. Links through `BrandLink` (no viewport prefetch, prefetch on intent). |
 | `CategoryShelf` | S | `categories: {slug,brands,promos}[]` (`getCategorySummaries()`), `allBrands?`, `morph?`. |
-| `CategoryChip` | C | `category: CategorySlug\|"all"`, `selected?`, `onToggle?(category, selected)` or `href?`, `label?`, `count?`, `dense?`. |
+| `CategoryChip` | C | `category: CategorySlug\|"all"`, `selected?`, `onToggle?(category, selected)` or `href?`, `label?` (default `categoryLabel(slug, locale)` / "All"), `count?`, `dense?`. |
 | `ChipRow` | S | `label` (group name), `wrapFrom?: "md"\|"lg"\|"never"`, `children`. Scrolls with edge fade. |
-| `Rail` | S | `id`, `title`, `titleText?` (plain text when `title` has markup), `sub?`, `eyebrow?`, `art?`, `count?`, `noun?`, `href?` (adds the end card and "Tengok semua"), `hint?` (first Home rail only), `as?`, `children` (one cell per child). Desktop prev/next buttons included. |
-| `RailControls`, `RailEndCard` | C / S | `RailControls({ trackId })`, `RailEndCard({ href, count?, noun })`. |
+| `Rail` | S · A | `id`, `title`, `titleText?` (plain text when `title` has markup), `sub?`, `eyebrow?`, `art?`, `count?`, `noun?: MaybePlural` (`{ one: "promo", other: "promos" }`), `href?` (adds the end card and "See all"), `hint?` (first Home rail only), `as?`, `children` (one cell per child). Desktop prev/next buttons included. |
+| `RailControls`, `RailEndCard` | C / S · L | `RailControls({ trackId })`, `RailEndCard({ href, count?, noun, locale })` (`noun` already in the right plural form). |
 
 ```tsx
-<Rail id="promo-panas" title={<>Promo <Accent>panas</Accent> sekarang</>} titleText="Promo panas sekarang"
-  count={stats.promos} noun="promo" href="/promos" hint>
-  {promos.map((p) => <ProductCard key={p.id} product={p} syncedAt={stats.syncedAt} context="rail" />)}
+<Rail id="promo-panas" title={rich(t.home.promoTitle, { accent: <Accent>{t.home.promoAccent}</Accent> })} titleText={t.home.promoTitleText}
+  count={stats.promos} noun={t.common.brand.promos} href="/promos" hint>
+  {promos.map((p) => <ProductCard key={p.id} product={p} locale={locale} syncedAt={stats.syncedAt} context="rail" />)}
 </Rail>
 ```
 
@@ -255,10 +261,13 @@ Lib: `monogram(slug,name)`, `initials`, `fnv1a`, `MONO_SHAPES` (`@/lib/monogram`
   replace it. Ranking: `prepareIndex()` / `search()` in `@/lib/search`.
 - **Saved store:** `useSaved()` → `{ items, count, isSaved(id), toggle(item) → boolean, remove(id), clear() }`;
   `brandSavedId(slug)`. Items: `{kind:"product", id, product}` or `{kind:"brand", id, brand}` (+ `savedAt`).
-- **Layout parts:** `Logo({ onInk?, size? })`, `Awning({ color?, height?, outlined? })`, `MotionToggle({ variant?: "switch"|"footer" })`,
+- **Language:** `LanguageToggle({ variant?: "header" | "compact" | "footer" })` (C): the EN | BM pill, already in
+  the desktop header, the mobile header and the footer. Sets the `lokallah-lang` cookie and `router.push`es the
+  same page (query + hash kept) in the other language.
+- **Layout parts:** `Logo({ onInk?, size? })` (A), `Awning({ color?, height?, outlined? })`, `MotionToggle({ variant?: "switch"|"footer" })`,
   `NavLink`, `PendingDots`, `NavSquiggle`, `isActivePath`, `KategoriTrigger`, `CategoryTiles`/`TierLinks`,
   `RandomBrandLink({ slugs })`, `SavedLink`, `BackToTop` (Home and list pages only: `/`, `/promos`, `/new`, `/brands*`, `/categories/*`; hidden on error/404 frames and while the footer is in view; no listeners elsewhere), `SkipLink`.
-  `ShellLink` (C): `next/link` for the header, tab bar and logo. Default viewport prefetch, but only after the first
+  `ShellLink` (C): locale-aware `next/link` for the header, tab bar and logo. Default viewport prefetch, but only after the first
   page has loaded and gone idle (`useAfterLoad()` from `@/lib/after-load`), so ~40–100 KB of shell prefetches no longer
   compete with the first paint. Use it for any link that sits on every page; use `BrandLink` in dense grids.
   `HeaderScroll` and `BackToTop` read `window.scrollY` from one passive `scroll` listener, once per frame (no Motion
@@ -284,8 +293,9 @@ Server (`@/lib/catalog`, server-only): `getStats()`, `getPromos(opts)`, `getNewL
 `getBrandSummaries()`, `getCategorySummaries()`, `getSearchIndex()`. Static: `BRANDS`, `getBrand`,
 `brandsInCategory`, `brandsInTier` (`@/lib/brands`); `CATEGORIES`, `CATEGORY_BY_SLUG`, `isCategorySlug`,
 `TIERS`, `TIER_BY_SLUG`, `STATES`, `NEW_WINDOW_DAYS`, `MIN_PROMO_DISCOUNT` (`@/lib/taxonomy`).
-Client and shared: `formatPrice`, `timeAgo(iso, now)`, `formatCount`, `outboundUrl` (`@/lib/format`);
-`sizedImage`, `imageSrcSet`, `IMAGE_WIDTHS` (`@/lib/images`: Shopify `?width=` and Jetpack Photon `i0–i3.wp.com` `?w=&quality=80`; other hosts pass through untouched); `SITE_NAME`, `SITE_URL`, `REPO_URL`, `pageMetadata({ title, description, path, socialDescription?, absolute?, defaultImage? })` and the `ogBase` / `twitterBase` spreads (`@/lib/site`): a page's `openGraph`/`twitter` replaces the layout's wholesale, so always build them from these (default OG image + `summary_large_image`); routes with their own `opengraph-image` file use `defaultImage: false` / `ogBaseNoImage`.
+Client and shared: `formatPrice`, `timeAgo(iso, now, locale)`, `formatCount`, `outboundUrl` (`@/lib/format`);
+`sizedImage`, `imageSrcSet`, `IMAGE_WIDTHS` (`@/lib/images`: Shopify `?width=` and Jetpack Photon `i0–i3.wp.com` `?w=&quality=80`; other hosts pass through untouched); `SITE_NAME`, `SITE_URL`, `MAKER`, `pageMetadata({ locale, title, description, path, socialTitle?, socialDescription?, absolute?, defaultImage?, extra? })`, `ogBase(locale)`, `ogImages(locale)`, `twitterImages(locale)`, `ogAlt(locale)` (`@/lib/site`): a page's `openGraph`/`twitter` replaces the layout's wholesale, so always build page metadata with `pageMetadata` (canonical + hreflang alternates + og locale + localized default image + `summary_large_image`); routes with their own `opengraph-image` file use `defaultImage: false`.
+Taxonomy helpers: `categoryLabel`, `categoryName`, `categoryBlurb`, `tierCopy`, `dealGroupLabel` (`@/lib/deal`), `brandDescription` (`@/lib/brands`, server only).
 Week picks ("Cili Padi minggu ni") derive from `syncedAt` (e.g. an ISO week number from it), never from the clock.
 
 ---
@@ -299,5 +309,5 @@ Week picks ("Cili Padi minggu ni") derive from `syncedAt` (e.g. an ISO week numb
 | Brand profile and directory | `brand/brand-hero.tsx`, `brand-tabs.tsx` (C, hash sync, `.sticky-stack`), `directory-filter.tsx` (C), `random-brand-button.tsx` (C; `layout/random-brand-link.tsx` already exists for the footer); flesh out `brands/[slug]/page.tsx` and `brands/page.tsx`. |
 | Search | Full `search/search-dialog.tsx` (same default export and props) + `search/search-row.tsx` (`<mark>` highlights). |
 | Category | `category/category-hero.tsx`; `categories/[slug]/page.tsx` body. |
-| About | `about/suggest-form.tsx` (C, lazy) + `app/about/actions.ts` (`suggestBrand`: validate, POST JSON to `SUGGEST_WEBHOOK_URL`; when it is unset, return the GitHub fallback `REPO_URL/issues/new?title=…&body=…` with honest copy), `about/faq.tsx` (`<details name="faq">`, facts limited to the brief). |
+| About | `about/suggest-form.tsx` (C, lazy) + `app/about/actions.ts` (`suggestBrand`: validate, POST JSON to `SUGGEST_WEBHOOK_URL`; without it, a prefilled `mailto:` to `SUGGEST_EMAIL` with honest copy; with neither, `suggestMode()` shows a "suggestions open soon" note; never link to the source repo), `about/faq.tsx` (`<details name="faq">`, facts limited to the brief). |
 | Saved | `saved/saved-view.tsx` (C: tabs, freshness check via `/api/feed/search`, sort, clear-all with `Modal`). A saved product missing from the index (or an index that failed) is **"unknown"**, never "sold out": no Habis, no grey, only the promo sticker/struck price drop, plus "Tak dapat semak harga terkini. Harga masa simpan: RM…" and a store link. Removing from /saved moves focus to the next card's heart (or previous, or the tab) and the Undo toast says so; keyboard removals keep the toast 12 s. sr-only h2s "Produk disimpan" / "Jenama disimpan". |

@@ -6,6 +6,8 @@
  */
 import { myDayKey } from "@/components/product/kalendar-koyak";
 import { dealLevel, type DealLevel } from "@/lib/deal";
+import { fmt } from "@/i18n/format";
+import type { ListingsMessages } from "@/i18n/dictionaries/en/listings";
 import { CATEGORIES, TIERS } from "@/lib/taxonomy";
 import type { CategorySlug, ProductCardData, TierSlug } from "@/lib/types";
 
@@ -42,18 +44,10 @@ export function defaultFilters(kind: ListingKind): FilterState {
   return { kat: [], tier: [], diskaun: 0, harga: null, q: "", susun: DEFAULT_SORT[kind], masa: "bulan", since: null };
 }
 
-export const SORT_OPTIONS: Record<ListingKind, { value: SortKey; label: string }[]> = {
-  promos: [
-    { value: "diskaun", label: "Diskaun paling besar" },
-    { value: "murah", label: "Harga paling murah" },
-    { value: "jimat", label: "Jimat paling banyak" },
-    { value: "az", label: "Jenama A–Z" },
-  ],
-  new: [
-    { value: "baru", label: "Paling baru" },
-    { value: "murah", label: "Harga paling murah" },
-    { value: "az", label: "Jenama A–Z" },
-  ],
+/** Sort keys per page, in menu order (labels: `listings.filters.sortOptions[key]`). */
+export const SORT_OPTIONS: Record<ListingKind, SortKey[]> = {
+  promos: ["diskaun", "murah", "jimat", "az"],
+  new: ["baru", "murah", "az"],
 };
 
 export const DISCOUNT_STEPS = [0, 10, 20, 30, 40, 50] as const;
@@ -76,14 +70,19 @@ export function priceId(r: PriceRange): string {
   return `${r.min}-${r.max ?? ""}`;
 }
 
-export function priceLabel(r: PriceRange): string {
-  if (r.min <= 0 && r.max != null) return `Bawah RM${r.max}`;
-  if (r.max == null) return `Atas RM${r.min}`;
-  return `RM${r.min}–${r.max}`;
+/** Filter labels from the `listings` namespace (`m.listings.filters`). */
+export type FilterLabels = ListingsMessages["filters"];
+
+/** "Under RM50" / "Over RM100" / "RM20–50" (or the Malay forms). */
+export function priceLabel(r: PriceRange, t: FilterLabels): string {
+  if (r.min <= 0 && r.max != null) return fmt(t.priceUnder, { max: r.max });
+  if (r.max == null) return fmt(t.priceOver, { min: r.min });
+  return fmt(t.priceBetween, { min: r.min, max: r.max });
 }
 
-export function discountLabel(d: number): string {
-  return d > 0 ? `${d}%+` : "Semua";
+/** "40%+" or "All" / "Semua". */
+export function discountLabel(d: number, t: FilterLabels): string {
+  return d > 0 ? `${d}%+` : t.discountAll;
 }
 
 /* ------------------------------------------------------------------ */

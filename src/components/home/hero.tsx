@@ -1,5 +1,5 @@
-import Link from "next/link";
-import type { CSSProperties } from "react";
+import { Link } from "@/i18n/link";
+import type { CSSProperties, ReactNode } from "react";
 import { BadgePercent, Sparkles, Tag } from "@/components/ui/lucide";
 import { ArrowDoodle } from "@/components/art/arrow-doodle";
 import { BungaRaya } from "@/components/art/bunga-raya";
@@ -15,6 +15,10 @@ import { HeroSearchPill } from "@/components/search/hero-search-pill";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { ChipRow } from "@/components/category/chip-row";
+import { fmt, plural, pluralForm } from "@/i18n/format";
+import { rich } from "@/i18n/rich";
+import { getDictionary } from "@/i18n/server";
+import type { HomeMessages } from "@/i18n/dictionaries/en/home";
 import type { SiteStats } from "@/lib/catalog";
 import type { ProductCardData } from "@/lib/types";
 import { HeroDealStack } from "./hero-deal-stack";
@@ -22,12 +26,12 @@ import { HeroParallax } from "./hero-parallax";
 
 const d = (ms: number) => ({ ["--d" as string]: `${ms}ms` }) as CSSProperties;
 
-const QUICK = [
-  { href: "/promos?diskaun=40", label: "Diskaun 40%+", icon: <BadgePercent strokeWidth={2} /> },
-  { href: "/new?masa=minggu", label: "Baru minggu ni", icon: <Sparkles strokeWidth={2} /> },
-  { href: "/brands?tier=cili-padi", label: "Cili Padi", icon: <TierIcon tier="cili-padi" size={18} /> },
-  { href: "/promos?harga=0-30", label: "Bawah RM30", icon: <Tag strokeWidth={2} /> },
-] as const;
+const QUICK: { href: string; key: keyof HomeMessages["hero"]["quick"]; icon: ReactNode }[] = [
+  { href: "/promos?diskaun=40", key: "discount", icon: <BadgePercent strokeWidth={2} /> },
+  { href: "/new?masa=minggu", key: "thisWeek", icon: <Sparkles strokeWidth={2} /> },
+  { href: "/brands?tier=cili-padi", key: "ciliPadi", icon: <TierIcon tier="cili-padi" size={18} /> },
+  { href: "/promos?harga=0-30", key: "under30", icon: <Tag strokeWidth={2} /> },
+];
 
 export interface HeroProps {
   stats: SiteStats;
@@ -41,12 +45,14 @@ export interface HeroProps {
  * frame with no animation; everything around it plays the CSS-only intro once per session.
  * No raster images on phones: mesh, stickers and Oyen are CSS + inline SVG.
  */
-export function Hero({ stats, deals, dealKind }: HeroProps) {
+export async function Hero({ stats, deals, dealKind }: HeroProps) {
+  const { hero: t, search } = (await getDictionary()).home;
   const stat = [
-    { value: stats.brands, label: "jenama", href: "/brands", d: 260 },
-    { value: stats.promos, label: "promo live", href: "/promos", d: 320 },
-    { value: stats.newLaunches, label: "baru", href: "/new", d: 380 },
+    { value: stats.brands, label: t.stats.brands, href: "/brands", d: 260 },
+    { value: stats.promos, label: t.stats.promos, href: "/promos", d: 320 },
+    { value: stats.newLaunches, label: t.stats.new, href: "/new", d: 380 },
   ];
+  const discount = `−${stats.maxDiscount}%`;
 
   return (
     <section
@@ -77,25 +83,28 @@ export function Hero({ stats, deals, dealKind }: HeroProps) {
             </div>
             <p aria-hidden className="intro-rise hidden items-center gap-1 lg:flex" style={d(420)}>
               <ArrowDoodle size={52} flip className="-mt-2" />
-              <span className="hand text-hand">psst… harga live!</span>
+              <span className="hand text-hand">{t.note}</span>
             </p>
           </div>
 
           <div className="relative mt-4 sm:w-fit lg:mt-5">
             <h1 id="hero-title" className="max-w-[13ch] text-display text-ink lg:max-w-[12.5ch]">
-              Semua jenama{" "}
-              <span className="relative inline-block">
-                <span className="text-grad-lokal">lokal</span>
-                <span aria-hidden className="intro-swash absolute inset-x-0 -bottom-[0.14em] block" style={d(120)}>
-                  <Squiggle variant="swash" height={12} />
-                </span>
-              </span>
-              , sentiasa{" "}
-              <span className="relative isolate inline-block whitespace-nowrap">
-                <span aria-hidden className="intro-swash absolute inset-x-[-0.08em] bottom-[0.08em] -z-10 h-[38%] rounded-[4px] bg-mangga" style={d(280)} />
-                up to date
-              </span>
-              .
+              {rich(t.title, {
+                local: (
+                  <span className="relative inline-block">
+                    <span className="text-grad-lokal">{t.local}</span>
+                    <span aria-hidden className="intro-swash absolute inset-x-0 -bottom-[0.14em] block" style={d(120)}>
+                      <Squiggle variant="swash" height={12} />
+                    </span>
+                  </span>
+                ),
+                fresh: (
+                  <span className="relative isolate inline-block whitespace-nowrap">
+                    <span aria-hidden className="intro-swash absolute inset-x-[-0.08em] bottom-[0.08em] -z-10 h-[38%] rounded-[4px] bg-mangga" style={d(280)} />
+                    {t.fresh}
+                  </span>
+                ),
+              })}
             </h1>
 
             {stats.maxDiscount > 0 && (
@@ -103,13 +112,13 @@ export function Hero({ stats, deals, dealKind }: HeroProps) {
               // "−N%", which its name starts with (QA F28). Hidden below 390 px, where it would hit
               // "date." (QA F27).
               <span className="absolute right-0 -bottom-6 lg:-right-4 lg:-bottom-2">
-                <Link href="/promos" transitionTypes={["nav-forward"]} aria-label={`−${stats.maxDiscount}% sampai. Tengok promo`} className="group block">
+                <Link href="/promos" transitionTypes={["nav-forward"]} aria-label={fmt(t.burstLabel, { discount })} className="group block">
                   <span
                     className="intro-slap relative grid size-16 place-items-center transition-transform duration-200 ease-pop group-hover:scale-105"
                     style={{ transform: "rotate(-10deg)", ["--r" as string]: "-10deg", ["--r-from" as string]: "-24deg", ...d(300) }}
                   >
                     <Starburst size={64} className="absolute inset-0" />
-                    <span className="relative font-num text-[17px] leading-none text-ink">−{stats.maxDiscount}%</span>
+                    <span className="relative font-num text-[17px] leading-none text-ink">{discount}</span>
                   </span>
                 </Link>
                 <span
@@ -117,36 +126,36 @@ export function Hero({ stats, deals, dealKind }: HeroProps) {
                   className="hand intro-rise pointer-events-none absolute top-1/2 right-full mr-1 hidden -translate-y-1/2 text-hand whitespace-nowrap min-[390px]:block lg:hidden"
                   style={d(460)}
                 >
-                  sampai!
+                  {t.upTo}
                 </span>
               </span>
             )}
           </div>
 
           <p className="mt-5 max-w-[40ch] text-lead text-ink-2 lg:max-w-[46ch]">
-            Promo dan produk terbaru dari {stats.brands} jenama Malaysia, dari skincare sampai sambal: {stats.liveBrands} kedai rasmi kami
-            semak live. Auto-update setiap beberapa jam, so kau tak terlepas apa-apa.
+            {fmt(t.sub, { brands: stats.brands, liveBrands: stats.liveBrands })}
           </p>
 
           <HeroSearchPill
             className="mt-16 lg:max-w-[520px]"
+            copy={search}
             peek={<Oyen mood="idle" pose="peek" size={76} />}
           />
 
           <div className="mt-5 hidden gap-4 lg:flex">
             <Button href="/promos" transitionTypes={["nav-forward"]} trailing="arrow">
-              Tengok promo hari ni
+              {t.ctaPromos}
             </Button>
             <Button href="/new" variant="secondary" transitionTypes={["nav-forward"]} trailing="arrow">
-              Jumpa launch baru
+              {t.ctaNew}
             </Button>
           </div>
 
           <div className="intro-rise mt-4 lg:hidden" style={d(200)}>
-            <ChipRow label="Tapis pantas" wrapFrom="never">
+            <ChipRow label={t.quickLabel} wrapFrom="never">
               {QUICK.map((q) => (
                 <Chip key={q.href} href={q.href} icon={q.icon} prefetch={false} transitionTypes={["nav-forward"]} className="bg-putih/90">
-                  {q.label}
+                  {t.quick[q.key]}
                 </Chip>
               ))}
             </ChipRow>
@@ -160,9 +169,9 @@ export function Hero({ stats, deals, dealKind }: HeroProps) {
                   transitionTypes={["nav-forward"]}
                   className="group flex h-full flex-col rounded-[18px] border-2 border-ink bg-putih/85 px-3 pt-2.5 pb-2 shadow-pop-sm transition-transform duration-150 ease-out-soft hover:-translate-y-0.5 active:translate-y-px"
                 >
-                  <Odometer value={s.value} roll="intro" className="text-stat text-ink" srText={`${s.value} ${s.label}`} />
+                  <Odometer value={s.value} roll="intro" className="text-stat text-ink" srText={plural(s.value, `{count} ${pluralForm(s.value, s.label)}`)} />
                   <span aria-hidden className="mt-1 text-caption font-semibold text-ink-2">
-                    {s.label}
+                    {pluralForm(s.value, s.label)}
                   </span>
                 </Link>
               </li>

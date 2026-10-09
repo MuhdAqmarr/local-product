@@ -1,3 +1,6 @@
+import type { Locale } from "@/i18n/config";
+import { fmt } from "@/i18n/format";
+import { commonFor } from "@/i18n/shared";
 import { formatPrice } from "@/lib/format";
 import { savedAmount } from "@/lib/deal";
 
@@ -20,16 +23,20 @@ export interface PriceFields {
   currency: string;
 }
 
-/** "Harga sekarang RM29.90, harga asal RM42.90, diskaun 30%" (DESIGN §6.7 / §10). */
-export function priceSentence({ price, compareAt, discount, currency }: PriceFields): string {
-  const parts = [`Harga sekarang ${displayPrice(price, currency)}`];
-  if (compareAt != null && compareAt > price) parts.push(`harga asal ${displayPrice(compareAt, currency)}`);
-  if (discount != null) parts.push(`diskaun ${Math.round(discount)}%`);
+/**
+ * Screen-reader price sentence (DESIGN §6.7 / §10):
+ * "Now RM29.90, was RM42.90, 30% off" / "Harga sekarang RM29.90, harga asal RM42.90, diskaun 30%".
+ */
+export function priceSentence({ price, compareAt, discount, currency }: PriceFields, locale: Locale): string {
+  const t = commonFor(locale).product;
+  const parts = [fmt(t.priceNow, { price: displayPrice(price, currency) })];
+  if (compareAt != null && compareAt > price) parts.push(fmt(t.priceWas, { price: displayPrice(compareAt, currency) }));
+  if (discount != null) parts.push(fmt(t.priceOff, { percent: String(Math.round(discount)) }));
   return parts.join(", ");
 }
 
-/** "Jimat RM13" — only for a real compare-at price. */
-export function jimatText({ price, compareAt, currency }: PriceFields): string | undefined {
+/** "RM13 off" / "Jimat RM13" — only for a real compare-at price. */
+export function jimatText({ price, compareAt, currency }: PriceFields, locale: Locale): string | undefined {
   const saved = savedAmount(price, compareAt);
-  return saved == null ? undefined : `Jimat ${displayPrice(saved, currency)}`;
+  return saved == null ? undefined : fmt(commonFor(locale).product.youSave, { amount: displayPrice(saved, currency) });
 }

@@ -1,10 +1,13 @@
+import type { Locale } from "@/i18n/config";
 import { cn } from "@/lib/utils";
 import { displayPrice, jimatText, priceSentence, type PriceFields } from "./price-text";
 
 export interface PriceProps extends PriceFields {
+  /** Page language (sr-only sentence and the savings pill). */
+  locale: Locale;
   size?: "md" | "lg";
   /**
-   * "Jimat RM13" pill. `auto` shows it only when the price row's container is ≥ 360 px
+   * "RM13 off" / "Jimat RM13" pill. `auto` shows it only when the price row's container is ≥ 360 px
    * (needs an `@container` ancestor, e.g. the product card); `always` / `never` force it.
    */
   jimat?: "auto" | "always" | "never";
@@ -13,13 +16,13 @@ export interface PriceProps extends PriceFields {
   className?: string;
 }
 
-/** Fredoka price, struck compare-at, "Jimat" pill, sr-only sentence (DESIGN §6.7). Works for USD stores too. */
-export function Price({ price, compareAt, discount, currency, size = "md", jimat = "auto", announce = true, className }: PriceProps) {
+/** Fredoka price, struck compare-at, savings pill, sr-only sentence (DESIGN §6.7). Works for USD stores too. */
+export function Price({ price, compareAt, discount, currency, locale, size = "md", jimat = "auto", announce = true, className }: PriceProps) {
   const promo = compareAt != null && compareAt > price;
-  const saved = promo ? jimatText({ price, compareAt, currency }) : undefined;
+  const saved = promo ? jimatText({ price, compareAt, currency }, locale) : undefined;
   return (
     <div className={cn("flex flex-wrap items-baseline gap-x-1.5 gap-y-1", className)}>
-      {announce && <span className="sr-only">{priceSentence({ price, compareAt, discount, currency })}</span>}
+      {announce && <span className="sr-only">{priceSentence({ price, compareAt, discount, currency }, locale)}</span>}
       <data
         value={price.toFixed(2)}
         aria-hidden="true"

@@ -4,6 +4,8 @@ import { SectionHeader } from "@/components/ui/section-header";
 import type { BrandSummary } from "@/lib/catalog";
 import type { Brand } from "@/lib/types";
 import { BrandCard } from "./brand-card";
+import { fmt } from "@/i18n/format";
+import { getDictionary, getLocale } from "@/i18n/server";
 
 const MAX = 10;
 
@@ -19,24 +21,29 @@ export function pickSimilar(brand: Pick<Brand, "slug" | "category" | "tier">, al
     .slice(0, MAX);
 }
 
-/** "Jenama serupa yang kau mungkin suka" (DESIGN §8.5 #9): a horizontal rail of kedai cards. */
-export function SimilarBrands({ brands }: { brands: BrandSummary[] }) {
+/**
+ * "Similar brands you might like" (DESIGN §8.5 #9): a horizontal rail of kedai cards.
+ * Pass descriptions already localised (`brandDescription(brand, locale)`).
+ */
+export async function SimilarBrands({ brands }: { brands: BrandSummary[] }) {
+  const [locale, dict] = await Promise.all([getLocale(), getDictionary()]);
+  const t = dict.brands.similar;
   if (!brands.length) return null;
   const trackId = "jenama-serupa-track";
   return (
     <section aria-labelledby="jenama-serupa" className="mt-(--section-y)">
       <div className="container-page">
-        <SectionHeader id="jenama-serupa" title="Jenama serupa yang kau mungkin suka" sub="Dari rak yang sama, saiz yang sama dulu." aside={<RailControls trackId={trackId} />} />
+        <SectionHeader id="jenama-serupa" title={t.title} sub={t.sub} aside={<RailControls trackId={trackId} />} />
       </div>
       <div className="mx-auto max-w-(--container)">
         <RailStagger
           id={trackId}
-          label="Jenama serupa, skrol mendatar"
+          label={fmt(dict.common.rail.region, { title: t.title })}
           className="no-scrollbar grid auto-cols-[min(78vw,272px)] grid-flow-col gap-4 overflow-x-auto overscroll-x-contain scroll-px-(--gutter) px-(--gutter) pt-4 pb-6 snap-x snap-mandatory focus-visible:outline-offset-[-3px]"
           itemClassName="snap-start min-w-0 flex"
         >
           {brands.map((b) => (
-            <BrandCard key={b.slug} brand={b} morph prefetch={false} />
+            <BrandCard locale={locale} key={b.slug} brand={b} morph prefetch={false} />
           ))}
         </RailStagger>
       </div>

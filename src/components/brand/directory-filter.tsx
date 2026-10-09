@@ -21,12 +21,15 @@ import { Sheet } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import { chipPresence } from "@/lib/motion";
 import { normalizeText } from "@/lib/search";
-import { CATEGORY_BY_SLUG, TIER_BY_SLUG } from "@/lib/taxonomy";
+import { categoryLabel, TIER_BY_SLUG } from "@/lib/taxonomy";
 import type { CategorySlug, TierSlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { BrandCard, type BrandCardData } from "./brand-card";
 import { letterOf } from "./directory-letter";
 import { headerOffset } from "./scroll-offset";
+import { useI18n } from "@/i18n/client";
+import { fmt, pluralForm } from "@/i18n/format";
+import { rich } from "@/i18n/rich";
 
 /* ------------------------------------------------------------------ */
 /* Model                                                                */
@@ -46,11 +49,6 @@ interface DirState {
 
 const DEFAULT: DirState = { q: "", kat: [], tier: "all", negeri: "", promo: false, susun: "az" };
 const TIERS: TierSlug[] = ["cili-padi", "naik-daun", "ikon"];
-const SORTS: { value: DirectorySort; label: string }[] = [
-  { value: "az", label: "Jenama A–Z" },
-  { value: "promo", label: "Paling banyak promo" },
-  { value: "baru", label: "Paling banyak produk baru" },
-];
 const OWN_KEYS = ["q", "kat", "tier", "negeri", "promo", "susun", "page"];
 
 export interface DirectoryFacets {
@@ -67,7 +65,7 @@ export interface DirectoryBrand extends BrandCardData {
   hay: string;
 }
 
-/** Brands per "Muat lagi" chunk. */
+/** Brands per "Load more" chunk. */
 const CHUNK = 24;
 
 function parsePage(search: string): number {
@@ -139,6 +137,15 @@ export interface DirectoryFilterProps {
  * small on phones; each cell uses `content-visibility: auto`.
  */
 export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
+  // `m` is motion/react-m here, so the messages go by another name.
+  const { locale, m: msg } = useI18n();
+  const t = msg.brands.directory;
+  const sorts: { value: DirectorySort; label: string }[] = [
+    { value: "az", label: t.sortAz },
+    { value: "promo", label: t.sortPromo },
+    { value: "baru", label: t.sortNew },
+  ];
+  const sizeAll = t.allSizes;
   const listRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
   const pendingJump = useRef<string | null>(null);
@@ -184,7 +191,8 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
       requestAnimationFrame(() => {
         for (const chip of document.querySelectorAll<HTMLElement>(".dir [role=group] [aria-pressed=true]")) {
           const row = chip.closest<HTMLElement>("[role=group]");
-          if (!row || row.scrollWidth <= row.clientWidth || chip.textContent?.startsWith("Semua")) continue;
+          // Skip the "All" chip (the only one without a category).
+          if (!row || row.scrollWidth <= row.clientWidth || !chip.closest("[data-cat]")) continue;
           row.scrollLeft += chip.getBoundingClientRect().left - row.getBoundingClientRect().left - 16;
           break;
         }
@@ -243,10 +251,10 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
 
   const pills: { key: string; label: string }[] = [
     ...(s.q.trim() ? [{ key: "q", label: `“${s.q.trim()}”` }] : []),
-    ...s.kat.map((k) => ({ key: `kat:${k}`, label: CATEGORY_BY_SLUG[k].nameMs })),
+    ...s.kat.map((k) => ({ key: `kat:${k}`, label: categoryLabel(k, locale) })),
     ...(s.tier !== "all" ? [{ key: "tier", label: TIER_BY_SLUG[s.tier].name }] : []),
     ...(s.negeri ? [{ key: "negeri", label: s.negeri }] : []),
-    ...(s.promo ? [{ key: "promo", label: "Ada promo je" }] : []),
+    ...(s.promo ? [{ key: "promo", label: t.promoOnly }] : []),
   ];
   const clearPill = (key: string) => {
     if (key === "q") update({ q: "" });
@@ -258,14 +266,14 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
 
   const tierOptions = useMemo(
     () => [
-      { value: "all" as TierFilter, label: "Semua" },
+      { value: "all" as TierFilter, label: t.all },
       ...TIERS.map((t) => ({
         value: t as TierFilter,
         label: TIER_BY_SLUG[t].name,
         icon: <TierIcon tier={t} size={18} />,
       })),
     ],
-    [],
+    [t.all],
   );
   const stateOptions = useMemo(() => facets.states.map((st) => ({ value: st, label: st })), [facets.states]);
 
@@ -321,7 +329,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
   const searchField = (id: string, className?: string) => (
     <div className={cn("relative min-w-0", className)}>
       <label htmlFor={id} className="sr-only">
-        Cari nama jenama
+        {t.searchLabel}
       </label>
       <Search aria-hidden size={20} className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-ink-soft" />
       <input
@@ -331,7 +339,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
         enterKeyHint="search"
         autoComplete="off"
         spellCheck={false}
-        placeholder="Cari nama jenama…"
+        placeholder={t.searchPlaceholder}
         value={s.q}
         maxLength={60}
         onChange={(e) => update({ q: e.target.value }, { animate: false })}
@@ -343,7 +351,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
       {s.q && (
         <button
           type="button"
-          aria-label="Padam carian"
+          aria-label={t.clearSearch}
           onClick={() => update({ q: "" }, { animate: false })}
           className="absolute top-1/2 right-1 grid size-11 -translate-y-1/2 place-items-center rounded-full text-ink-soft hover:text-ink"
         >
@@ -362,12 +370,12 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
     </>
   );
 
-  const tierControl = <Segmented label="Saiz jenama" options={tierOptions} value={s.tier} onChange={(v) => update({ tier: v })} fit="content" />;
+  const tierControl = <Segmented label={t.size} options={tierOptions} value={s.tier} onChange={(v) => update({ tier: v })} fit="content" />;
   const negeriControl = (id: string, label?: string) => (
-    <Select id={id} label={label} aria-label={label ? undefined : "Negeri"} options={stateOptions} placeholder="Semua negeri" value={s.negeri} onChange={(e) => update({ negeri: e.target.value })} />
+    <Select id={id} label={label} aria-label={label ? undefined : t.state} options={stateOptions} placeholder={t.allStates} value={s.negeri} onChange={(e) => update({ negeri: e.target.value })} />
   );
   const sortControl = (id: string, label?: string) => (
-    <Select id={id} label={label} aria-label={label ? undefined : "Susun"} options={SORTS} value={s.susun} onChange={(e) => update({ susun: e.target.value as DirectorySort })} />
+    <Select id={id} label={label} aria-label={label ? undefined : t.sort} options={sorts} value={s.susun} onChange={(e) => update({ susun: e.target.value as DirectorySort })} />
   );
   const promoControl = (
     <Switch
@@ -376,7 +384,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
       label={
         <span className="inline-flex items-center gap-1.5">
           <BadgePercent aria-hidden size={18} className="text-bandung-pekat" />
-          Ada promo je
+          {t.promoOnly}
         </span>
       }
     />
@@ -397,17 +405,17 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
               icon={<SlidersHorizontal aria-hidden />}
               onClick={() => setSheetOpen(true)}
               aria-haspopup="dialog"
-              aria-label={sheetActive ? `Tapis, ${sheetActive} aktif` : "Tapis"}
+              aria-label={sheetActive ? fmt(t.filterActive, { count: sheetActive }) : t.filter}
               faceClassName="px-4"
             >
-              Tapis
+              {t.filter}
             </Button>
             {sheetActive > 0 && <CountBubble count={sheetActive} className="pointer-events-none absolute -top-1.5 -right-1.5 z-10" />}
           </span>
         </div>
       </div>
       <div className="lg:hidden">
-        <ChipRow label="Kategori" className="mt-1">
+        <ChipRow label={t.categories} className="mt-1">
           {chips}
         </ChipRow>
       </div>
@@ -418,7 +426,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
           {searchField("dir-q-d", "flex-1")}
           <div className="w-max min-w-[540px] shrink-0">{tierControl}</div>
         </div>
-        <ChipRow label="Kategori" className="mt-3">
+        <ChipRow label={t.categories} className="mt-3">
           {chips}
         </ChipRow>
         <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-3 border-t-2 border-dashed border-garis pt-4">
@@ -426,7 +434,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
           {promoControl}
           <div className="ml-auto flex items-center gap-3">
             <span aria-hidden className="text-label text-ink-soft">
-              Susun
+              {t.sort}
             </span>
             <div className="w-64">{sortControl("dir-susun-d")}</div>
           </div>
@@ -437,20 +445,20 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
       <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 lg:mt-6">
         <p className="text-body-sm text-ink-2">
           <span aria-hidden="true">
-            Tunjuk <Odometer value={visible} className="font-num text-[17px] text-ink" /> daripada {facets.total} jenama
+            {rich(t.showing, { count: <Odometer value={visible} className="font-num text-[17px] text-ink" />, total: facets.total })}
           </span>
           <span role="status" className="sr-only">
-            Tunjuk {said} daripada {facets.total} jenama
+            {fmt(t.showing, { count: said, total: facets.total })}
           </span>
         </p>
-        <ul className="flex flex-wrap items-center gap-1.5" aria-label="Tapisan aktif">
+        <ul className="flex flex-wrap items-center gap-1.5" aria-label={t.activeFilters}>
           <AnimatePresence initial={false}>
             {pills.map((p) => (
               <m.li key={p.key} variants={chipPresence} initial="hidden" animate="show" exit="exit">
                 <button
                   type="button"
                   onClick={() => clearPill(p.key)}
-                  aria-label={`Buang tapisan ${p.label}`}
+                  aria-label={fmt(t.removeFilter, { label: p.label })}
                   className="inline-flex h-8 max-w-[220px] items-center gap-1 rounded-full bg-kapas pr-1.5 pl-3 text-label-sm text-ink transition-transform active:scale-95"
                 >
                   <span className="truncate">{p.label}</span>
@@ -462,16 +470,16 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
         </ul>
         {anyFilter && (
           <button type="button" onClick={reset} className="inline-flex min-h-11 items-center text-label text-telang underline-offset-4 hover:underline">
-            Reset semua
+            {t.resetAll}
           </button>
         )}
       </div>
 
       <div className="mt-3 lg:grid lg:grid-cols-[minmax(0,1fr)_28px] lg:gap-5">
         <div ref={listRef} className="min-w-0">
-          <h2 className="sr-only">Senarai jenama</h2>
+          <h2 className="sr-only">{t.list}</h2>
           {shown.length > 0 && (
-            <ul role="list" aria-label="Senarai jenama" className="-m-1 grid grid-cols-1 xs:-m-1.5 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <ul role="list" aria-label={t.list} className="-m-1 grid grid-cols-1 xs:-m-1.5 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {shown.map((b, i) => {
                 const appended = i >= CHUNK;
                 return (
@@ -482,35 +490,33 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
                     data-reveal={appended ? "" : undefined}
                     style={appended ? ({ "--i": i % 4 } as CSSProperties) : undefined}
                   >
-                    <BrandCard brand={b} layout="auto" morph />
+                    <BrandCard locale={locale} brand={b} layout="auto" morph />
                   </li>
                 );
               })}
             </ul>
           )}
-          <LoadMore shown={shown.length} total={visible} onMore={more} noun="jenama" className="pt-8" />
+          <LoadMore shown={shown.length} total={visible} onMore={more} noun={t.noun} className="pt-8" />
           {ready && visible > CHUNK && shown.length >= visible && (
             <div data-reveal="" className="flex flex-col items-center gap-2 pt-10 text-center">
               <WauBulan size={56} sway />
-              <p className="text-body text-ink-2">
-                Dah habis! Kau dah tengok semua <span className="font-num text-ink">{visible}</span> jenama.
-              </p>
+              <p className="text-body text-ink-2">{rich(t.end, { count: <span className="font-num text-ink">{visible}</span> })}</p>
             </div>
           )}
           {empty && (
             <EmptyState
               mood="cari"
-              title={q ? <>Alamak, &ldquo;{q}&rdquo; tak jumpa.</> : "Takde yang padan semua tapisan ni."}
-              body={q ? "Cuba ejaan lain, atau cari ikut kategori. Jenama ni belum ada?" : "Buang satu dua tapisan, confirm jumpa."}
-              primary={q ? { label: "Cadang jenama ni", href: `/about?nama=${encodeURIComponent(q)}#cadang`, trailing: "arrow" } : { label: "Reset tapisan", onClick: reset }}
-              secondary={q ? { label: "Reset tapisan", onClick: reset } : undefined}
+              title={q ? fmt(t.emptyQueryTitle, { q }) : t.emptyFiltersTitle}
+              body={q ? t.emptyQueryBody : t.emptyFiltersBody}
+              primary={q ? { label: t.suggestThis, href: `/about?nama=${encodeURIComponent(q)}#cadang`, trailing: "arrow" } : { label: t.resetFilters, onClick: reset }}
+              secondary={q ? { label: t.resetFilters, onClick: reset } : undefined}
             />
           )}
         </div>
 
         {/* Desktop A–Z rail: only meaningful while the list is A–Z. */}
         <nav
-          aria-label="Lompat ikut huruf"
+          aria-label={t.jump}
           aria-hidden={s.susun !== "az" || empty || undefined}
           inert={s.susun !== "az" || empty || undefined}
           className={cn("dir-rail hidden lg:block", (s.susun !== "az" || empty) && "is-off")}
@@ -524,7 +530,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
                     type="button"
                     disabled={!on}
                     onClick={() => jumpTo(l)}
-                    aria-label={`Huruf ${l}`}
+                    aria-label={fmt(t.letter, { letter: l })}
                     className="dir-letter grid h-[22px] w-7 place-items-center rounded-full font-num text-[12px] leading-none text-ink disabled:text-garis-kuat"
                   >
                     {l}
@@ -539,23 +545,23 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
       <Sheet
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
-        title="Tapis jenama"
-        description="Senarai berubah terus bila kau pilih."
+        title={t.sheetTitle}
+        description={t.sheetDescription}
         footer={
           <div className="flex items-center justify-between gap-3">
             <Button variant="ghost" onClick={reset} disabled={!anyFilter}>
-              Reset
+              {t.reset}
             </Button>
             <Button variant="primary" onClick={() => setSheetOpen(false)} className="flex-1" fullWidth>
-              Tunjuk <Odometer value={visible} className="font-num" /> jenama
+              {rich(pluralForm(visible, t.show), { count: <Odometer value={visible} className="font-num" /> })}
             </Button>
           </div>
         }
       >
         <div className="flex flex-col gap-6 pt-1">
           <fieldset>
-            <legend className="mb-2 text-overline text-ink-soft uppercase">Saiz jenama</legend>
-            <div role="radiogroup" aria-label="Saiz jenama" className="grid grid-cols-2 gap-2">
+            <legend className="mb-2 text-overline text-ink-soft uppercase">{t.size}</legend>
+            <div role="radiogroup" aria-label={t.size} className="grid grid-cols-2 gap-2">
               {(["all", ...TIERS] as TierFilter[]).map((t) => {
                 const on = s.tier === t;
                 return (
@@ -576,21 +582,21 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
                     <span aria-hidden className="grid size-8 shrink-0 place-items-center rounded-full border-[1.5px] border-ink bg-putih">
                       {t === "all" ? <Store size={16} strokeWidth={2.25} /> : <TierIcon tier={t} size={20} />}
                     </span>
-                    {t === "all" ? "Semua saiz" : TIER_BY_SLUG[t].name}
+                    {t === "all" ? sizeAll : TIER_BY_SLUG[t].name}
                   </button>
                 );
               })}
             </div>
           </fieldset>
           <fieldset>
-            <legend className="mb-2 text-overline text-ink-soft uppercase">Negeri</legend>
+            <legend className="mb-2 text-overline text-ink-soft uppercase">{t.state}</legend>
             {negeriControl("dir-negeri-m")}
           </fieldset>
           <div className="rounded-card border-2 border-garis bg-putih p-3.5">{promoControl}</div>
           <fieldset>
-            <legend className="mb-2 text-overline text-ink-soft uppercase">Susun</legend>
-            <div role="radiogroup" aria-label="Susun" className="flex flex-col gap-2">
-              {SORTS.map((o) => {
+            <legend className="mb-2 text-overline text-ink-soft uppercase">{t.sort}</legend>
+            <div role="radiogroup" aria-label={t.sort} className="flex flex-col gap-2">
+              {sorts.map((o) => {
                 const on = s.susun === o.value;
                 return (
                   <button

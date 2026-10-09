@@ -55,7 +55,7 @@ export function parseFilters(search: string, kind: ListingKind): { filters: Filt
   f.q = (sp.get("q") ?? "").slice(0, 60);
 
   const susun = sp.get("susun") as SortKey | null;
-  if (susun && SORT_OPTIONS[kind].some((o) => o.value === susun)) f.susun = susun;
+  if (susun && SORT_OPTIONS[kind].includes(susun)) f.susun = susun;
 
   if (kind === "new") {
     if (sp.get("masa") === "minggu") f.masa = "minggu";

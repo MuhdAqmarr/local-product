@@ -1,22 +1,26 @@
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import { ArrowRight } from "@/components/ui/lucide";
 import { TierIcon } from "@/components/art/tier-icon";
 import { Monogram } from "@/components/brand/monogram";
-import { TIER_COPY, TierCop } from "@/components/brand/tier-cop";
+import { TierCop } from "@/components/brand/tier-cop";
 import { Odometer } from "@/components/feedback/odometer";
 import { Band } from "@/components/ui/band";
 import { SectionHeader } from "@/components/ui/section-header";
 import type { BrandSummary } from "@/lib/catalog";
-import { TIERS } from "@/lib/taxonomy";
+import { tierCopy, TIERS } from "@/lib/taxonomy";
 import type { TierSlug } from "@/lib/types";
 import { ScrollStations } from "./explainer-progress";
+import { fmt, plural, pluralForm } from "@/i18n/format";
+import { getDictionary, getLocale } from "@/i18n/server";
 
 /** The three faces shown per tier: live shops with the most promos first, then A–Z (stable). */
 function faces(brands: BrandSummary[]) {
   return [...brands].sort((a, b) => Number(b.live) - Number(a.live) || b.promoCount - a.promoCount || a.name.localeCompare(b.name)).slice(0, 3);
 }
 
-function Station({ tier, brands }: { tier: TierSlug; brands: BrandSummary[] }) {
+async function Station({ tier, brands }: { tier: TierSlug; brands: BrandSummary[] }) {
+  const [locale, dict] = await Promise.all([getLocale(), getDictionary()]);
+  const copy = dict.home.tiers;
   const t = TIERS.find((x) => x.slug === tier)!;
   const shown = faces(brands);
   const more = brands.length - shown.length;
@@ -29,14 +33,14 @@ function Station({ tier, brands }: { tier: TierSlug; brands: BrandSummary[] }) {
       </span>
       <div className="min-w-0 pt-2 lg:pt-0">
         <span className="home-tj-stamp">
-          <TierCop tier={tier} size="lg" />
+          <TierCop locale={locale} tier={tier} size="lg" />
         </span>
-        <p className="mt-3 max-w-[32ch] text-body-sm text-ink-2">{TIER_COPY[tier].line}</p>
+        <p className="mt-3 max-w-[32ch] text-body-sm text-ink-2">{tierCopy(tier, locale).line}</p>
         <div data-reveal="" className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-3">
           <p className="flex items-baseline gap-1.5 text-ink">
-            <Odometer value={brands.length} roll="reveal" className="text-[28px]" srText={`${brands.length} jenama`} />
+            <Odometer value={brands.length} roll="reveal" className="text-[28px]" srText={plural(brands.length, `{count} ${pluralForm(brands.length, copy.brands)}`)} />
             <span aria-hidden className="text-label text-ink-2">
-              jenama
+              {pluralForm(brands.length, copy.brands)}
             </span>
           </p>
           {shown.length > 0 && (
@@ -57,7 +61,7 @@ function Station({ tier, brands }: { tier: TierSlug; brands: BrandSummary[] }) {
           transitionTypes={["nav-forward"]}
           className="group mt-3 inline-flex min-h-11 items-center gap-1 text-label text-ink underline decoration-ink/30 decoration-2 underline-offset-4 hover:decoration-ink"
         >
-          Tengok semua {t.name}
+          {fmt(copy.seeAll, { name: t.name })}
           <ArrowRight aria-hidden size={18} className="transition-transform duration-200 group-hover:translate-x-[3px]" />
         </Link>
       </div>
@@ -66,17 +70,18 @@ function Station({ tier, brands }: { tier: TierSlug; brands: BrandSummary[] }) {
 }
 
 /**
- * "Dari Cili Padi ke Jenama Ikon" (DESIGN §8.1 #7, §7.5 #5): chili seed → sprouting leaf → crown.
+ * "From Cili Padi to Jenama Ikon" (DESIGN §8.1 #7, §7.5 #5): chili seed → sprouting leaf → crown.
  * A dashed connector draws with scroll; each station gets stamped (cop) as it switches on and its
  * kawaii icon plays its micro. Fully drawn without JS or under reduced motion.
  */
-export function TierJourney({ brands }: { brands: BrandSummary[] }) {
+export async function TierJourney({ brands }: { brands: BrandSummary[] }) {
+  const t = (await getDictionary()).home.tiers;
   const steps = TIERS.map((t) => <Station key={t.slug} tier={t.slug} brands={brands.filter((b) => b.tier === t.slug)} />);
   return (
     <Band tone="senja" labelledBy="tier-journey-title" className="md:py-12">
-      <SectionHeader id="tier-journey-title" title="Dari Cili Padi ke Jenama Ikon" sub="Setiap jenama besar pernah bermula kecil." />
+      <SectionHeader id="tier-journey-title" title={t.title} sub={t.sub} />
       <ScrollStations
-        label="Tiga saiz jenama"
+        label={t.listLabel}
         className="mt-8 lg:mt-10"
         steps={steps}
         itemAttrs={{ "data-tier-trigger": "" }}

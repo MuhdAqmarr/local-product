@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence } from "motion/react";
 import * as m from "motion/react-m";
 import { CircleAlert, CircleCheck, Heart, Info, WifiOff, X } from "@/components/ui/lucide";
 import { toast as toastVariants } from "@/lib/motion";
+import { useI18n } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 import { dismissToast, toast, useToastState, type ToastItem, type ToastTone } from "./toast-store";
 
@@ -29,17 +30,18 @@ const ICON: Record<ToastTone, { icon: React.ReactNode; well: string }> = {
 export function ToastRegion() {
   const { current, announcement } = useToastState();
   const isError = current?.tone === "error" || current?.tone === "offline";
+  const t = useI18n().m.common.feedback;
 
   useEffect(() => {
-    const offline = () => toast({ message: "Internet tengah merajuk. Data mungkin bukan yang terkini.", tone: "offline" });
-    const online = () => toast({ message: "Dah online balik!", tone: "success" });
+    const offline = () => toast({ message: t.offline, tone: "offline" });
+    const online = () => toast({ message: t.online, tone: "success" });
     window.addEventListener("offline", offline);
     window.addEventListener("online", online);
     return () => {
       window.removeEventListener("offline", offline);
       window.removeEventListener("online", online);
     };
-  }, []);
+  }, [t]);
 
   // Activity hygiene: never leave a toast behind on a hidden route.
   useLayoutEffect(() => () => dismissToast(), []);
@@ -87,6 +89,7 @@ function ToastView({ item }: { item: ToastItem }) {
   }, [paused, item.id]);
 
   const look = ICON[item.tone];
+  const closeLabel = useI18n().m.common.feedback.close;
   const actionClass =
     "relative inline-flex min-h-11 items-center px-1 text-label text-mangga underline decoration-2 underline-offset-4 hover:decoration-mangga";
 
@@ -127,7 +130,7 @@ function ToastView({ item }: { item: ToastItem }) {
         ))}
       <button
         type="button"
-        aria-label="Tutup"
+        aria-label={closeLabel}
         onClick={() => dismissToast(item.id)}
         className="grid size-8 shrink-0 place-items-center rounded-full text-ink-dim transition-colors hover:bg-white/10 hover:text-santan"
       >

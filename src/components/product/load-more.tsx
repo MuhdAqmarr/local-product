@@ -4,6 +4,9 @@ import { startTransition, useCallback, useEffect, useRef, useState, type CSSProp
 import { ChevronDown, RefreshCw } from "@/components/ui/lucide";
 import { Button } from "@/components/ui/button";
 import { decodeCards, type CardFeed } from "@/components/listing/feed-codec";
+import { useI18n } from "@/i18n/client";
+import { pluralForm, type MaybePlural } from "@/i18n/format";
+import { rich } from "@/i18n/rich";
 import { formatCount } from "@/lib/format";
 import type { ProductCardData } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -72,8 +75,8 @@ export interface LoadMoreProps {
   total: number;
   onMore: () => void;
   pending?: boolean;
-  /** "promo", "produk", "jenama"… */
-  noun?: string;
+  /** Plural noun for "You've seen 24 of 120 {noun}": `{ one: "promo", other: "promos" }` (default: products). */
+  noun?: MaybePlural;
   /** The last load failed: show the inline error, and the button becomes the retry. */
   error?: boolean;
   /**
@@ -111,17 +114,21 @@ function useNear(onNear: (() => void) | undefined) {
   return ref;
 }
 
-/** "Muat lagi" (DESIGN §0.3 #19): 24 per chunk, no infinite scroll, footer stays reachable. */
-export function LoadMore({ shown, total, onMore, pending, noun = "produk", error, onNear, className }: LoadMoreProps) {
+/** "Load more" / "Muat lagi" (DESIGN §0.3 #19): 24 per chunk, no infinite scroll, footer stays reachable. */
+export function LoadMore({ shown, total, onMore, pending, noun, error, onNear, className }: LoadMoreProps) {
   const ref = useNear(shown < total ? onNear : undefined);
+  const t = useI18n().m.common.feedback;
   if (shown >= total) return null;
   const progress = Math.min(1, shown / Math.max(1, total));
   return (
     <div ref={ref} className={cn("flex flex-col items-center gap-3 pt-6", className)}>
       {/* No aria-live: the listing's result count already announces changes. */}
       <p className="text-caption text-ink-soft">
-        Kau dah tengok <span className="font-num text-ink">{formatCount(shown)}</span> daripada{" "}
-        <span className="font-num text-ink">{formatCount(total)}</span> {noun}
+        {rich(t.seen, {
+          shown: <span className="font-num text-ink">{formatCount(shown)}</span>,
+          total: <span className="font-num text-ink">{formatCount(total)}</span>,
+          noun: pluralForm(total, noun ?? t.nounProducts),
+        })}
       </p>
       <div className="h-1.5 w-28 overflow-hidden rounded-full bg-kapas" aria-hidden="true">
         <div
@@ -131,7 +138,7 @@ export function LoadMore({ shown, total, onMore, pending, noun = "produk", error
       </div>
       {error && (
         <p role="alert" className="text-caption font-semibold text-sambal-pekat">
-          Alamak, tak jadi. Cuba lagi?
+          {t.error}
         </p>
       )}
       <Button
@@ -140,7 +147,7 @@ export function LoadMore({ shown, total, onMore, pending, noun = "produk", error
         loading={pending}
         icon={pending ? undefined : error ? <RefreshCw aria-hidden size={18} /> : <ChevronDown aria-hidden size={20} />}
       >
-        {error ? "Cuba lagi" : "Muat lagi"}
+        {error ? t.retry : t.loadMore}
       </Button>
     </div>
   );
@@ -186,8 +193,9 @@ export interface ProductFeedMoreProps {
   sidebar?: boolean;
   view?: "grid" | "list";
   emphasis?: "promo" | "baru";
-  noun?: string;
-  /** Rendered once everything is shown ("Dah habis! …"). */
+  /** Plural noun for the progress line (default: products). */
+  noun?: MaybePlural;
+  /** Rendered once everything is shown ("That's everything!…"). */
   end?: ReactNode;
   className?: string;
 }
@@ -206,10 +214,11 @@ export function ProductFeedMore({
   sidebar,
   view,
   emphasis,
-  noun = "produk",
+  noun,
   end,
   className,
 }: ProductFeedMoreProps) {
+  const { locale, m } = useI18n();
   const [page, setPage] = usePageParam();
   const [items, setItems] = useState<ProductCardData[] | null>(null);
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
@@ -244,6 +253,7 @@ export function ProductFeedMore({
         <div className="mt-3.5 sm:mt-4">
           <ProductGrid
             products={extra}
+            locale={locale}
             startIndex={initialCount}
             syncedAt={syncedAt}
             checkedAt={checkedAt}
@@ -257,7 +267,7 @@ export function ProductFeedMore({
       )}
       {state === "loading" && view !== "list" && (
         <div className="mt-3.5 sm:mt-4" aria-busy="true">
-          <span className="sr-only">Sedang dimuatkan…</span>
+          <span className="sr-only">{m.common.feedback.loading}</span>
           <PendingRow sidebar={sidebar} />
         </div>
       )}

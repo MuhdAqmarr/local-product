@@ -5,6 +5,7 @@ import { useLenis } from "lenis/react";
 import { BadgePercent, Sparkles } from "@/components/ui/lucide";
 import { prefersLessMotion } from "@/components/providers/motion-pref";
 import { panelId, tabId, Tabs } from "@/components/ui/tabs";
+import { useI18n } from "@/i18n/client";
 import { headerOffset } from "./scroll-offset";
 
 export type BrandTab = "promo" | "baru";
@@ -28,6 +29,7 @@ const isTab = (v: string): v is BrandTab => v === "promo" || v === "baru";
  * `hidden` instantly and fade in via @starting-style. In-panel links to "#promo" / "#baru" switch tabs.
  */
 export function BrandTabs({ promoCount, baruCount, promo, baru, initial }: BrandTabsProps) {
+  const t = useI18n().m.brands.profile;
   const [tab, setTab] = useState<BrandTab>(initial);
   const rootRef = useRef<HTMLElement>(null);
   const lenis = useLenis();
@@ -73,7 +75,7 @@ export function BrandTabs({ promoCount, baruCount, promo, baru, initial }: Brand
   return (
     <section ref={rootRef} aria-labelledby="kedai-produk-title" onClickCapture={onClickCapture}>
       <h2 id="kedai-produk-title" className="sr-only">
-        Produk kedai
+        {t.tabsLabel}
       </h2>
       {/* Hash targets (#promo / #baru) so deep links and smooth-scroll anchors land on the tabs. */}
       <span id="promo" aria-hidden className="block scroll-mt-(--header-total)" />
@@ -81,13 +83,13 @@ export function BrandTabs({ promoCount, baruCount, promo, baru, initial }: Brand
       <div className="sticky-stack -mx-(--gutter) bg-santan/96 px-(--gutter) py-2.5 shadow-[0_2px_0_-1px_var(--color-garis)]">
         <Tabs
           base={BASE}
-          label="Produk kedai"
+          label={t.tabsLabel}
           value={tab}
           onChange={choose}
           className="max-w-[440px]"
           items={[
-            { value: "promo", label: "Promo", count: promoCount, icon: <BadgePercent aria-hidden /> },
-            { value: "baru", label: "Baru", count: baruCount, icon: <Sparkles aria-hidden /> },
+            { value: "promo", label: t.tabPromo, count: promoCount, icon: <BadgePercent aria-hidden /> },
+            { value: "baru", label: t.tabNew, count: baruCount, icon: <Sparkles aria-hidden /> },
           ]}
         />
       </div>

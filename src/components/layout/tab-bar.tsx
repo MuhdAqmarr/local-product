@@ -2,28 +2,29 @@
 
 import { useLinkStatus } from "next/link";
 import { ShellLink } from "./shell-link";
-import { usePathname } from "next/navigation";
 import * as m from "motion/react-m";
 import { BadgePercent, Heart, House, Sparkles, type LucideIcon } from "@/components/ui/lucide";
 import { SearchTrigger } from "@/components/search/search-trigger";
 import { CountBubble } from "@/components/ui/count-bubble";
 import { useSaved } from "@/lib/saved";
 import { spring } from "@/lib/motion";
+import { useI18n, useLocalePath } from "@/i18n/client";
 import { cn } from "@/lib/utils";
 import { isActivePath } from "./nav-link";
 
 interface Slot {
+  /** Language-neutral; ShellLink localizes it. */
   href: string;
-  label: string;
+  label: "home" | "promos" | "new" | "saved";
   icon: LucideIcon;
   slot: number;
 }
 
 const SLOTS: Slot[] = [
-  { href: "/", label: "Utama", icon: House, slot: 0 },
-  { href: "/promos", label: "Promo", icon: BadgePercent, slot: 1 },
-  { href: "/new", label: "Baru", icon: Sparkles, slot: 3 },
-  { href: "/saved", label: "Simpan", icon: Heart, slot: 4 },
+  { href: "/", label: "home", icon: House, slot: 0 },
+  { href: "/promos", label: "promos", icon: BadgePercent, slot: 1 },
+  { href: "/new", label: "new", icon: Sparkles, slot: 3 },
+  { href: "/saved", label: "saved", icon: Heart, slot: 4 },
 ];
 
 function TabDots() {
@@ -47,13 +48,14 @@ function TabDots() {
  * spring.snappy, no layoutId). Promo shows the live promo count; Simpan is the fly-to target.
  */
 export function TabBar({ promoCount }: { promoCount: number }) {
-  const pathname = usePathname();
+  const pathname = useLocalePath();
+  const nav = useI18n().m.common.nav;
   const { count: savedCount } = useSaved();
   const active = SLOTS.find((s) => isActivePath(pathname, s.href));
 
   return (
     <nav
-      aria-label="Navigasi utama"
+      aria-label={nav.main}
       style={{ viewTransitionName: "tab-bar" }}
       className="fixed inset-x-0 bottom-0 z-(--z-header) rounded-t-[24px] border-t-2 border-ink bg-putih/96 pb-[env(safe-area-inset-bottom)] shadow-up lg:hidden"
     >
@@ -83,6 +85,9 @@ export function TabBar({ promoCount }: { promoCount: number }) {
 
 function TabLink({ slot, active, badge, saved }: { slot: Slot; active: boolean; badge: number; saved?: boolean }) {
   const Icon = slot.icon;
+  const { m: messages, plural } = useI18n();
+  const nav = messages.common.nav;
+  const label = nav[slot.label];
   return (
     <ShellLink
       href={slot.href}
@@ -98,8 +103,8 @@ function TabLink({ slot, active, badge, saved }: { slot: Slot; active: boolean; 
       </span>
       {/* The accessible name starts with the visible label (QA F28); the bubble itself is aria-hidden. */}
       <span className={cn("text-tab", active ? "text-ink" : "text-ink-soft")}>
-        {slot.label}
-        {badge > 0 && <span className="sr-only">, {badge} item</span>}
+        {label}
+        {badge > 0 && <span className="sr-only">{plural(badge, nav.itemCount)}</span>}
       </span>
     </ShellLink>
   );
