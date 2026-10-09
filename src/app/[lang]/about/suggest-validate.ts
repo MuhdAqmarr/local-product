@@ -59,8 +59,19 @@ export function validateSuggestion(values: Record<SuggestField, string>): Sugges
  */
 export type SuggestMode = "webhook" | "email" | "closed";
 
+/**
+ * The Google Form receives suggestions in production only (so dev servers and preview deploys never
+ * add rows to the owner's sheet). SUGGEST_GOOGLE_FORM=on forces it on (local testing), =off disables it.
+ */
+export function googleFormSwitch(): boolean {
+  const flag = process.env.SUGGEST_GOOGLE_FORM;
+  if (flag === "off") return false;
+  return flag === "on" || process.env.VERCEL_ENV === "production";
+}
+
+/** "webhook" = we store suggestions ourselves (Google Form or webhook); "email" = visitor sends it. */
 export function suggestMode(): SuggestMode {
-  if (process.env.SUGGEST_WEBHOOK_URL) return "webhook";
+  if (googleFormSwitch() || process.env.SUGGEST_WEBHOOK_URL) return "webhook";
   if (process.env.SUGGEST_EMAIL?.trim()) return "email";
   return "closed";
 }

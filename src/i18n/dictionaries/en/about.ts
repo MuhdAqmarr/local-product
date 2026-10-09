@@ -158,7 +158,7 @@ const about = {
     /** `{star}` is the red asterisk. */
     required: "Fields marked {star} are required.",
     noteEmail: "Your suggestion is sent from your own email app.",
-    noteWebhook: "Oyen takes notes, we check them out.",
+    noteWebhook: "Oyen saves every suggestion to our Google Form, and we check each one.",
     submit: "Send suggestion",
 
     sentTitle: "Thank you! Oyen has noted your suggestion.",
@@ -172,6 +172,8 @@ const about = {
     failed: "Oops, that didn't work. Try again?",
     sendDirect: "Send by email",
 
+    /** Announced (polite live region) when a submit finds problems. */
+    errorSummary: { one: "1 field needs fixing.", other: "{count} fields need fixing." },
     errors: {
       nameShort: "Enter the brand name (at least 2 letters).",
       linkMissing: "Add the brand's online store or Instagram link.",

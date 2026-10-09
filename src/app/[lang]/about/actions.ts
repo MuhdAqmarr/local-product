@@ -4,10 +4,29 @@ import { hasLocale, type Locale } from "@/i18n/config";
 import enAbout from "@/i18n/dictionaries/en/about";
 import msAbout from "@/i18n/dictionaries/ms/about";
 import { fmt } from "@/i18n/format";
+import { headers } from "next/headers";
+import { GoogleFormError, googleFormEnabled, submitToGoogleForm } from "@/lib/suggest-google-form";
 import { categoryName, isCategorySlug } from "@/lib/taxonomy";
 import { LIMITS, normaliseLink, text, validateSuggestion, type SuggestField, type SuggestResult } from "./suggest-validate";
 
 export type { SuggestField, SuggestResult };
+
+/**
+ * Light anti-spam on top of the honeypot: at most 5 suggestions per IP per 10 minutes on each
+ * server instance, and forms submitted within 2.5 s of opening are treated as bots. Both get the
+ * same quiet "sent" as the honeypot, so scripts learn nothing.
+ */
+const WINDOW_MS = 10 * 60 * 1000;
+const MAX_PER_WINDOW = 5;
+const recent = new Map<string, number[]>();
+
+function overLimit(ip: string, now: number): boolean {
+  const hits = (recent.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
+  hits.push(now);
+  recent.set(ip, hits);
+  if (recent.size > 5000) recent.clear();
+  return hits.length > MAX_PER_WINDOW;
+}
 
 /**
  * A prefilled email to `SUGGEST_EMAIL`, labelled in the visitor's language (the form posts a hidden
@@ -34,15 +53,18 @@ function mailtoUrl(to: string, v: Record<SuggestField, string>, link: string, lo
 }
 
 /**
- * "Cadang jenama" (DESIGN §8.8 #6). Validates, then POSTs JSON to `SUGGEST_WEBHOOK_URL` when it
- * is set. Without a webhook but with `SUGGEST_EMAIL`, nothing is stored on our side, so we say so
- * honestly and hand back a prefilled email for the visitor to send from their own app. With
- * neither, the page shows a "suggestions open soon" note instead of the form (see `suggestMode`).
+ * "Cadang jenama" (DESIGN §8.8 #6). Validates, then records the suggestion in the owner's Google
+ * Form (src/lib/suggest-google-form.ts). If that fails and `SUGGEST_WEBHOOK_URL` is set, the JSON
+ * goes there instead; with `SUGGEST_EMAIL` the visitor gets a prefilled email as a last resort.
  * Never link to the source repo (owner's rule).
  */
 export async function suggestBrand(form: FormData): Promise<SuggestResult> {
   // Honeypot: real people never see this field. Bots get a quiet success and nothing is sent.
   if (text(form, "laman", 200)) return { status: "sent" };
+  const elapsed = Number(text(form, "e", 12));
+  if (Number.isFinite(elapsed) && elapsed > 0 && elapsed < 2500) return { status: "sent" };
+  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  if (overLimit(ip, Date.now())) return { status: "sent" };
 
   const values: Record<SuggestField, string> = {
     nama: text(form, "nama", LIMITS.nama),
@@ -57,10 +79,37 @@ export async function suggestBrand(form: FormData): Promise<SuggestResult> {
 
   const link = normaliseLink(values.link) ?? values.link;
   const lang = text(form, "lang", 4);
+  const locale: Locale = hasLocale(lang) ? lang : "en";
   const email = process.env.SUGGEST_EMAIL?.trim();
-  const fallback = email ? mailtoUrl(email, values, link, hasLocale(lang) ? lang : "en") : undefined;
+  const fallback = email ? mailtoUrl(email, values, link, locale) : undefined;
   const webhook = process.env.SUGGEST_WEBHOOK_URL;
-  if (!webhook) return fallback ? { status: "email", url: fallback } : { status: "error" };
+
+  let rejected = false;
+  if (googleFormEnabled()) {
+    try {
+      await submitToGoogleForm({
+        name: values.nama,
+        link,
+        // English category name + slug so the sheet sorts the same whatever language was used.
+        category: isCategorySlug(values.kategori) ? `${categoryName(values.kategori, "en")} (${values.kategori})` : "",
+        state: values.negeri,
+        why: values.kenapa,
+        email: values.email,
+      });
+      return { status: "sent" };
+    } catch (err) {
+      // A timeout may still have been recorded: don't store it twice through another channel.
+      if (err instanceof GoogleFormError && err.kind === "timeout") return { status: "error", url: fallback };
+      rejected = true;
+    }
+  }
+
+  if (!webhook) {
+    // After a failed save, say so (with the email link as a way out); "email" mode is only for
+    // sites configured to send suggestions by email in the first place.
+    if (rejected) return { status: "error", url: fallback };
+    return fallback ? { status: "email", url: fallback } : { status: "error" };
+  }
 
   try {
     const res = await fetch(webhook, {

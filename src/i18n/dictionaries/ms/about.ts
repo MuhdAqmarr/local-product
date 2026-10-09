@@ -142,9 +142,9 @@ const about = {
     email: "Email kau (tak wajib)",
     emailHelper: "Hanya untuk kami hubungi kau pasal cadangan ni.",
     honeypot: "Laman web (biar kosong)",
-    required: "Medan bertanda {star} wajib.",
+    required: "Ruangan bertanda {star} wajib diisi.",
     noteEmail: "Cadangan kau dihantar dari app email kau sendiri.",
-    noteWebhook: "Oyen catat, kami semak.",
+    noteWebhook: "Oyen simpan setiap cadangan dalam Google Form kami, dan kami semak satu-satu.",
     submit: "Hantar cadangan",
 
     sentTitle: "Terima kasih! Oyen dah catat cadangan kau.",
@@ -158,6 +158,7 @@ const about = {
     failed: "Alamak, tak jadi. Cuba lagi?",
     sendDirect: "Hantar guna email",
 
+    errorSummary: { one: "1 ruangan perlu dibetulkan.", other: "{count} ruangan perlu dibetulkan." },
     errors: {
       nameShort: "Tulis nama jenama (sekurang-kurangnya 2 huruf).",
       linkMissing: "Letak link kedai online atau Instagram jenama ni.",

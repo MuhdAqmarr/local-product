@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition, type FocusEvent, type FormEvent } from "react";
+import { flushSync } from "react-dom";
 import { Send } from "@/components/ui/lucide";
 import { Oyen } from "@/components/art/oyen";
 import { Particles } from "@/components/art/particles";
@@ -27,7 +28,7 @@ const STATE_OPTIONS = STATES.map((s) => ({ value: s, label: s }));
  * Validation returns codes; messages come from `about.form.errors` (needs the `about` namespace).
  */
 export function SuggestForm({ mode = "email" }: { mode?: "webhook" | "email" }) {
-  const { m, locale } = useI18n();
+  const { m, locale, plural } = useI18n();
   const t = m.about.form;
   const categoryOptions = useMemo(() => CATEGORIES.map((c) => ({ value: c.slug, label: categoryName(c, locale) })), [locale]);
   const [values, setValues] = useState(EMPTY);
@@ -41,6 +42,13 @@ export function SuggestForm({ mode = "email" }: { mode?: "webhook" | "email" }) 
   const [burst, setBurst] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
   const doneRef = useRef<HTMLDivElement>(null);
+  /** Error count for screen readers, announced on submit (polite live region). */
+  const [announce, setAnnounce] = useState("");
+  /** When the form became usable; the time taken to fill it goes with the submit (bot check). */
+  const openedAt = useRef(0);
+  useEffect(() => {
+    openedAt.current = performance.now();
+  }, []);
 
   // ?nama= prefill (from search "Cadang jenama ni" / directory empty state). Client-only URL read.
   useEffect(() => {
@@ -64,19 +72,27 @@ export function SuggestForm({ mode = "email" }: { mode?: "webhook" | "email" }) 
     setErrors((prev) => ({ ...prev, [field]: validateSuggestion({ ...values, [field]: e.target.value })[field] }));
   };
 
+  const focusFirstError = (found: SuggestErrors): boolean => {
+    const first = (Object.keys(EMPTY) as SuggestField[]).find((f) => found[f]);
+    if (!first) return false;
+    // Render aria-invalid + the error text first, so focusing the field reads the error out.
+    flushSync(() => setErrors(found));
+    setAnnounce(plural(Object.keys(found).length, t.errorSummary));
+    formRef.current?.querySelector<HTMLElement>(`#cadang-${first}`)?.focus();
+    return true;
+  };
+
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const found = validateSuggestion(values);
+    if (focusFirstError(found)) return;
     setErrors(found);
-    const first = (Object.keys(EMPTY) as SuggestField[]).find((f) => found[f]);
-    if (first) {
-      formRef.current?.querySelector<HTMLElement>(`#cadang-${first}`)?.focus();
-      return;
-    }
+    setAnnounce("");
     const data = new FormData(event.currentTarget);
+    data.set("e", String(Math.round(performance.now() - openedAt.current)));
     startTransition(async () => {
       const res = await suggestBrand(data).catch((): SuggestResult => ({ status: "error" }));
-      if (res.status === "invalid") setErrors(res.errors);
+      if (res.status === "invalid") focusFirstError(res.errors);
       if (res.status === "sent") setBurst((b) => b + 1);
       setResult(res);
     });
@@ -121,6 +137,9 @@ export function SuggestForm({ mode = "email" }: { mode?: "webhook" | "email" }) 
 
   return (
     <form ref={formRef} onSubmit={submit} noValidate aria-describedby="cadang-note" className="grid gap-4 sm:grid-cols-2">
+      <p role="status" aria-live="polite" className="sr-only">
+        {announce}
+      </p>
       <Input
         id="cadang-nama"
         name="nama"
