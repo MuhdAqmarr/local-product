@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Sparkles } from "lucide-react";
+import { Sparkles } from "@/components/ui/lucide";
 import { Sparkle } from "@/components/art/sparkle";
 import { WauBulan } from "@/components/art/wau-bulan";
 import { LivePill } from "@/components/feedback/live-pill";

@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import * as m from "motion/react-m";
 import { useMotionValue, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "motion/react";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw } from "@/components/ui/lucide";
 import { prefersLessMotion, useMotionPref } from "@/components/providers/motion-pref";
 import { cn } from "@/lib/utils";
 

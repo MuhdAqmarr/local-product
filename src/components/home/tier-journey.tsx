@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/components/ui/lucide";
 import { TierIcon } from "@/components/art/tier-icon";
 import { Monogram } from "@/components/brand/monogram";
 import { TIER_COPY, TierCop } from "@/components/brand/tier-cop";

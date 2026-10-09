@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { useLenis } from "lenis/react";
-import { BadgePercent, Sparkles } from "lucide-react";
+import { BadgePercent, Sparkles } from "@/components/ui/lucide";
 import { prefersLessMotion } from "@/components/providers/motion-pref";
 import { panelId, tabId, Tabs } from "@/components/ui/tabs";
 import { headerOffset } from "./scroll-offset";

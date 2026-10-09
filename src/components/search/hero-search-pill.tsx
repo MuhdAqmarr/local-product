@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Search } from "lucide-react";
+import { Search } from "@/components/ui/lucide";
 import { popStyle } from "@/components/ui/pop";
 import { useMotionPref } from "@/components/providers/motion-pref";
 import { cn } from "@/lib/utils";

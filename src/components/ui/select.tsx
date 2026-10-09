@@ -1,5 +1,5 @@
 import type { ReactNode, SelectHTMLAttributes } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/ui/lucide";
 import { cn } from "@/lib/utils";
 import { controlClasses, describedBy, Field } from "./field";
 

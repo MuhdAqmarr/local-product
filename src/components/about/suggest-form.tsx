@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition, type FocusEvent, type FormEvent } from "react";
-import { ExternalLink, Send } from "lucide-react";
+import { ExternalLink, Send } from "@/components/ui/lucide";
 import { Oyen } from "@/components/art/oyen";
 import { Particles } from "@/components/art/particles";
 import { Button } from "@/components/ui/button";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw } from "@/components/ui/lucide";
 import { activeCount } from "@/components/listing/listing-model";
 import { cn } from "@/lib/utils";
 import {

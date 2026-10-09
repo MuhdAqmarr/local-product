@@ -1,4 +1,4 @@
-import { Baby, Bike, Coffee, Cookie, Droplets, Gift, Handbag, Headphones, HeartPulse, Shirt, Sofa, type LucideIcon } from "lucide-react";
+import { Baby, Bike, Coffee, Cookie, Droplets, Gift, Handbag, Headphones, HeartPulse, Shirt, Sofa, type LucideIcon } from "@/components/ui/lucide";
 import type { CategorySlug } from "@/lib/types";
 
 /** Category → lucide icon (DESIGN §2.3). `Sparkles` is reserved for "Baru". */

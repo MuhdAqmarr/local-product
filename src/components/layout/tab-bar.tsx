@@ -3,7 +3,7 @@
 import Link, { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
 import * as m from "motion/react-m";
-import { BadgePercent, Heart, House, Sparkles, type LucideIcon } from "lucide-react";
+import { BadgePercent, Heart, House, Sparkles, type LucideIcon } from "@/components/ui/lucide";
 import { SearchTrigger } from "@/components/search/search-trigger";
 import { CountBubble } from "@/components/ui/count-bubble";
 import { useSaved } from "@/lib/saved";

@@ -1,7 +1,7 @@
 "use client";
 
 import { startTransition, useCallback, useEffect, useState, type CSSProperties, type ReactNode } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/ui/lucide";
 import { Button } from "@/components/ui/button";
 import { formatCount } from "@/lib/format";
 import type { ProductCardData } from "@/lib/types";

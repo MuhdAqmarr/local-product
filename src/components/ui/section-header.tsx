@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/components/ui/lucide";
 import { cn } from "@/lib/utils";
 
 /** The one accent word of a heading: gradient text that pops in after the header reveals. */

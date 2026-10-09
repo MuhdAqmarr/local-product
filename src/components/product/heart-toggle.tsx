@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Heart } from "lucide-react";
+import { Heart } from "@/components/ui/lucide";
 import { prefersLessMotion } from "@/components/providers/motion-pref";
 import { FLY_TEACH_LIMIT } from "@/lib/motion";
 import { Particles } from "@/components/art/particles";

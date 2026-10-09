@@ -1,6 +1,6 @@
 import { Children, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/components/ui/lucide";
 import { RailStagger } from "@/components/motion/rail-stagger";
 import { formatCount } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -78,23 +78,26 @@ export function Rail({ id, title, titleText, sub, eyebrow, art, count, noun = "p
         </div>
       </div>
 
-      <div className="mx-auto max-w-(--container)">
-        <RailStagger
-          id={trackId}
-          label={label}
-          hint={hint}
-          className={cn(
-            "rail-track",
-            "no-scrollbar grid auto-cols-[var(--rail-col)] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain scroll-px-(--gutter) px-(--gutter) pt-3 pb-5 snap-x snap-mandatory",
-            "[--rail-col:clamp(148px,42vw,188px)] lg:[--rail-col:216px]",
-            "focus-visible:outline-offset-[-3px]",
-          )}
-          itemClassName="snap-start min-w-0"
-        >
-          {cells}
-          {href && <RailEndCard key="rail-end" href={href} count={count} noun={noun} />}
-        </RailStagger>
-      </div>
+      {/* Full-bleed track: the inset puts the first card on the heading's line (the container-page
+          content edge) while scrolled cards run on to the band/section edge instead of being cut at
+          an invisible 1240 px line. Padding % and scroll-padding % both resolve against the section
+          width here, so the two values stay identical. */}
+      <RailStagger
+        id={trackId}
+        label={label}
+        hint={hint}
+        className={cn(
+          "rail-track",
+          "no-scrollbar grid auto-cols-[var(--rail-col)] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain pt-3 pb-5 snap-x snap-mandatory",
+          "[--rail-inset:max(var(--gutter),calc((100%-var(--container))/2+var(--gutter)))] scroll-px-(--rail-inset) px-(--rail-inset)",
+          "[--rail-col:clamp(148px,42vw,188px)] lg:[--rail-col:216px]",
+          "focus-visible:outline-offset-[-3px]",
+        )}
+        itemClassName="snap-start min-w-0"
+      >
+        {cells}
+        {href && <RailEndCard key="rail-end" href={href} count={count} noun={noun} />}
+      </RailStagger>
 
       <div className={cn("rail-progress", "mx-auto -mt-1 h-1.5 w-24 overflow-hidden rounded-full bg-kapas")} aria-hidden="true">
         <div className={cn("rail-thumb", "h-full w-full bg-kuih-lapis")} />

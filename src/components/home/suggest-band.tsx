@@ -1,4 +1,4 @@
-import { Megaphone } from "lucide-react";
+import { Megaphone } from "@/components/ui/lucide";
 import { Oyen } from "@/components/art/oyen";
 import { Band } from "@/components/ui/band";
 import { Button } from "@/components/ui/button";

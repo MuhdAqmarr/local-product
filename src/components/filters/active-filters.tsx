@@ -2,7 +2,7 @@
 
 import { AnimatePresence } from "motion/react";
 import * as m from "motion/react-m";
-import { X } from "lucide-react";
+import { X } from "@/components/ui/lucide";
 import { chipPresence } from "@/lib/motion";
 import { CATEGORY_BY_SLUG, TIER_BY_SLUG } from "@/lib/taxonomy";
 import { activeCount, discountLabel, priceLabel, type FilterState } from "@/components/listing/listing-model";

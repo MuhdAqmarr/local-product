@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowRight, Info, LayoutGrid, Megaphone, Store } from "lucide-react";
+import { ArrowRight, Info, LayoutGrid, Megaphone, Store } from "@/components/ui/lucide";
 import { Sheet } from "@/components/ui/sheet";
 import { IconButton } from "@/components/ui/icon-button";
 import { CategoryTiles, TierLinks } from "./category-tiles";

@@ -1,4 +1,4 @@
-import { Sparkles } from "lucide-react";
+import { Sparkles } from "@/components/ui/lucide";
 import { ListingSkeleton } from "@/components/listing/listing-skeleton";
 import { PageTransition, SkeletonOut } from "@/components/motion/page-transition";
 import { PageHead } from "@/components/skeletons/page-head";

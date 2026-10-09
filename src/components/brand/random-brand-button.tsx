@@ -2,7 +2,7 @@
 
 import { startTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Dices } from "lucide-react";
+import { Dices } from "@/components/ui/lucide";
 import { prefersLessMotion } from "@/components/providers/motion-pref";
 import { Button, type ButtonSize, type ButtonVariant } from "@/components/ui/button";
 

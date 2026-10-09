@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { BadgePercent, CircleAlert, Heart, PackageX, Store, TrendingDown, TrendingUp, Trash2 } from "lucide-react";
+import { BadgePercent, CircleAlert, Heart, PackageX, Store, TrendingDown, TrendingUp, Trash2 } from "@/components/ui/lucide";
 import { Monogram } from "@/components/brand/monogram";
 import { SaveBrandButton } from "@/components/brand/save-brand-button";
 import { TierCop } from "@/components/brand/tier-cop";

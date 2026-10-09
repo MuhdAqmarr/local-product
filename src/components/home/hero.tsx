@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { BadgePercent, Sparkles, Tag } from "lucide-react";
+import { BadgePercent, Sparkles, Tag } from "@/components/ui/lucide";
 import { ArrowDoodle } from "@/components/art/arrow-doodle";
 import { BungaRaya } from "@/components/art/bunga-raya";
 import { Oyen } from "@/components/art/oyen";

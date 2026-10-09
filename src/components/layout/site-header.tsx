@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Store } from "lucide-react";
+import { Store } from "@/components/ui/lucide";
 import { getCategorySummaries } from "@/lib/catalog";
 import { CATEGORY_BY_SLUG } from "@/lib/taxonomy";
 import { SearchTrigger } from "@/components/search/search-trigger";
@@ -18,6 +18,7 @@ import { SavedLink } from "./saved-link";
  * Site header (DESIGN §6.2). One sticky element (`#site-header`, VT name "site-header"):
  * awning (20 / 26 px) + bar (56 / 72 px) on solid santan/96 (no blur). Mobile: logo · Jenama pill ·
  * Kategori sheet. Desktop: logo · nav (Promo · Baru · Jenama · Kategori ▾ · Tentang) · search pill · Simpan.
+ * The pill is fluid (≤ 300 px) and the nav tightens below xl so 1024–1279 px never scrolls sideways.
  */
 export async function SiteHeader({ promoCount }: { promoCount: number }) {
   const summaries = await getCategorySummaries();
@@ -35,7 +36,7 @@ export async function SiteHeader({ promoCount }: { promoCount: number }) {
         <div className="container-page flex h-(--header-h) items-center gap-3">
           <Logo />
 
-          <nav aria-label="Navigasi utama desktop" className="ml-8 hidden items-center gap-6 lg:flex">
+          <nav aria-label="Navigasi utama desktop" className="ml-6 hidden shrink-0 items-center gap-3 lg:flex xl:ml-8 xl:gap-6">
             <NavLink href="/promos" badge={<CountBubble count={promoCount} />}>
               Promo
             </NavLink>
@@ -55,8 +56,8 @@ export async function SiteHeader({ promoCount }: { promoCount: number }) {
             <CategorySheet categories={categories} />
           </div>
 
-          <div className="ml-auto hidden items-center gap-3 lg:flex">
-            <SearchTrigger variant="pill" className="w-[260px] xl:w-[300px]" />
+          <div className="ml-auto hidden min-w-0 flex-1 items-center justify-end gap-3 lg:flex">
+            <SearchTrigger variant="pill" className="w-auto min-w-0 max-w-[300px] flex-1 shrink" />
             <SavedLink />
           </div>
         </div>

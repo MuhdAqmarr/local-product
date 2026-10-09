@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "@/components/ui/lucide";
 import { TierIcon } from "@/components/art/tier-icon";
 import { CategoryGlyph } from "@/components/product/category-glyph";
 import { TIERS } from "@/lib/taxonomy";

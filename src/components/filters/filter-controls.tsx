@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type KeyboardEvent, type ReactNode } from "react";
-import { Check, Search, X } from "lucide-react";
+import { Check, Search, X } from "@/components/ui/lucide";
 import { TierIcon } from "@/components/art/tier-icon";
 import { TIER_COPY } from "@/components/brand/tier-cop";
 import { CategoryChip } from "@/components/category/category-chip";
@@ -401,31 +401,44 @@ export function priceOptions(current: PriceRange | null): PriceRange[] {
   return list.sort((a, b) => a.min - b.min || (a.max ?? Infinity) - (b.max ?? Infinity));
 }
 
+/** Honesty note under the Harga control: RM bands never match US$ items, so say how many are left out. */
+function NonMyrNote({ value, facets }: Pick<ControlProps, "value" | "facets">) {
+  const n = value.harga && facets ? facets.nonMyr : 0;
+  if (!n) return null;
+  return <p className="mt-2 text-caption text-ink-2">Produk dalam US$ ({formatCount(n)}) tak termasuk dalam tapisan harga RM.</p>;
+}
+
 export function PriceChips({ value, onChange, facets }: ControlProps) {
   const active = value.harga ? priceId(value.harga) : "";
   return (
-    <RadioPills
-      label="Harga"
-      options={[{ value: "", label: "Semua harga" }, ...priceOptions(value.harga).map((r) => ({ value: priceId(r), label: priceLabel(r), count: facets ? (facets.harga[priceId(r)] ?? 0) : undefined }))]}
-      value={active}
-      onChange={(id) => onChange({ harga: id ? (priceOptions(value.harga).find((r) => priceId(r) === id) ?? null) : null })}
-    />
+    <>
+      <RadioPills
+        label="Harga"
+        options={[{ value: "", label: "Semua harga" }, ...priceOptions(value.harga).map((r) => ({ value: priceId(r), label: priceLabel(r), count: facets ? (facets.harga[priceId(r)] ?? 0) : undefined }))]}
+        value={active}
+        onChange={(id) => onChange({ harga: id ? (priceOptions(value.harga).find((r) => priceId(r) === id) ?? null) : null })}
+      />
+      <NonMyrNote value={value} facets={facets} />
+    </>
   );
 }
 
 export function PriceRows({ value, onChange, facets, name }: ControlProps & { name: string }) {
   const active = value.harga ? priceId(value.harga) : "";
   return (
-    <div role="radiogroup" aria-label="Harga" className="flex flex-col">
-      <CheckRow type="radio" name={name} checked={active === ""} onChange={() => onChange({ harga: null })}>
-        Semua harga
-      </CheckRow>
-      {priceOptions(value.harga).map((r) => (
-        <CheckRow key={priceId(r)} type="radio" name={name} checked={active === priceId(r)} onChange={() => onChange({ harga: r })} count={facets ? (facets.harga[priceId(r)] ?? 0) : undefined}>
-          {priceLabel(r)}
+    <>
+      <div role="radiogroup" aria-label="Harga" className="flex flex-col">
+        <CheckRow type="radio" name={name} checked={active === ""} onChange={() => onChange({ harga: null })}>
+          Semua harga
         </CheckRow>
-      ))}
-    </div>
+        {priceOptions(value.harga).map((r) => (
+          <CheckRow key={priceId(r)} type="radio" name={name} checked={active === priceId(r)} onChange={() => onChange({ harga: r })} count={facets ? (facets.harga[priceId(r)] ?? 0) : undefined}>
+            {priceLabel(r)}
+          </CheckRow>
+        ))}
+      </div>
+      <NonMyrNote value={value} facets={facets} />
+    </>
   );
 }
 

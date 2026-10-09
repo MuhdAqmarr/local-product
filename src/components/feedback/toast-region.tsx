@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence } from "motion/react";
 import * as m from "motion/react-m";
-import { CircleAlert, CircleCheck, Heart, Info, WifiOff, X } from "lucide-react";
+import { CircleAlert, CircleCheck, Heart, Info, WifiOff, X } from "@/components/ui/lucide";
 import { toast as toastVariants } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { dismissToast, toast, useToastState, type ToastItem, type ToastTone } from "./toast-store";

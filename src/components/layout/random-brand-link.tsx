@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition } from "react";
-import { Dices } from "lucide-react";
+import { Dices } from "@/components/ui/lucide";
 
 /** Footer "Jenama rawak": picks a random brand at tap time (no randomness during render). */
 export function RandomBrandLink({ slugs, className }: { slugs: string[]; className?: string }) {

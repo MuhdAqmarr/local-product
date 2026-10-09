@@ -326,7 +326,8 @@
   .mesh-blob:nth-child(2) { --s: min(66vmax, 860px); --c: 189 166 255; --a: .5; right: -32%; top: 8%; animation: drift-b 23s var(--ease-sine) infinite alternate; }
   .mesh-blob:nth-child(3) { --s: min(48vmax, 640px); --c: 255 213 79; --a: .4; left: 18%; bottom: -36%; animation: drift-c 29s var(--ease-sine) infinite alternate; }
   @media (max-width: 767px) { .mesh-blob:nth-child(3) { display: none; } }
-  [data-paused] .mesh-blob, [data-paused] .ambient { animation-play-state: paused; }
+  /* !important: inline `animation` shorthands (Oyen, wau, seal) reset play-state; layered !important beats inline + unlayered (.stamp-ring) */
+  [data-paused] .mesh-blob, [data-paused] .ambient, [data-paused] .ambient *, [data-paused] .stamp-ring { animation-play-state: paused !important; }
 
   /* ---- 6.4 Skeleton: one shimmer per block, starts after 400ms, travels as a wave via --i ---- */
   .skeleton { position: relative; overflow: hidden; isolation: isolate; background: var(--skel, var(--color-kapas)); }

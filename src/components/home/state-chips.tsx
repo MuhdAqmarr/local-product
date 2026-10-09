@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin, Megaphone } from "lucide-react";
+import { MapPin, Megaphone } from "@/components/ui/lucide";
 import { Chip } from "@/components/ui/chip";
 import { SectionHeader } from "@/components/ui/section-header";
 import type { BrandSummary } from "@/lib/catalog";

@@ -1,4 +1,4 @@
-import { Store } from "lucide-react";
+import { Store } from "@/components/ui/lucide";
 import { PageTransition, SkeletonOut } from "@/components/motion/page-transition";
 import { BrandGridSkeleton } from "@/components/skeletons/brand-grid-skeleton";
 import { Bone } from "@/components/skeletons/bone";

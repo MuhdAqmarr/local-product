@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
-import { BadgePercent, Info } from "lucide-react";
+import { BadgePercent, Info } from "@/components/ui/lucide";
 import { Sparkle } from "@/components/art/sparkle";
 import { Starburst } from "@/components/art/starburst";
 import { LivePill } from "@/components/feedback/live-pill";

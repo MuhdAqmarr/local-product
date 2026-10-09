@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, CalendarHeart, MapPin, RefreshCwOff } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, CalendarHeart, MapPin, RefreshCwOff } from "@/components/ui/lucide";
 import { Oyen } from "@/components/art/oyen";
 import { CategoryChip } from "@/components/category/category-chip";
 import { LivePill } from "@/components/feedback/live-pill";

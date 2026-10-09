@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { MapPin } from "@/components/ui/lucide";
 import { CATEGORY_BY_SLUG } from "@/lib/taxonomy";
 import { cn } from "@/lib/utils";
 import { BrandCollage, type BrandCardData } from "./brand-card";

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Check, CircleDot, X } from "lucide-react";
+import { Check, CircleDot, X } from "@/components/ui/lucide";
 import { Oyen } from "@/components/art/oyen";
 import { Seal } from "@/components/art/seal";
 import { Faq } from "@/components/about/faq";

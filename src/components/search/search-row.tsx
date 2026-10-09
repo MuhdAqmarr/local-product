@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ArrowUpRight, ChevronRight } from "lucide-react";
+import { ArrowUpRight, ChevronRight } from "@/components/ui/lucide";
 import { TierIcon } from "@/components/art/tier-icon";
 import { Monogram } from "@/components/brand/monogram";
 import { CategoryGlyph } from "@/components/product/category-glyph";

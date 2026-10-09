@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search } from "lucide-react";
+import { Search } from "@/components/ui/lucide";
 import { Kbd } from "@/components/ui/kbd";
 import { popStyle } from "@/components/ui/pop";
 import { cn } from "@/lib/utils";
@@ -22,7 +22,8 @@ function useShortcutLabel() {
 
 /**
  * Opens the search dialog (DESIGN §6.4).
- * - `pill`: desktop header pill (300 × 44, white, 2 px ink, pop) with the ⌘K / Ctrl K hint.
+ * - `pill`: desktop header pill (≤ 300 × 44, white, 2 px ink, pop) with the ⌘K / Ctrl K hint; the hint
+ *   drops when the pill is squeezed under 220 px (header at 1024–1179 px) so the label stays readable.
  * - `icon`: 44 px icon button.
  * - `tab`: the raised 56 px bandung "Cari" button in the bottom tab bar.
  * Warms the dialog chunk + `/api/feed/search` on pointerenter / focus / touchstart.
@@ -79,13 +80,13 @@ export function SearchTrigger({ variant = "pill", className }: { variant?: Searc
       {...intent}
       aria-label="Cari jenama atau produk"
       aria-haspopup="dialog"
-      className={cn("pop w-[300px] shrink-0", className)}
+      className={cn("pop @container w-[300px] shrink-0", className)}
       style={popStyle({ offset: 2 })}
     >
       <span className="pop-face h-11 w-full !justify-start gap-2.5 bg-putih pl-4 pr-2 text-ink">
         <Search aria-hidden size={18} strokeWidth={2.25} />
-        <span className="flex-1 text-left text-[14px] text-ink-soft">Cari jenama, produk…</span>
-        <Kbd className={cn("transition-opacity duration-200 pointer-coarse:hidden", shortcut ? "opacity-100" : "opacity-0")}>{shortcut ?? "⌘K"}</Kbd>
+        <span className="min-w-0 flex-1 truncate text-left text-[14px] text-ink-soft">Cari jenama, produk…</span>
+        <Kbd className={cn("transition-opacity duration-200 pointer-coarse:hidden @max-[220px]:hidden", shortcut ? "opacity-100" : "opacity-0")}>{shortcut ?? "⌘K"}</Kbd>
       </span>
     </button>
   );

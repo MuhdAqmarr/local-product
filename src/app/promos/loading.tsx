@@ -1,4 +1,4 @@
-import { BadgePercent } from "lucide-react";
+import { BadgePercent } from "@/components/ui/lucide";
 import { ListingSkeleton } from "@/components/listing/listing-skeleton";
 import { PageTransition, SkeletonOut } from "@/components/motion/page-transition";
 import { PageHead } from "@/components/skeletons/page-head";

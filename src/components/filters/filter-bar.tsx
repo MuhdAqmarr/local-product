@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { ArrowUpDown, BadgePercent, CalendarDays, Check, SlidersHorizontal, Wallet } from "lucide-react";
+import { ArrowUpDown, BadgePercent, CalendarDays, Check, SlidersHorizontal, Wallet } from "@/components/ui/lucide";
 import { CategoryChip } from "@/components/category/category-chip";
 import { Chip } from "@/components/ui/chip";
 import { CountBubble } from "@/components/ui/count-bubble";

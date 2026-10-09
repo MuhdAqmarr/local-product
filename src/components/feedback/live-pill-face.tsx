@@ -2,7 +2,7 @@
 
 import { startTransition, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RefreshCwOff } from "lucide-react";
+import { RefreshCwOff } from "@/components/ui/lucide";
 import { timeAgo } from "@/lib/format";
 import { formatClock, syncState, SYNC_COPY, type SyncSource, type SyncState } from "@/lib/freshness";
 import { cn } from "@/lib/utils";

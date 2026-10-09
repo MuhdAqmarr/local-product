@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDeferredValue, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { useLenis } from "lenis/react";
-import { Clock3, Flame, Search, Sparkles, X } from "lucide-react";
+import { Clock3, Flame, Search, Sparkles, X } from "@/components/ui/lucide";
 import { Oyen } from "@/components/art/oyen";
 import { CategoryGlyph } from "@/components/product/category-glyph";
 import { SearchRowSkeleton } from "@/components/skeletons/search-row-skeleton";

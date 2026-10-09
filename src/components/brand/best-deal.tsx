@@ -1,4 +1,4 @@
-import { ArrowUpRight, Clock3 } from "lucide-react";
+import { ArrowUpRight, Clock3 } from "@/components/ui/lucide";
 import { DealSticker } from "@/components/product/deal-sticker";
 import { PlateImage } from "@/components/product/plate-image";
 import { Price } from "@/components/product/price";

@@ -21,7 +21,11 @@ it obvious that data is live and when it was last synced.
   (`@theme`). Use the design tokens — no raw hex values in components.
 - Motion 14 (`motion` package; re-exports framer-motion 14).
 - Lenis 1.3 (`lenis/react`).
-- lucide-react icons, clsx + tailwind-merge via `cn()` in `@/lib/utils`.
+- Icons: import from `@/components/ui/lucide` (server-safe wrappers over the vanilla `lucide`
+  icon data, same props as lucide-react). Do not install lucide-react: its components are
+  `"use client"`, so every icon in a Server Component became a client island. Add new icons
+  to the `ICONS` map in that file.
+- clsx + tailwind-merge via `cn()` in `@/lib/utils`.
 
 ## Next.js 16 + Cache Components rules (build breaks if ignored)
 

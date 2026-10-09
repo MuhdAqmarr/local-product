@@ -1,6 +1,6 @@
 import { useId } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/components/ui/lucide";
 import type { FeedStatus } from "@/lib/types";
 import { brandSyncState, formatClock, formatDate, syncState, type SyncSource } from "@/lib/freshness";
 import { cn } from "@/lib/utils";

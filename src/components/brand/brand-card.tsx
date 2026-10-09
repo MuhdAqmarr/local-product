@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { MapPin } from "@/components/ui/lucide";
 import { CategoryGlyph } from "@/components/product/category-glyph";
 import { PlateImage } from "@/components/product/plate-image";
 import { PLATE_SIZES } from "@/components/product/plate-sizes";

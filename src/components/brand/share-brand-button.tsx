@@ -1,6 +1,6 @@
 "use client";
 
-import { Share2 } from "lucide-react";
+import { Share2 } from "@/components/ui/lucide";
 import { toast } from "@/components/feedback/toast-store";
 import { IconButton } from "@/components/ui/icon-button";
 

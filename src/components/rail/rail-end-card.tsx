@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/components/ui/lucide";
 import { formatCount } from "@/lib/format";
 import { cn } from "@/lib/utils";
 

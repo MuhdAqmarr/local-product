@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { CircleAlert } from "lucide-react";
+import { CircleAlert } from "@/components/ui/lucide";
 import { cn } from "@/lib/utils";
 
 export interface FieldProps {

@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { ArrowUpRight, BadgePercent, RefreshCw } from "lucide-react";
+import { ArrowUpRight, BadgePercent, RefreshCw } from "@/components/ui/lucide";
 import { formatClock, formatDate } from "@/lib/freshness";
 import { cn } from "@/lib/utils";
 import "./about.css";

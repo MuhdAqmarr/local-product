@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Store } from "lucide-react";
+import { Store } from "@/components/ui/lucide";
 import { Seal } from "@/components/art/seal";
 import { DirectoryFilter, type DirectoryBrand, type DirectoryFacets } from "@/components/brand/directory-filter";
 import { RandomBrandButton } from "@/components/brand/random-brand-button";

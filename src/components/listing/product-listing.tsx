@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState, ViewTransition, type ReactNode } from "react";
 import { useLenis } from "lenis/react";
-import { LayoutGrid, Rows3, Sparkles, X } from "lucide-react";
+import { LayoutGrid, Rows3, Sparkles, X } from "@/components/ui/lucide";
 import { WauBulan } from "@/components/art/wau-bulan";
 import { EmptyState } from "@/components/feedback/empty-state";
 import { Odometer } from "@/components/feedback/odometer";

@@ -1,4 +1,4 @@
-import { ArrowUpRight, RefreshCw, Search } from "lucide-react";
+import { ArrowUpRight, RefreshCw, Search } from "@/components/ui/lucide";
 import type { ReactNode } from "react";
 import { Band } from "@/components/ui/band";
 import { Accent, SectionHeader } from "@/components/ui/section-header";

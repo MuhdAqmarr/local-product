@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, useMotionValueEvent, useScroll } from "motion/react";
 import * as m from "motion/react-m";
 import { useLenis } from "lenis/react";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp } from "@/components/ui/lucide";
 import { fab } from "@/lib/motion";
 import { prefersLessMotion } from "@/components/providers/motion-pref";
 

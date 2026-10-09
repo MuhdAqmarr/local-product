@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/ui/lucide";
 import { formatClock, formatDate } from "@/lib/freshness";
 import { REPO_URL } from "@/lib/site";
 import "./about.css";

@@ -1,6 +1,6 @@
 import { useId } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/components/ui/lucide";
 import { TierIcon } from "@/components/art/tier-icon";
 import { TIER_BY_SLUG } from "@/lib/taxonomy";
 import type { TierSlug } from "@/lib/types";

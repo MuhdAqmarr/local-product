@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Info } from "lucide-react";
+import { Info } from "@/components/ui/lucide";
 import { BestDeal } from "@/components/brand/best-deal";
 import { BrandHero } from "@/components/brand/brand-hero";
 import { BrandTabs } from "@/components/brand/brand-tabs";

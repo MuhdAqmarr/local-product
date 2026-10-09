@@ -54,6 +54,8 @@
 .cop-btn:active { transform: scale(0.94); }
 /* 44 px hit area without changing the 24 px sticker */
 .cop-btn::before { content: ""; position: absolute; inset: -10px -4px; }
+/* unlayered: beats .cop's decorative dashed outline in @layer components */
+.cop-btn:focus-visible { outline: 3px solid var(--color-telang); outline-offset: 2px; }
 
 /* ---- Tier stamp ring (ambient) ---- */
 .stamp-ring {

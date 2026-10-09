@@ -1,6 +1,6 @@
 import { ViewTransition } from "react";
 import Link from "next/link";
-import { LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "@/components/ui/lucide";
 import { CategoryGlyph } from "@/components/product/category-glyph";
 import { formatCount } from "@/lib/format";
 import { CATEGORY_BY_SLUG } from "@/lib/taxonomy";

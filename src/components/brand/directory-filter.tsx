@@ -4,7 +4,7 @@ import { startTransition, useCallback, useEffect, useMemo, useRef, useState, use
 import { AnimatePresence } from "motion/react";
 import * as m from "motion/react-m";
 import { useLenis } from "lenis/react";
-import { BadgePercent, Search, SlidersHorizontal, Store, X } from "lucide-react";
+import { BadgePercent, Search, SlidersHorizontal, Store, X } from "@/components/ui/lucide";
 import { TierIcon } from "@/components/art/tier-icon";
 import { WauBulan } from "@/components/art/wau-bulan";
 import { CategoryChip } from "@/components/category/category-chip";

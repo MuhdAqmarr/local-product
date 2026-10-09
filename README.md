@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LokalLah! 🌺
 
-## Getting Started
+**Semua jenama lokal, sentiasa up to date.** A directory of Malaysian-made brands, from tiny
+*Cili Padi* home-grown makers to *Jenama Ikon* household names, with **live promos** and
+**new launches** read straight from each brand's official online store.
 
-First, run the development server:
+Built in answer to a viral Threads wish: *"boleh tak ada sorang buat website yang compile all
+local brand products… and MUST BE UP TO DATE dari segi promotion and new products they launched"*.
+
+Live: https://lokallah.vercel.app
+
+## What it does
+
+- **207 curated Malaysian brands** across 11 categories, each researched and fact-checked for
+  Malaysian origin, tiered as Cili Padi 🌶️ (small & indie), Naik Daun 🌿 (rising) or Jenama Ikon 👑.
+- **Live store data** for the brands that run their own Shopify or WooCommerce store: every
+  promo (price below the store's own compare-at price) and every product launched in the last
+  30 days, linking out to the brand's official store.
+- Search (⌘K), filters, a brand directory, brand profiles, a saved list (kept on your device),
+  and a cute, fast UI: Lenis smooth scroll, meaningful motion, skeletons, lazy images.
+
+## How the data stays fresh
+
+1. `npm run sync` reads every brand store and writes `src/data/snapshot.json`.
+   - Shopify: `/products.json` (latest 250 products), `/meta.json` (store country) and
+     `/cart.js` (presentment currency). Requests ask for the **Malaysian market** explicitly,
+     because Shopify Markets otherwise localises prices to wherever the request comes from.
+   - WooCommerce: the public Store API (`/wp-json/wc/store/v1/products`).
+   - One request per store per refresh, honest `LokalLahBot` user agent, 429 back-off.
+2. Every deploy runs the sync first (`prebuild`, Vercel/CI only), so each build ships fresh data.
+3. On Vercel the catalog is a `'use cache'` function with a custom `catalog` cache life:
+   pages refresh in the background about every 3 hours, and a daily cron
+   (`/api/cron/refresh`, 06:00 MYT) marks everything stale. If a store fails, its last good
+   data stays up with an honest timestamp.
+
+Brands that only sell on marketplaces (Shopee, TikTok Shop, Lazada) are listed with links
+but no live products; we do not scrape marketplaces.
+
+## Stack
+
+Next.js 16.4 (App Router, Cache Components, Partial Prefetching) · React 19.3 · TypeScript ·
+Tailwind CSS 4.3 · Motion 14 · Lenis 1.3 · lucide-react · deployed on Vercel (functions in `sin1`).
+
+## Develop
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000 — renders the committed snapshot
+npm run sync         # refresh src/data/snapshot.json from the live stores
+LOKAL_LIVE=1 npm run dev   # read stores live at runtime, like production
+npm run build        # production build (sync runs first on Vercel/CI only)
+npm run typecheck && npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Rebuild the brand list from research files (and re-detect store platforms):
+`npm run brands -- <research-dir>`. Manual corrections that must survive re-runs live in
+`src/data/brand-overrides.json`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Where | Purpose |
+| --- | --- | --- |
+| `CRON_SECRET` | Vercel (production) | Protects `/api/cron/refresh` (Vercel Cron sends it) |
+| `NEXT_PUBLIC_SITE_URL` | Vercel (production) | Canonical URL for metadata, sitemap, OG |
+| `SUGGEST_WEBHOOK_URL` | optional | Where "Cadang jenama" suggestions are POSTed; without it the form opens a prefilled GitHub issue |
+| `LOKAL_LIVE` | local, optional | `1` reads stores live at runtime, `0` forces the snapshot |
 
-## Learn More
+## Project map
 
-To learn more about Next.js, take a look at the following resources:
+- `src/lib/feeds/` — store readers, normalisation, refresh with snapshot fallback
+- `src/lib/catalog.ts` — cached selectors (promos, new launches, brand products, stats, search index)
+- `src/data/` — `brands.json`, `brand-overrides.json`, `snapshot.json`
+- `src/components/` — UI ("Kedai Oyen" design system: Oyen the ginger-cat tauke, stickers, rails…)
+- `docs/DESIGN.md` · `docs/ENGINEERING.md` · `docs/COMPONENTS.md` — design spec, engineering rules, component API
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Honesty
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+LokalLah! is an independent directory, not affiliated with the brands, with no paid placements
+or commission. Product names, prices and photos belong to their brands and come from their
+public stores; prices can change, so always confirm on the brand's store. Outbound links carry
+`utm_source=lokallah` so brands can see the visits. Brand owners can ask for corrections or
+removal through the suggest form or a GitHub issue.

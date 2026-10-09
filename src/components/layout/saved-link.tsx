@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart } from "@/components/ui/lucide";
 import { useSaved } from "@/lib/saved";
 import { popStyle } from "@/components/ui/pop";
 import { CountBubble } from "@/components/ui/count-bubble";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, type ReactNode, type RefObject } from "react";
-import { X } from "lucide-react";
+import { X } from "@/components/ui/lucide";
 import { cn } from "@/lib/utils";
 
 export interface DialogBaseProps {

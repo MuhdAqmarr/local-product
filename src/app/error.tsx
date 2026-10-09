@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw } from "@/components/ui/lucide";
 import { ErrorFrame } from "@/components/feedback/error-frame";
 import { Button } from "@/components/ui/button";
 

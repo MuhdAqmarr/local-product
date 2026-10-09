@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BadgePercent, LayoutGrid, Sparkles, Store } from "lucide-react";
+import { BadgePercent, LayoutGrid, Sparkles, Store } from "@/components/ui/lucide";
 import { ErrorFrame } from "@/components/feedback/error-frame";
 import { CategoryTiles } from "@/components/layout/category-tiles";
 import { SearchTrigger } from "@/components/search/search-trigger";

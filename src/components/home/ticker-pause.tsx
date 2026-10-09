@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type CSSProperties, type ReactNode } from "react";
-import { Pause, Play } from "lucide-react";
+import { Pause, Play } from "@/components/ui/lucide";
 
 /**
  * The ticker's moving strip + its Pause/Play toggle (DESIGN §6.19, WCAG 2.2.2). The pause lives

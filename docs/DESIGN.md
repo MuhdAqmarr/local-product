@@ -1798,18 +1798,19 @@ export const BURST_16 = "M50 0L58.2 8.8L69.1 3.8L73.3 15.1L85.4 14.6L84.9 26.7L9
 
 **#4 Sparkle** (viewBox 24): `M12 1Q13.3 10.7 23 12Q13.3 13.3 12 23Q10.7 13.3 1 12Q10.7 10.7 12 1Z` (fill `#FFD54F`, ink 1.5).
 
-**#5 Wau bulan** (viewBox `0 0 120 152`, ink stroke 2.5 unless stated):
+**#5 Wau bulan** (viewBox `0 0 120 152`, ink stroke 2.5 unless stated). Must read as a moon kite, not a parasol: small kepala under the busur, gull wings with up-curled tips, pinched waist, and a crescent-moon tail concave on top whose horns curl up and out wider than the wings.
 ```svg
-<path d="M14 34Q60 -6 106 34" stroke-width="2" fill="none"/>                                                           <!-- busur (bow) -->
-<path d="M60 28C44 20 20 22 6 42C20 48 42 52 60 58C78 52 100 48 114 42C100 22 76 20 60 28Z" fill="#BDA6FF"/>           <!-- sayap -->
-<path d="M60 34C48 29 33 30 24 39C35 43 48 46 60 50C72 46 85 43 96 39C87 30 72 29 60 34Z" fill="#FFC2DD" stroke-width="1.5"/>
-<path d="M60 74C38 74 20 92 16 118C30 104 46 101 60 110C74 101 90 104 104 118C100 92 82 74 60 74Z" fill="#FFD54F"/>  <!-- ekor bulan -->
-<path d="M60 82C46 83 35 92 31 104C41 98 51 98 60 103C69 98 79 98 89 104C85 92 74 83 60 82Z" fill="#A8EED8" stroke-width="1.5"/>
-<path d="M60 8L67 18L60 28L53 18Z" fill="#FF8FC8"/>                                                                     <!-- kepala -->
-<path d="M60 28V112" fill="none"/>                                                                                      <!-- tulang -->
-<path d="M60 112C62 128 78 134 94 148" stroke-width="2" stroke-dasharray="0.5 6" fill="none"/>                          <!-- tali -->
+<path d="M60 72C64 106 78 132 94 148" stroke-width="2" stroke-dasharray="0.5 6" fill="none"/>                          <!-- tali: drawn first, tucks under the tail -->
+<path d="M30 30Q60 -24 90 30" stroke-width="2" fill="none"/>                                                           <!-- busur (bow) -->
+<path d="M60 26C46 30 30 31 18 24C12 20 8 14 6 8C4 22 12 36 28 42C42 47 54 50 60 58C66 50 78 47 92 42C108 36 116 22 114 8C112 14 108 20 102 24C90 31 74 30 60 26Z" fill="#BDA6FF"/>  <!-- sayap -->
+<path d="M60 32C48 35 34 36 22 31C24 36 30 40 38 42C46 44 54 47 60 51C66 47 74 44 82 42C90 40 96 36 98 31C86 36 72 35 60 32Z" fill="#FFC2DD" stroke-width="1.5"/>
+<path d="M60 114C30 114 6 94 2 56C14 80 36 92 60 88C84 92 106 80 118 56C114 94 90 114 60 114Z" fill="#FFD54F"/>        <!-- ekor bulan -->
+<path d="M60 108C40 108 22 98 13 78C26 92 42 98 60 96C78 98 94 92 107 78C98 98 80 108 60 108Z" fill="#A8EED8" stroke-width="1.5"/>
+<path d="M60 26V89" fill="none"/>                                                                                       <!-- tulang -->
+<path d="M6 9l-3 8M6 9l3 7M114 9l3 8M114 9l-3 7" stroke="#FF6FB5" stroke-width="2" fill="none"/>                       <!-- rumbai -->
+<path d="M60 6L67 15L60 25L53 15Z" fill="#FF8FC8"/>                                                                     <!-- kepala -->
 ```
-Wrap the body (all but the string) in `<g class="ambient" style="transform-box:fill-box;transform-origin:50% 20%;animation:var(--animate-sway)">`. 404 variant: string becomes `M60 112C62 122 66 126 70 128` + a 6 px zig-zag `l3 -3 l3 3`.
+Wrap the body (all but the string) in `<g class="ambient" style="transform-box:fill-box;transform-origin:50% 20%;animation:var(--animate-sway)">`. Under 40 px drop the inner tints and rumbai. 404 variant: string becomes `M60 72C61 100 64 120 70 132` + a 6 px zig-zag `l3 -3 l3 3`.
 
 **#6 Tier icons** (viewBox 48; drop eyes/mouth below 28 px):
 ```svg

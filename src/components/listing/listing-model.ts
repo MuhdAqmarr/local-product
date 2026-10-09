@@ -272,11 +272,13 @@ export interface Facets {
   diskaun: Record<number, number>;
   /** By preset id, plus the active custom range. */
   harga: Record<string, number>;
+  /** Items in scope (every filter except price) priced in a currency other than MYR; RM bands never match them. */
+  nonMyr: number;
   masa: Record<Masa, number>;
 }
 
 export function computeFacets(items: ProductCardData[], f: FilterState, syncedAt: string): Facets {
-  const out: Facets = { kat: {}, tier: {}, diskaun: {}, harga: {}, masa: { minggu: 0, bulan: 0 } };
+  const out: Facets = { kat: {}, tier: {}, diskaun: {}, harga: {}, nonMyr: 0, masa: { minggu: 0, bulan: 0 } };
 
   const noKat = predicate(f, syncedAt, "kat");
   const noTier = predicate(f, syncedAt, "tier");
@@ -294,7 +296,8 @@ export function computeFacets(items: ProductCardData[], f: FilterState, syncedAt
       const d = p.discount ?? 0;
       for (const s of DISCOUNT_STEPS) if (d >= s) out.diskaun[s] = (out.diskaun[s] ?? 0) + 1;
     }
-    if (noPrice(p) && p.currency === "MYR") {
+    if (noPrice(p) && p.currency !== "MYR") out.nonMyr++;
+    else if (noPrice(p)) {
       for (const r of ranges) {
         if (p.price >= r.min && (r.max == null || p.price < r.max)) {
           const id = priceId(r);

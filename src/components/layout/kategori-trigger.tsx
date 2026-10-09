@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/ui/lucide";
 import { NavSquiggle } from "./nav-link";
 
 /** Desktop "Kategori ▾" button: opens the native popover; squiggle when browsing a category. */

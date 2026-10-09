@@ -1,4 +1,4 @@
-import { Camera, Globe, Music2, ShoppingBag } from "lucide-react";
+import { Camera, Globe, Music2, ShoppingBag } from "@/components/ui/lucide";
 import { Button } from "@/components/ui/button";
 import { outboundUrl } from "@/lib/format";
 import type { Brand } from "@/lib/types";

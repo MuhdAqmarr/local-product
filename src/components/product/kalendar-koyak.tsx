@@ -45,9 +45,9 @@ export interface KalendarKoyakProps {
   /** The catalog's syncedAt, for "Hari ni" / "Semalam". */
   reference: string;
   count?: number;
-  /** Sticky offset under the header + filter bar. Pass `null` for a static header. */
   /**
-   * Omit: sticks 8 px under header + filter bar and moves with the header stack (`.sticky-sub`).
+   * Omit: sticks flush under header + filter bar (opaque, with 8 px extra top padding so the calendar
+   * keeps its spot and nothing shows through above it) and moves with the header stack (`.sticky-sub`).
    * A CSS length: sticky at that `top` instead. `null`: not sticky.
    */
   stickyTop?: string | null;
@@ -69,11 +69,12 @@ export function KalendarKoyak({ date, reference, count, stickyTop, className }: 
     <h2
       className={cn(
         "flex items-center gap-3",
-        stickyTop !== null && "-mx-(--gutter) bg-santan/96 px-(--gutter) py-1.5",
+        stickyTop !== null && "-mx-(--gutter) bg-santan px-(--gutter) pb-1.5",
+        stickyTop === undefined ? "pt-3.5" : stickyTop !== null && "pt-1.5",
         stickyTop === undefined ? "sticky-sub" : stickyTop !== null && "sticky z-20",
         className,
       )}
-      style={stickyTop === undefined ? ({ "--sub-top": "calc(var(--filterbar-h) + 8px)" } as CSSProperties) : stickyTop !== null ? { top: stickyTop } : undefined}
+      style={stickyTop === undefined ? ({ "--sub-top": "var(--filterbar-h)" } as CSSProperties) : stickyTop !== null ? { top: stickyTop } : undefined}
     >
       <span aria-hidden="true" className="relative block h-[72px] w-16 shrink-0 rotate-[-2deg] drop-shadow-[2px_3px_0_rgb(43_23_54_/_0.18)]">
         <span className="absolute inset-0 flex flex-col overflow-hidden rounded-t-[10px] border-2 border-b-0 border-ink bg-putih" style={{ mask: TORN, WebkitMask: TORN }}>

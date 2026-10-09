@@ -1,4 +1,4 @@
-import { BadgePercent, RefreshCw, Sparkles } from "lucide-react";
+import { BadgePercent, RefreshCw, Sparkles } from "@/components/ui/lucide";
 import { InfoPill } from "@/components/ui/info-pill";
 import { cn } from "@/lib/utils";
 import "./about.css";

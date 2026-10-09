@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Clock3, Sparkles } from "lucide-react";
+import { ArrowUpRight, Clock3, Sparkles } from "@/components/ui/lucide";
 import { TierIcon } from "@/components/art/tier-icon";
 import { dealLevel } from "@/lib/deal";
 import { outboundUrl } from "@/lib/format";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "@/components/ui/lucide";
 import { Chip } from "@/components/ui/chip";
 import { CategoryGlyph } from "@/components/product/category-glyph";
 import { CATEGORY_BY_SLUG } from "@/lib/taxonomy";

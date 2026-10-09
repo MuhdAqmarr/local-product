@@ -28,7 +28,7 @@ export function DealGroupHeader({ level, count, stickyTop, id, className }: Deal
       id={id}
       className={cn(
         stickyTop === undefined ? "sticky-sub" : stickyTop !== null && "sticky z-20",
-        "-mx-(--gutter) flex h-11 items-center gap-2.5 bg-santan/96 px-(--gutter) text-label text-ink",
+        "-mx-(--gutter) flex h-11 items-center gap-2.5 bg-santan px-(--gutter) text-label text-ink",
         className,
       )}
       style={stickyTop != null ? { top: stickyTop } : undefined}
