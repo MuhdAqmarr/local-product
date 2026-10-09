@@ -1,6 +1,7 @@
 "use client";
 
-import Link, { useLinkStatus } from "next/link";
+import { useLinkStatus } from "next/link";
+import { ShellLink } from "./shell-link";
 import { usePathname } from "next/navigation";
 import * as m from "motion/react-m";
 import { BadgePercent, Heart, House, Sparkles, type LucideIcon } from "@/components/ui/lucide";
@@ -29,9 +30,13 @@ function TabDots() {
   const { pending } = useLinkStatus();
   return (
     <span aria-hidden className={cn("dots absolute -bottom-0.5 left-1/2 inline-flex -translate-x-1/2 transition-opacity duration-150 [&>i]:size-1", pending ? "opacity-100" : "opacity-0")}>
-      <i />
-      <i />
-      <i />
+      {pending && (
+        <>
+          <i />
+          <i />
+          <i />
+        </>
+      )}
     </span>
   );
 }
@@ -52,7 +57,7 @@ export function TabBar({ promoCount }: { promoCount: number }) {
       style={{ viewTransitionName: "tab-bar" }}
       className="fixed inset-x-0 bottom-0 z-(--z-header) rounded-t-[24px] border-t-2 border-ink bg-putih/96 pb-[env(safe-area-inset-bottom)] shadow-up lg:hidden"
     >
-      <div className="relative mx-auto grid h-16 max-w-[560px] grid-cols-5">
+      <div className="relative mx-auto grid h-16 max-w-[560px] grid-cols-[repeat(5,minmax(0,1fr))]">
         {/* Sliding active pill: one element, moved by whole slots. */}
         <m.span
           aria-hidden
@@ -61,7 +66,7 @@ export function TabBar({ promoCount }: { promoCount: number }) {
           animate={{ x: `${(active?.slot ?? 0) * 100}%`, opacity: active ? 1 : 0 }}
           transition={spring.snappy}
         >
-          <span className="h-8 w-[52px] rounded-full border-[1.5px] border-ink bg-bandung-tint" />
+          <span className="h-8 w-full max-w-[52px] rounded-full border-[1.5px] border-ink bg-bandung-tint" />
         </m.span>
 
         {SLOTS.slice(0, 2).map((s) => (
@@ -78,24 +83,24 @@ export function TabBar({ promoCount }: { promoCount: number }) {
 
 function TabLink({ slot, active, badge, saved }: { slot: Slot; active: boolean; badge: number; saved?: boolean }) {
   const Icon = slot.icon;
-  const name = badge > 0 ? `${slot.label}, ${badge} item` : slot.label;
   return (
-    <Link
+    <ShellLink
       href={slot.href}
-      aria-label={name}
       aria-current={active ? "page" : undefined}
       transitionTypes={["nav-tab"]}
       data-saved-target={saved ? "" : undefined}
       className="relative flex flex-col items-center justify-start gap-1 pt-2 active:[&>span:first-child]:scale-90"
     >
-      <span className="relative grid h-8 w-[52px] place-items-center transition-transform duration-[90ms]">
+      <span className="relative grid h-8 w-full max-w-[52px] place-items-center transition-transform duration-[90ms]">
         <Icon aria-hidden size={24} strokeWidth={2.25} className={cn(active ? "text-ink" : "text-ink-soft", active && saved && "fill-bandung")} />
         <CountBubble count={badge} className="absolute -top-1 right-0.5" />
         <TabDots />
       </span>
-      <span aria-hidden className={cn("text-tab", active ? "text-ink" : "text-ink-soft")}>
+      {/* The accessible name starts with the visible label (QA F28); the bubble itself is aria-hidden. */}
+      <span className={cn("text-tab", active ? "text-ink" : "text-ink-soft")}>
         {slot.label}
+        {badge > 0 && <span className="sr-only">, {badge} item</span>}
       </span>
-    </Link>
+    </ShellLink>
   );
 }

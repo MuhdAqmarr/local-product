@@ -1,6 +1,21 @@
 /* src/app/globals.css — LokalLah! "Kedai Oyen: Comel & Laju" (light theme only) */
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
+/* Component and route styles: plain, unlayered, prefixed CSS that lives next to its components.
+   Imported here (not from the components) so every page gets ONE render-blocking stylesheet instead
+   of 4–7 small ones, and prefetched routes stop injecting CSS preloads. Their selectors don't overlap
+   globals' unlayered rules, so loading them first doesn't change the cascade. */
+@import "../components/art/art.css";
+@import "../components/product/save-button.css";
+@import "../components/brand/brand.css";
+@import "../components/brand/brand-profile.css";
+@import "../components/brand/directory.css";
+@import "../components/category/category.css";
+@import "../components/home/home.css";
+@import "../components/rail/rail.css";
+@import "../components/listing/listing.css";
+@import "./categories/[slug]/scope.css";
+@import "../components/about/about.css";
 
 /* =====================================================================
    1. THEME TOKENS (generate Tailwind utilities; `static` = always emit vars)

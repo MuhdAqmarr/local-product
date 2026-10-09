@@ -1,29 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, useMotionValueEvent, useScroll } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import * as m from "motion/react-m";
 import { useLenis } from "lenis/react";
 import { ArrowUp } from "@/components/ui/lucide";
 import { fab } from "@/lib/motion";
 import { prefersLessMotion } from "@/components/providers/motion-pref";
 
-const HIDDEN_ON = ["/about"];
+/** DESIGN §6.20: list pages and Home only (QA F22). */
+const LIST_PREFIXES = ["/promos", "/new", "/brands", "/categories/"];
+const allowed = (path: string | null) => path === "/" || LIST_PREFIXES.some((p) => path?.startsWith(p));
 
-/** Back-to-top FAB (DESIGN §6.20): appears after 1.5 screens, Lenis glide to the top. */
+/**
+ * Back-to-top FAB (DESIGN §6.20): appears after 1.5 screens, Lenis glide to the top (native smooth
+ * scroll when Lenis isn't mounted, e.g. on touch). Routes outside the allow-list render nothing and
+ * attach no listeners (QA F05).
+ */
 export function BackToTop() {
   const pathname = usePathname();
+  return allowed(pathname) ? <Fab key={pathname} /> : null;
+}
+
+function Fab() {
   const lenis = useLenis();
-  const { scrollY } = useScroll();
-  const [show, setShow] = useState(false);
+  const [past, setPast] = useState(false);
+  const [footerIn, setFooterIn] = useState(false);
 
-  useMotionValueEvent(scrollY, "change", (y) => {
-    const next = y > window.innerHeight * 1.5;
-    if (next !== show) setShow(next);
-  });
+  useEffect(() => {
+    // One passive listener; React bails out when the boolean doesn't change. A 404/error frame
+    // keeps the original path (the proxy rewrites it), so it is checked here too.
+    // Read at most once per frame (rAF), like HeaderScroll.
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      setPast(window.scrollY > window.innerHeight * 1.5 && !document.querySelector("[data-not-found], .error-frame"));
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
 
-  const enabled = !HIDDEN_ON.some((p) => pathname?.startsWith(p));
+  useEffect(() => {
+    // Step aside while the footer is on screen (its links sit where the FAB would).
+    const footer = document.querySelector("footer.footer-wrap");
+    if (!footer) return;
+    const io = new IntersectionObserver(([e]) => setFooterIn(e.isIntersecting));
+    io.observe(footer);
+    return () => io.disconnect();
+  }, []);
 
   const toTop = () => {
     const instant = prefersLessMotion();
@@ -34,7 +66,7 @@ export function BackToTop() {
 
   return (
     <AnimatePresence>
-      {enabled && show && (
+      {past && !footerIn && (
         <m.button
           key="fab"
           type="button"
@@ -44,7 +76,7 @@ export function BackToTop() {
           initial="hidden"
           animate="show"
           exit="exit"
-          className="pop fixed bottom-[calc(var(--tabbar-h)+env(safe-area-inset-bottom)+20px)] right-4 z-(--z-fab) lg:bottom-8 lg:right-8"
+          className="pop fixed right-3 bottom-[calc(var(--tabbar-h)+env(safe-area-inset-bottom)+20px)] z-(--z-fab) lg:right-8 lg:bottom-8"
           style={{ ["--pop-offset" as string]: "3px" }}
         >
           <span className="pop-face size-12 bg-bandung-fizz text-ink">

@@ -1,4 +1,4 @@
-/* /about page pieces (DESIGN §8.8). Prefixed .about-*; imported once by the about components. */
+/* /about page pieces (DESIGN §8.8). Prefixed .about-*; bundled via globals.css. */
 
 /* Reading progress (§7.7 #7): a 3 px kuih-lapis bar under the header that moves with the sticky stack. */
 .about-progress {

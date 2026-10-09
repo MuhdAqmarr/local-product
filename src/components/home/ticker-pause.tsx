@@ -19,7 +19,7 @@ export function TickerPause({ children, duration }: { children: ReactNode; durat
         type="button"
         onClick={() => setPaused((p) => !p)}
         aria-pressed={paused}
-        aria-label={paused ? "Sambung ticker" : "Jeda ticker"}
+        aria-label="Jeda ticker"
         className="home-ticker-toggle relative grid size-8 shrink-0 place-items-center rounded-full border-[1.5px] border-ink-dim text-santan transition-colors duration-150 hover:bg-santan/10 before:absolute before:-inset-1.5 before:content-['']"
       >
         {paused ? <Play aria-hidden size={14} strokeWidth={2.5} /> : <Pause aria-hidden size={14} strokeWidth={2.5} />}

@@ -1,6 +1,5 @@
 import type { TierSlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import "./art.css";
 import { a11y, C, stroke, type ArtProps } from "./shared";
 
 export interface TierIconProps extends ArtProps {
@@ -14,6 +13,8 @@ const BODY = { fill: "var(--tier-pop)" } as const;
 /**
  * Kawaii tier icons (Appendix D #6): chili seed → sprouting leaf → crown. viewBox 48.
  * Sizes: 14 (cop, faces dropped), 20 (cop-lg), 40 (stamp, popover), 96 (tier journey).
+ * Strokes are identical from 28 px up, so one instance can serve every breakpoint: pass the
+ * smallest size and grow it with classes (`size={40} className="lg:size-24"`), never two copies.
  *
  * The main body is painted with `var(--tier-pop)` (the svg carries its own `data-tier`).
  * Micro-animation (§7.5 #6) plays on hover of the icon, or when an ancestor marked

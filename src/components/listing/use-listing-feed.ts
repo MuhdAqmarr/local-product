@@ -9,17 +9,12 @@ export type FeedState = "idle" | "loading" | "ready" | "error";
 /** Resolved feeds survive remounts (Activity, client navigation back) for this page life. */
 const resolved = new Map<string, ProductCardData[]>();
 
-type IdleWindow = Window & {
-  requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
-  cancelIdleCallback?: (id: number) => void;
-};
-
 /**
- * The full prerendered feed for a listing (`/api/feed/promos`, `/api/feed/new`), fetched lazily:
- * on the first interaction (`load()`), when `eager` (URL filters, `?page=`), or once the browser
- * is idle a little after the page settles. Save-Data users only fetch on interaction. The swap
- * from the server's first 24 to the full list runs in a "filter" transition, so a filtered view
- * crossfades in.
+ * The full prerendered feed for a listing (`/api/feed/promos`, `/api/feed/new`), fetched only
+ * when needed: on an interaction (`load()` from a filter, the sheet, "Muat lagi", or "Muat lagi"
+ * scrolling near after the user has scrolled) or when `eager` (URL filters, `?page=`). Never on
+ * page load or idle: it would compete with the first images on phones. The swap from the
+ * server's first 24 to the full list runs in a "filter" transition, so a filtered view crossfades in.
  */
 export function useListingFeed(endpoint: string, { eager }: { eager: boolean }) {
   const [items, setItems] = useState<ProductCardData[] | null>(() => resolved.get(endpoint) ?? null);
@@ -67,22 +62,6 @@ export function useListingFeed(endpoint: string, { eager }: { eager: boolean }) 
     // eslint-disable-next-line react-hooks/set-state-in-effect -- starts a request whose status this hook reports
     if (eager && state === "idle") load();
   }, [eager, state, load]);
-
-  // Otherwise warm it when the main thread is idle, a little after load (not on Save-Data).
-  useEffect(() => {
-    if (state !== "idle") return;
-    const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-    if (conn?.saveData) return;
-    const w = window as IdleWindow;
-    let idle: number | undefined;
-    const timer = window.setTimeout(() => {
-      idle = w.requestIdleCallback ? w.requestIdleCallback(load, { timeout: 4000 }) : window.setTimeout(load, 200);
-    }, 2500);
-    return () => {
-      window.clearTimeout(timer);
-      if (idle != null) (w.cancelIdleCallback ?? window.clearTimeout)(idle);
-    };
-  }, [state, load]);
 
   return { items, state, load };
 }

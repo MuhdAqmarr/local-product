@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
+import { startTransition, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { AnimatePresence } from "motion/react";
 import * as m from "motion/react-m";
 import { useLenis } from "lenis/react";
@@ -25,8 +25,7 @@ import { CATEGORY_BY_SLUG, TIER_BY_SLUG } from "@/lib/taxonomy";
 import type { CategorySlug, TierSlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { BrandCard, type BrandCardData } from "./brand-card";
-import { BrandRow } from "./brand-row";
-import "./directory.css";
+import { letterOf } from "./directory-letter";
 import { headerOffset } from "./scroll-offset";
 
 /* ------------------------------------------------------------------ */
@@ -62,9 +61,8 @@ export interface DirectoryFacets {
   letters: string[];
 }
 
-/** A brand card's data plus its precomputed A–Z letter and normalised search text. */
+/** A brand card's data plus its normalised search text (previews packed with `packPreview`). */
 export interface DirectoryBrand extends BrandCardData {
-  letter: string;
   /** normalizeText(name + subcategory + category + origin + tags) */
   hay: string;
 }
@@ -123,21 +121,6 @@ function matches(b: DirectoryBrand, s: DirState, words: string[], ignore?: "kat"
   return words.every((w) => b.hay.includes(w));
 }
 
-/* Phones under 480 px get compact rows, wider screens kedai cards. The server (and hydration)
-   renders both and lets CSS pick; after mount only the matching one is kept. */
-const NARROW = "(max-width: 479.98px)";
-function subscribeNarrow(cb: () => void) {
-  const mq = window.matchMedia(NARROW);
-  mq.addEventListener("change", cb);
-  return () => mq.removeEventListener("change", cb);
-}
-const useNarrow = () =>
-  useSyncExternalStore<boolean | null>(
-    subscribeNarrow,
-    () => window.matchMedia(NARROW).matches,
-    () => null,
-  );
-
 /* ------------------------------------------------------------------ */
 /* Component                                                            */
 /* ------------------------------------------------------------------ */
@@ -163,7 +146,6 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
   const [pages, setPages] = useState(1);
   const [ready, setReady] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const narrow = useNarrow();
   const lenis = useLenis();
 
   /* Cheap crossfade so a filter swap reads as "the shelf changed", not a jump. */
@@ -219,6 +201,12 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
     return list;
   }, [brands, s, words]);
   const visible = filtered.length;
+  /* Screen readers hear the count once typing pauses (500 ms), not on every keystroke. */
+  const [said, setSaid] = useState(visible);
+  useEffect(() => {
+    const t = window.setTimeout(() => setSaid(visible), 500);
+    return () => window.clearTimeout(t);
+  }, [visible]);
   const shown = filtered.slice(0, pages * CHUNK);
 
   const catCounts = useMemo(() => {
@@ -227,7 +215,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
     return counts;
   }, [brands, s, words]);
 
-  const lettersVisible = useMemo(() => new Set(filtered.map((b) => b.letter)), [filtered]);
+  const lettersVisible = useMemo(() => new Set(filtered.map((b) => letterOf(b.name))), [filtered]);
 
   const update = useCallback(
     (patch: Partial<DirState>, opts: { animate?: boolean } = {}) => {
@@ -273,8 +261,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
       { value: "all" as TierFilter, label: "Semua" },
       ...TIERS.map((t) => ({
         value: t as TierFilter,
-        label: t === "ikon" ? <><span className="sm:hidden">Ikon</span><span className="hidden sm:inline">Jenama Ikon</span></> : TIER_BY_SLUG[t].name,
-        ariaLabel: TIER_BY_SLUG[t].name,
+        label: TIER_BY_SLUG[t].name,
         icon: <TierIcon tier={t} size={18} />,
       })),
     ],
@@ -306,7 +293,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
   );
 
   const jumpTo = (letter: string) => {
-    const index = filtered.findIndex((b) => b.letter === letter);
+    const index = filtered.findIndex((b) => letterOf(b.name) === letter);
     if (index < 0) return;
     const need = Math.floor(index / CHUNK) + 1;
     if (need > pages) {
@@ -351,7 +338,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
         onKeyDown={(e) => {
           if (e.key === "Enter") (e.target as HTMLInputElement).blur();
         }}
-        className={cn("dir-search h-12 w-full rounded-full border-2 border-ink bg-putih pl-11", s.q ? "pr-12" : "pr-4", " text-body text-ink shadow-pop-sm outline-none placeholder:text-ink-soft focus:shadow-[0_0_0_4px_rgb(91_43_201/.18)]")}
+        className={cn("dir-search h-12 w-full rounded-full border-2 border-ink bg-putih pl-11", s.q ? "pr-12" : "pr-4", " text-body text-ink shadow-pop-sm outline-none placeholder:text-ink-soft focus:border-telang focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-solid focus-visible:outline-telang")}
       />
       {s.q && (
         <button
@@ -375,7 +362,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
     </>
   );
 
-  const tierControl = <Segmented label="Saiz jenama" options={tierOptions} value={s.tier} onChange={(v) => update({ tier: v })} />;
+  const tierControl = <Segmented label="Saiz jenama" options={tierOptions} value={s.tier} onChange={(v) => update({ tier: v })} fit="content" />;
   const negeriControl = (id: string, label?: string) => (
     <Select id={id} label={label} aria-label={label ? undefined : "Negeri"} options={stateOptions} placeholder="Semua negeri" value={s.negeri} onChange={(e) => update({ negeri: e.target.value })} />
   );
@@ -429,7 +416,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
       <div className="mt-6 hidden rounded-card-lg border-2 border-garis bg-putih p-5 lg:block">
         <div className="flex items-center gap-4">
           {searchField("dir-q-d", "flex-1")}
-          <div className="w-[540px] shrink-0">{tierControl}</div>
+          <div className="w-max min-w-[540px] shrink-0">{tierControl}</div>
         </div>
         <ChipRow label="Kategori" className="mt-3">
           {chips}
@@ -448,8 +435,13 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
 
       {/* Result summary + active filters */}
       <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 lg:mt-6">
-        <p className="text-body-sm text-ink-2" aria-live="polite" aria-atomic="true">
-          Tunjuk <Odometer value={visible} className="font-num text-[17px] text-ink" /> daripada {facets.total} jenama
+        <p className="text-body-sm text-ink-2">
+          <span aria-hidden="true">
+            Tunjuk <Odometer value={visible} className="font-num text-[17px] text-ink" /> daripada {facets.total} jenama
+          </span>
+          <span role="status" className="sr-only">
+            Tunjuk {said} daripada {facets.total} jenama
+          </span>
         </p>
         <ul className="flex flex-wrap items-center gap-1.5" aria-label="Tapisan aktif">
           <AnimatePresence initial={false}>
@@ -477,6 +469,7 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
 
       <div className="mt-3 lg:grid lg:grid-cols-[minmax(0,1fr)_28px] lg:gap-5">
         <div ref={listRef} className="min-w-0">
+          <h2 className="sr-only">Senarai jenama</h2>
           {shown.length > 0 && (
             <ul role="list" aria-label="Senarai jenama" className="-m-1 grid grid-cols-1 xs:-m-1.5 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {shown.map((b, i) => {
@@ -485,20 +478,11 @@ export function DirectoryFilter({ brands, facets }: DirectoryFilterProps) {
                   <li
                     key={b.slug}
                     className="dir-item"
-                    data-letter={b.letter}
+                    data-letter={letterOf(b.name)}
                     data-reveal={appended ? "" : undefined}
                     style={appended ? ({ "--i": i % 4 } as CSSProperties) : undefined}
                   >
-                    {narrow !== false && (
-                      <div className={narrow === null ? "xs:hidden" : undefined}>
-                        <BrandRow brand={b} />
-                      </div>
-                    )}
-                    {narrow !== true && (
-                      <div className={cn("h-full", narrow === null ? "hidden xs:flex" : "flex")}>
-                        <BrandCard brand={b} morph />
-                      </div>
-                    )}
+                    <BrandCard brand={b} layout="auto" morph />
                   </li>
                 );
               })}

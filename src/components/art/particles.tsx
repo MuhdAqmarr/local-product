@@ -2,7 +2,6 @@
 
 import { useState, useSyncExternalStore, type CSSProperties } from "react";
 import { cn } from "@/lib/utils";
-import "./art.css";
 import { BungaRayaShape } from "./bunga-raya";
 import { C } from "./shared";
 import { SPARKLE } from "./sparkle";

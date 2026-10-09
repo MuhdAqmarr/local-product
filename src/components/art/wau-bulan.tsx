@@ -11,6 +11,8 @@ export interface WauBulanProps extends ArtProps {
  * Wau bulan, the moon kite that "brings the deals" (Appendix D #5). viewBox 120 × 152: kepala + busur,
  * gull wings with up-curled tips and rumbai, pinched waist, crescent-moon tail (horns up), string from the waist.
  * Sizes (width): 140 (desktop hero), 92 (/new header), 48 (Baru rail title), 28 (end of list).
+ * Strokes are identical from 40 px up, so one instance can serve every breakpoint: pass the
+ * smallest size and grow it with classes (`size={76} className="h-auto w-[76px] md:w-[124px]"`).
  */
 export function WauBulan({ size = 92, sway = true, string = "long", className, style, title }: WauBulanProps) {
   const small = size < 40;

@@ -14,6 +14,7 @@ import { BrandHeroSkeleton } from "@/components/skeletons/brand-hero-skeleton";
 import { getBrandProducts, getBrandSummaries, type BrandProducts } from "@/lib/catalog";
 import { BRANDS, getBrand } from "@/lib/brands";
 import { outboundUrl } from "@/lib/format";
+import { ogBaseNoImage, twitterBaseNoImage } from "@/lib/site";
 import { CATEGORY_BY_SLUG, NEW_WINDOW_DAYS, TIER_BY_SLUG } from "@/lib/taxonomy";
 import type { Brand, ProductCardData } from "@/lib/types";
 
@@ -34,8 +35,9 @@ export async function generateMetadata({ params }: PageProps<"/brands/[slug]">):
     title: `${brand.name}: jenama ${cat.nameMs.toLowerCase()} lokal`,
     description,
     alternates: { canonical: `/brands/${brand.slug}` },
-    openGraph: { type: "website", title: `${brand.name} · LokalLah!`, description, url: `/brands/${brand.slug}` },
-    twitter: { title: `${brand.name} · LokalLah!`, description },
+    // Images come from ./opengraph-image.tsx and ./twitter-image.tsx (file convention wins).
+    openGraph: { ...ogBaseNoImage, title: `${brand.name} · LokalLah!`, description, url: `/brands/${brand.slug}` },
+    twitter: { ...twitterBaseNoImage, title: `${brand.name} · LokalLah!`, description },
   };
 }
 

@@ -7,7 +7,6 @@ import { RelTime } from "@/components/product/rel-time";
 import { SaveButton } from "@/components/product/save-button";
 import { outboundUrl } from "@/lib/format";
 import type { ProductCardData } from "@/lib/types";
-import "./brand-profile.css";
 
 export interface BestDealProps {
   product: ProductCardData;

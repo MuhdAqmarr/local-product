@@ -30,13 +30,14 @@
 .heart-btn-lg::before { inset: 0; }
 .heart-btn-solid { background: var(--color-putih); box-shadow: none; border: 2px solid var(--color-ink); }
 
-.heart-ic { position: relative; display: grid; place-items: center; width: 20px; height: 20px; }
-.heart-ic > svg { grid-area: 1 / 1; transition: opacity 150ms var(--ease-out-soft); }
-.heart-outline { opacity: 1; }
-.heart-filled { opacity: 0; color: var(--color-bandung); }
-.heart-on .heart-outline { opacity: 0; }
-.heart-on .heart-filled { opacity: 1; }
-.heart-on .heart-filled.heart-popping { animation: heart-pop 380ms var(--ease-pop) both; }
+/* One heart svg (QA F02): outline by default, CSS fills it bandung when saved. */
+.heart-ic {
+  position: relative; width: 20px; height: 20px;
+  fill: transparent; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  transition: fill 150ms var(--ease-out-soft), stroke 150ms var(--ease-out-soft);
+}
+.heart-on .heart-ic { fill: var(--color-bandung); stroke: var(--color-ink); }
+.heart-on .heart-ic.heart-popping { animation: heart-pop 380ms var(--ease-pop) both; }
 
 .heart-burst-ring { position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--color-jambu); pointer-events: none;
   animation: ring-out 360ms var(--ease-out-soft) both; }

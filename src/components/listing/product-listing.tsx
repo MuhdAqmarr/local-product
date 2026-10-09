@@ -38,7 +38,6 @@ import {
   type ListingKind,
 } from "./listing-model";
 import { useListingFeed } from "./use-listing-feed";
-import "./listing.css";
 
 const importSheet = () => import("@/components/filters/filter-sheet");
 const FilterSheet = dynamic(importSheet, { ssr: false });
@@ -96,7 +95,7 @@ const VIEW_OPTIONS = [
 
 /**
  * /promos and /new listing island (DESIGN §8.2, §8.3, §6.6). The server passes the first 24 items
- * of the default view; the full feed loads on the first interaction or when idle, then filtering,
+ * of the default view; the full feed loads on the first interaction (never on load or idle), then filtering,
  * sorting, grouping and "Muat lagi" are all client-side with the URL as the source of truth.
  */
 export function ProductListing({ kind, endpoint, initial, total, initialGroupTotals, initialFacets, syncedAt, head, tone }: ProductListingProps) {
@@ -107,6 +106,9 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
   const [sheetOpen, setSheetOpen] = useState(false);
   const [sheetMounted, setSheetMounted] = useState(false);
   const resultsTop = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  /** Index of the first card a "Muat lagi" tap will reveal; focus moves there once it renders. */
+  const focusFrom = useRef<number | null>(null);
   const lenis = useLenis();
   const noun = NOUN[kind];
 
@@ -149,6 +151,7 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
 
   const change = useCallback(
     (update: FilterUpdate, options?: { animate?: boolean }) => {
+      focusFrom.current = null;
       load();
       scrollToResults();
       setFilters(update, options);
@@ -157,6 +160,7 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
   );
 
   const resetAll = useCallback(() => {
+    focusFrom.current = null;
     scrollToResults();
     reset();
   }, [reset, scrollToResults]);
@@ -173,15 +177,33 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
   };
 
   const applySheet = (next: FilterState) => {
+    focusFrom.current = null;
     setFilters(next);
     // The dialog still holds the scroll lock this frame; scroll once it has closed.
     requestAnimationFrame(() => requestAnimationFrame(scrollToResults));
   };
 
   const more = () => {
+    // A page already waits for the feed (still loading, or the fetch failed and this tap is the
+    // retry): fetch again but never stack more pages onto ?page=.
+    if (!items && want > initial.length) {
+      focusFrom.current ??= visible.length;
+      load();
+      return;
+    }
+    focusFrom.current = visible.length;
     load();
     setPage(page + 1);
   };
+
+  // After an append renders, put focus on the first new card's link (keyboard and screen-reader
+  // users continue where the new cards start instead of on a button that moved down).
+  useEffect(() => {
+    const from = focusFrom.current;
+    if (from == null || visible.length <= from) return;
+    focusFrom.current = null;
+    bodyRef.current?.querySelectorAll<HTMLElement>("a.stretched-link")[from]?.focus({ preventScroll: false });
+  }, [visible.length]);
 
   const controls = { kind, value: filters, facets, onChange: change };
   const emptyScope = total === 0;
@@ -251,7 +273,7 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
 
             <div className="listing-results relative" data-pending={waiting ? "" : undefined} aria-busy={waiting || moreLoading || undefined}>
               {waiting && state !== "error" && <div aria-hidden className="progress-indeterminate listing-progress" />}
-              {state === "error" && (waiting || moreLoading || (want > initial.length && !sorted)) && (
+              {state === "error" && waiting && (
                 <div role="alert" className="mb-3 flex flex-wrap items-center gap-3 rounded-card border-2 border-garis bg-mangga-tint px-4 py-3 text-body-sm text-ink">
                   Alamak, senarai penuh tak dapat dimuat. Cuba lagi?
                   <Button size="sm" variant="secondary" onClick={load}>
@@ -261,7 +283,7 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
               )}
 
               <ViewTransition name={`results-${kind}`} update={{ filter: "auto", default: "none" }} default="none">
-                <div className="listing-body">
+                <div ref={bodyRef} className="listing-body">
                   {emptyScope ? (
                     kind === "promos" ? (
                       <EmptyState
@@ -335,8 +357,9 @@ export function ProductListing({ kind, endpoint, initial, total, initialGroupTot
                       total={count}
                       noun={noun}
                       pending={state === "loading" && (moreLoading || waiting)}
-                      error={false}
+                      error={state === "error" && want > initial.length && !sorted && !waiting}
                       onMore={more}
+                      onNear={state === "idle" ? load : undefined}
                       className="pt-8"
                     />
                   ) : (

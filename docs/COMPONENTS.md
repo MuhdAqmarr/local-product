@@ -19,7 +19,9 @@ C components, but must pass only serialisable props (no functions).
 2. **No CSS modules.** `next.config.ts` sends every `*.css` file through the Tailwind loader as global
    CSS, so `*.module.css` class maps come back empty. Use Tailwind classes. If you must write CSS,
    use a plain `.css` file next to the component with a prefixed class (`brand.css` → `.kedai-*`)
-   and import it once: `import "./my-thing.css"`.
+   and add one `@import "../components/…/my-thing.css";` line at the top of `src/app/globals.css`.
+   Never import CSS from a component: every extra import becomes its own render-blocking stylesheet
+   (Lighthouse counted 4–7 per page) and prefetched routes inject preloads for it.
 3. **One `<main>`.** The root layout already renders `<main id="main">`, the header, footer, tab bar,
    back-to-top, toast region, search provider and RevealObserver. A page returns its content only,
    wrapped in `<PageTransition>`.
@@ -95,7 +97,9 @@ import { fadeUp, viewportOnce } from "@/lib/motion";
 | `@/components/motion/use-ambient-pause` | C | `useAmbientPause(ref)`, `trackAmbient(el) → cleanup`. |
 | `@/components/providers/motion-pref` | C | `useMotionPref(): "user" \| "always"`, `useSiteMotionReduced()`, `prefersLessMotion()` (for event handlers), `setMotionPref(reduce)`. |
 
-Lenis: `useLenis()` from `"lenis/react"` for programmatic scroll. `<dialog>`s lock scroll through
+Lenis: `useLenis()` from `"lenis/react"` for programmatic scroll. It is `undefined` on touch-only devices and under
+reduced motion (Lenis is mounted only for a fine pointer with full motion), so every caller falls back to
+`window.scrollTo`. Lenis's frame loop runs only while it smooth-scrolls (`lenis.scrollTo` starts it). `<dialog>`s lock scroll through
 `html:has(dialog[open])`.
 
 ---
@@ -110,7 +114,7 @@ Lenis: `useLenis()` from `"lenis/react"` for programmatic scroll. `<dialog>`s lo
 | `Chip`, `chipClasses()` | S* | `children`, `icon?`, `selected?`, `count?`, `dense?`. Button mode (`aria-pressed`, needs a client parent for `onClick`) or Link mode (`href`, `prefetch?`, `transitionTypes?`). Colour comes from the nearest `data-cat`. |
 | `Field`, `Input`, `Textarea`, `Select` | S | All take `id` (required), `label?`, `helper?`, `error?`, `fieldClassName?`, plus native attributes. `Input` also takes `icon?`; `Select` takes `options: {value,label}[]` and `placeholder?`. Helpers: `describedBy`, `controlClasses`, `helperId`, `errorId`. |
 | `Switch` | C | `checked`, `onCheckedChange`, `label?` or `aria-label`, `description?`, `disabled?`, `labelAfter?`, `onInk?`. |
-| `Segmented<V>` | C | `options: {value,label,icon?,ariaLabel?}[]`, `value`, `onChange`, `label`, `size?: "md"\|"sm"`. Cells are equal width and labels truncate, so keep labels short (or use `ariaLabel` + icon). |
+| `Segmented<V>` | C | `options: {value,label,icon?,ariaLabel?}[]`, `value`, `onChange`, `label`, `size?: "md"\|"sm"`, `fit?: "equal"\|"content"`, `wrap?`. Cells are equal width. `equal` (default) truncates labels; `content` (`auto-cols-[1fr]`) never shrinks a cell below its label, so give the control room (`w-max min-w-[540px]`). `wrap` hides icons below 640 px and lets labels wrap to two centred lines (full tier names in a phone-width h-11). |
 | `Tabs<V>` | C | `base`, `items: {value,label,count?,icon?}[]`, `value`, `onChange`, `label`. Panels: `<div role="tabpanel" id={panelId(base,v)} aria-labelledby={tabId(base,v)} className="tab-panel" hidden={v!==value}>`. |
 | `Sheet`, `Modal` | C | `DialogBaseProps`: `open`, `onClose`, `title`, `hideTitle?`, `description?`, `children`, `footer?`, `className?`, `bodyClassName?`, `initialFocusRef?`, `id?`. Native `<dialog>` + CSS enter/exit. The body is `data-lenis-prevent`. |
 | `PopoverTrigger`, `PopoverPanel` | S | Native `popover`: `<PopoverTrigger target="x">` + `<PopoverPanel id="x" label? align?: "start"\|"end"\|"center">`. Zero JS. |
@@ -136,10 +140,10 @@ Lenis: `useLenis()` from `"lenis/react"` for programmatic scroll. `<dialog>`s lo
 | `LivePill` (`live-pill.tsx`) | S | Site mode: `syncedAt`, `source`, `liveBrands?`, `brands?`, `watch?` (refresh on focus and toast new syncs), `promos?`. Brand mode: `syncedAt` + `brand: {name, hasFeed, status?: FeedStatus}`. Also `size?: "md"\|"sm"`, `className?`. Includes the "how syncing works" popover. **Renders a div.** |
 | `LiveTime` | C | `iso`, `initial?`, `className?`. The server prints the clock time; after mount it shows relative time, updated every 60 s. Also `useNow(intervalMs?)`. |
 | `Odometer` | S | `value`, `prefix?`, `suffix?`, `roll?: "intro"\|"reveal"\|"none"`, `srText?`. `reveal` needs a `data-reveal` ancestor that starts below the fold. |
-| `toast`, `useToast`, `announce`, `dismissToast` (`toast-region.tsx` or `toast-store.ts`) | C | `toast({ message, tone?: "save"\|"success"\|"error"\|"offline"\|"info", action?: {label, onClick?\|href?}, duration? })`. `announce(text)` = screen-reader only. `ToastRegion` is already mounted. |
+| `toast`, `useToast`, `announce`, `dismissToast` (`toast-region.tsx` or `toast-store.ts`) | C | `toast({ message, tone?: "save"\|"success"\|"error"\|"offline"\|"info", action?: {label, onClick?\|href?}, duration? })`. `announce(text)` = screen-reader only. `ToastRegion` is already mounted; auto-dismiss pauses while hovered **or** while focus is inside the toast (tracked separately), and resumes with at least 1.5 s left. |
 | `EmptyState` | S | `mood?` (Oyen), `title`, `body?`, `primary?`/`secondary?: {label, href?, external?, onClick?, trailing?}`, `note?` (Gochi), `as?`, `children?`. |
 | `ErrorFrame` | S | `mood`, `title`, `body`, `children?`, `kite?`. Used by 404 and error pages. |
-| `LoadingLine` | C | `start?`, `className?`. Rotating Gochi lines (`LOADING_LINES`). |
+| `LoadingLine` | C | `start?`, `className?`. Rotating Gochi lines (`LOADING_LINES`). Text renders on the client only (prerendered fallbacks never show it, and it kept Gochi Hand off the first paint). |
 
 Freshness (`@/lib/freshness`): `syncState(iso, source, now)` → `"fresh"|"stale"|"old"|"none"`
 (4 h / 24 h), `brandSyncState(hasFeed, status, fallbackIso, now)`, `SYNC_COPY`, `formatClock(iso)`
@@ -169,14 +173,14 @@ doesn't flash).
 
 | Component | Kind | Props |
 |---|---|---|
-| `ProductCard` | S | `product: ProductCardData`, `syncedAt`, `checkedAt?`, `priority?` (LCP), `eager?`, `context?: "grid"\|"rail"`, `emphasis?: "promo"\|"baru"`, `className?`. |
+| `ProductCard` | S | `product: ProductCardData`, `syncedAt`, `checkedAt?`, `priority?` (LCP), `eager?`, `context?: "grid"\|"rail"`, `emphasis?: "promo"\|"baru"`, `hideBrandLink?` (brand pages: brand name as plain text), `className?`. The brand link has a 44 px tall tap target (padding + negative margin). |
 | `ProductRow` | S | `product`, `syncedAt`, `checkedAt?`, `eager?`, `emphasis?`. "Senarai" list row. |
 | `ProductGrid` | S | `products`, `syncedAt`, `checkedAt?: Record<brandSlug, iso>`, `startIndex?`, `sidebar?` (max 4 columns), `view?: "grid"\|"list"`, `emphasis?`, `eagerCount?`, `priorityFirst?` (false when below the fold). Also `PAGE_SIZE` (24) and `gridColumns(sidebar?)`. |
 | `ProductFeedMore` (`load-more.tsx`) | C | `endpoint` ("/api/feed/promos" \| "/api/feed/new"), `initialCount?`, `total`, `syncedAt`, `checkedAt?`, `sidebar?`, `view?`, `emphasis?`, `noun?`, `end?`. Place it directly under a server `ProductGrid` that shows the first `initialCount` items **in the same order as the feed** (`getPromos()` / `getNewLaunches()` with the same options). Syncs `?page=`. |
-| `LoadMore`, `usePageParam()`, `loadFeed(endpoint)` | C | For client-filtered lists. `LoadMore({ shown, total, onMore, pending?, noun?, error? })`. `loadFeed` fetches and memoises a feed once per visit. |
-| `PlateImage` | C | The only product `<img>` (ENGINEERING's "ProductImage"): `src?`, `alt`, `width?`, `height?`, `category`, `sizes?` (`PLATE_SIZES.grid\|rail\|row\|collage\|search`), `priority?`, `eager?`, `glyph?`. Handles fit, srcset, fade-in and the missing-photo fallback. |
+| `LoadMore`, `usePageParam()`, `loadFeed(endpoint)` | C | For client-filtered lists. `LoadMore({ shown, total, onMore, pending?, noun?, error?, onNear? })`. `error` shows the inline "Alamak, tak jadi. Cuba lagi?" alert and turns the button into "Cuba lagi" (the caller's `onMore` retries **without** advancing `?page=`). `onNear` prefetch: fires once when the button is within 800 px, armed only after the first user scroll, skipped on Save-Data. The "Kau dah tengok N daripada M" line is not a live region (the result count announces). `loadFeed` fetches, decodes (`feed-codec.ts`) and memoises a feed once per visit. |
+| `PlateImage` | C | The only product `<img>` (ENGINEERING's "ProductImage"): `src?`, `alt`, `width?`, `height?`, `category`, `sizes?` (`PLATE_SIZES.grid\|rail\|row\|collage\|thumb\|search`), `priority?`, `eager?`, `glyph?`. Handles fit, srcset (96–800w, `IMAGE_WIDTHS`), fade-in and the missing-photo fallback. Always pass the `sizes` of the rendered slot: a 44 px thumb with `PLATE_SIZES.thumb` picks 96w/160w at DPR 2–3. |
 | `SaveButton` | C | `product`, `size?: "md"\|"lg"`, `tone?: "float"\|"solid"`. Full "Masuk Simpan" reward: pop, ring, `<Particles>`, flight to `[data-saved-target]` for the first 3 saves of a session, bump, toast on the first save, Undo on unsave. |
-| `HeartToggle` | C | Low-level heart: `saved`, `onToggle(): boolean`, `onChange?`, `label: {save, unsave}`, `size?`, `tone?`. |
+| `HeartToggle` | C | Low-level heart: `saved`, `onToggle(): boolean`, `onChange?`, `label: {save, unsave}`, `size?`, `tone?`. ONE `svg.heart-ic` (lucide heart path); `.heart-on` fills it bandung in CSS (save-button.css), pop class on the same svg. |
 | `DealSticker` | S | `discount?`, `size?: "card"\|"lg"\|"mini"`, `level?`, `label?`. L1/L2/L3 from `dealLevel()`. |
 | `BaruSticker`, `baruKind(publishedAt, syncedAt)` | S | `publishedAt?`, `syncedAt`, `calm?`. "Baru je" ≤ 3 days, "Baru" ≤ 30 days, measured against `syncedAt`. |
 | `Price`, `priceSentence`, `displayPrice`, `jimatText` | S | `price`, `compareAt?`, `discount?`, `currency`, `size?: "md"\|"lg"`, `jimat?: "auto"\|"always"\|"never"`, `announce?`. Use `displayPrice()` instead of `formatPrice()` when a price can exceed RM999 (it adds thousands separators). |
@@ -193,6 +197,12 @@ const [stats, promos] = await Promise.all([getStats(), getPromos({ limit: PAGE_S
 ```
 
 `/api/feed/new` and `/api/feed/promos` hold **in-stock items only**, so there is no "show sold out" filter.
+The three `/api/feed/*` routes send a slim wire format (brand table, path-only links, per-brand image
+base, one-letter keys / tuples; see `listing/feed-codec.ts`) with `Cache-Control: public, max-age=300,
+s-maxage=10800, stale-while-revalidate=594000`. Always read them through `loadFeed()` /
+`loadSearchIndex()`, which decode back to `ProductCardData` / `SearchItem`. Listings fetch them **only on
+interaction** (filter, sheet, "Muat lagi", or scrolling near "Muat lagi") or for URL filters / `?page=`;
+never on load or idle. After a "Muat lagi" append, focus moves to the first new card's link.
 
 ---
 
@@ -200,8 +210,9 @@ const [stats, promos] = await Promise.all([getStats(), getPromos({ limit: PAGE_S
 
 | Component | Kind | Props |
 |---|---|---|
-| `BrandCard` | S | `brand: BrandCardData` (any `BrandSummary` fits), `morph?` (monogram view-transition, only where the brand appears once on the page), `prefetch?`. Also `BrandCounts`, `BrandCollage`. |
-| `BrandRow` | S | `brand`, `thumbs?`, `prefetch?`. Compact mobile row. |
+| `BrandCard` | S | `brand: BrandCardData` (any `BrandSummary` fits; needs `hasFeed`), `layout?: "card"\|"auto"`, `morph?` (monogram view-transition, only where the brand appears once on the page), `prefetch?` (`true` = viewport prefetch; default prefetches on intent via `BrandLink`). `layout="auto"` (directory and category grids) is ONE DOM that renders as the compact brand row below 480 px (name in 2 lines, cop on its own line, 2 thumbs < 400 px / 3 from 400 px / none < 340 px, promo pill) and as the kedai card from 480 px (brand.css `.kedai-auto`). Never render a second component per breakpoint. Also `BrandCounts` (no products: "Rak online kosong buat masa ni" when `hasFeed`, else "Kedai ni belum boleh disync"), `BrandCollage({ previews, sizes? })`. |
+| `BrandLink` | C | Drop-in `next/link` for dense link grids: `prefetch={false}` plus `router.prefetch(href)` on pointer enter, touch start and focus (skipped under Save-Data). |
+| `packPreview` / `unpackPreview` | lib | `brand/preview-url.ts`: strip / restore the `https://cdn.shopify.com/s/files/` prefix of preview photos in client payloads. `BrandCard` unpacks itself. `letterOf(name)` (A–Z rail letter) is in `brand/directory-letter.ts`. |
 | `Monogram` | S | `slug`, `name`, `category`, `size?: 20\|36\|56\|96`, `tier?` (badge), `morph?` (VT name `brand-av-{slug}`). |
 | `TierCop`, `TIER_COPY` | S | `tier`, `size?: "sm"\|"lg"`, `explain?` (popover explainer, default true). |
 | `TierStamp` | S | `tier`, `size?` (112), `spin?`. |
@@ -217,7 +228,7 @@ Lib: `monogram(slug,name)`, `initials`, `fnv1a`, `MONO_SHAPES` (`@/lib/monogram`
 
 | Component | Kind | Props |
 |---|---|---|
-| `CategoryTile` | S | `slug: CategorySlug\|"all"`, `promos?`, `brands?`, `compact?`, `morph?` (VT `cat-ic-{slug}`, once per page), `onShelf?`. |
+| `CategoryTile` | S | `slug: CategorySlug\|"all"`, `promos?`, `brands?`, `compact?`, `morph?` (VT `cat-ic-{slug}`, once per page), `onShelf?`. Links through `BrandLink` (no viewport prefetch, prefetch on intent). |
 | `CategoryShelf` | S | `categories: {slug,brands,promos}[]` (`getCategorySummaries()`), `allBrands?`, `morph?`. |
 | `CategoryChip` | C | `category: CategorySlug\|"all"`, `selected?`, `onToggle?(category, selected)` or `href?`, `label?`, `count?`, `dense?`. |
 | `ChipRow` | S | `label` (group name), `wrapFrom?: "md"\|"lg"\|"never"`, `children`. Scrolls with edge fade. |
@@ -236,7 +247,9 @@ Lib: `monogram(slug,name)`, `initials`, `fnv1a`, `MONO_SHAPES` (`@/lib/monogram`
 ## 9. Shell, search and layout (already mounted; reuse the pieces)
 
 - **Search:** `useSearch()` → `{ open({ query? }), close, isOpen }`. `preloadSearch(withIndex?)` warms the
-  chunk on intent, and `loadSearchIndex()` → `Promise<SearchItem[]>`. `SearchTrigger({ variant: "pill"|"icon"|"tab" })`.
+  chunk on intent, and `loadSearchIndex()` → `Promise<SearchItem[]>` (decoded from the slim feed). ⌘K / Ctrl+K and "/"
+  do nothing while another `dialog[open]` (Tapis sheet, modal) is up. Empty-state examples show only terms with 3+ product
+  hits. `SearchTrigger({ variant: "pill"|"icon"|"tab" })`.
   The dialog is lazy-loaded from `search/search-dialog.tsx`. Its default export
   `SearchDialog({ open, onClose, initialQuery })` is a **minimal stub**; keep that signature when you
   replace it. Ranking: `prepareIndex()` / `search()` in `@/lib/search`.
@@ -244,7 +257,15 @@ Lib: `monogram(slug,name)`, `initials`, `fnv1a`, `MONO_SHAPES` (`@/lib/monogram`
   `brandSavedId(slug)`. Items: `{kind:"product", id, product}` or `{kind:"brand", id, brand}` (+ `savedAt`).
 - **Layout parts:** `Logo({ onInk?, size? })`, `Awning({ color?, height?, outlined? })`, `MotionToggle({ variant?: "switch"|"footer" })`,
   `NavLink`, `PendingDots`, `NavSquiggle`, `isActivePath`, `KategoriTrigger`, `CategoryTiles`/`TierLinks`,
-  `RandomBrandLink({ slugs })`, `SavedLink`, `BackToTop`, `SkipLink`.
+  `RandomBrandLink({ slugs })`, `SavedLink`, `BackToTop` (Home and list pages only: `/`, `/promos`, `/new`, `/brands*`, `/categories/*`; hidden on error/404 frames and while the footer is in view; no listeners elsewhere), `SkipLink`.
+  `ShellLink` (C): `next/link` for the header, tab bar and logo. Default viewport prefetch, but only after the first
+  page has loaded and gone idle (`useAfterLoad()` from `@/lib/after-load`), so ~40–100 KB of shell prefetches no longer
+  compete with the first paint. Use it for any link that sits on every page; use `BrandLink` in dense grids.
+  `HeaderScroll` and `BackToTop` read `window.scrollY` from one passive `scroll` listener, once per frame (no Motion
+  `useScroll` for threshold checks). `PendingDots`/tab dots render their `<i>`s only while the link is pending.
+  The Kategori sheet renders its body on first open. `InitialRevealScript` (root `<head>`) lets the first page load
+  reveal outlined Suspense content without a view transition (React would otherwise hold it back for fonts and photos);
+  client-side navigations keep every transition.
 - **Art** (`@/components/art/*`; all take `size`, `className`, `style`, `title`, and are `aria-hidden` unless `title` is set):
   `LogoMark`, `BungaRaya` (+ `BungaRayaShape`, `PETAL`), `Starburst` (`BURST_16`, keep the label as HTML on top),
   `Sparkle({ tone: "candy"|"ink" })`, `WauBulan({ sway?, string?: "long"|"cut" })`, `TierIcon({ tier, face? })`,
@@ -264,7 +285,7 @@ Server (`@/lib/catalog`, server-only): `getStats()`, `getPromos(opts)`, `getNewL
 `brandsInCategory`, `brandsInTier` (`@/lib/brands`); `CATEGORIES`, `CATEGORY_BY_SLUG`, `isCategorySlug`,
 `TIERS`, `TIER_BY_SLUG`, `STATES`, `NEW_WINDOW_DAYS`, `MIN_PROMO_DISCOUNT` (`@/lib/taxonomy`).
 Client and shared: `formatPrice`, `timeAgo(iso, now)`, `formatCount`, `outboundUrl` (`@/lib/format`);
-`sizedImage`, `imageSrcSet` (`@/lib/images`); `SITE_NAME`, `SITE_URL`, `REPO_URL` (`@/lib/site`).
+`sizedImage`, `imageSrcSet`, `IMAGE_WIDTHS` (`@/lib/images`: Shopify `?width=` and Jetpack Photon `i0–i3.wp.com` `?w=&quality=80`; other hosts pass through untouched); `SITE_NAME`, `SITE_URL`, `REPO_URL`, `pageMetadata({ title, description, path, socialDescription?, absolute?, defaultImage? })` and the `ogBase` / `twitterBase` spreads (`@/lib/site`): a page's `openGraph`/`twitter` replaces the layout's wholesale, so always build them from these (default OG image + `summary_large_image`); routes with their own `opengraph-image` file use `defaultImage: false` / `ogBaseNoImage`.
 Week picks ("Cili Padi minggu ni") derive from `syncedAt` (e.g. an ISO week number from it), never from the clock.
 
 ---
@@ -279,4 +300,4 @@ Week picks ("Cili Padi minggu ni") derive from `syncedAt` (e.g. an ISO week numb
 | Search | Full `search/search-dialog.tsx` (same default export and props) + `search/search-row.tsx` (`<mark>` highlights). |
 | Category | `category/category-hero.tsx`; `categories/[slug]/page.tsx` body. |
 | About | `about/suggest-form.tsx` (C, lazy) + `app/about/actions.ts` (`suggestBrand`: validate, POST JSON to `SUGGEST_WEBHOOK_URL`; when it is unset, return the GitHub fallback `REPO_URL/issues/new?title=…&body=…` with honest copy), `about/faq.tsx` (`<details name="faq">`, facts limited to the brief). |
-| Saved | `saved/saved-view.tsx` (C: tabs, freshness check via `/api/feed/search`, sort, clear-all with `Modal`). |
+| Saved | `saved/saved-view.tsx` (C: tabs, freshness check via `/api/feed/search`, sort, clear-all with `Modal`). A saved product missing from the index (or an index that failed) is **"unknown"**, never "sold out": no Habis, no grey, only the promo sticker/struck price drop, plus "Tak dapat semak harga terkini. Harga masa simpan: RM…" and a store link. Removing from /saved moves focus to the next card's heart (or previous, or the tab) and the Undo toast says so; keyboard removals keep the toast 12 s. sr-only h2s "Produk disimpan" / "Jenama disimpan". |

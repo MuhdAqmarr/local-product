@@ -1,12 +1,11 @@
 import { ViewTransition } from "react";
-import Link from "next/link";
+import { BrandLink as IntentLink } from "@/components/brand/brand-link";
 import { LayoutGrid } from "@/components/ui/lucide";
 import { CategoryGlyph } from "@/components/product/category-glyph";
 import { formatCount } from "@/lib/format";
 import { CATEGORY_BY_SLUG } from "@/lib/taxonomy";
 import type { CategorySlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import "./category.css";
 
 export interface CategoryTileProps {
   /** A category, or "all" for the "Semua jenama" tile (→ /brands). */
@@ -59,9 +58,9 @@ export function CategoryTile({ slug, promos = 0, brands, compact, morph = true, 
   const srCount = [promos > 0 ? `${promos} promo` : null, brands != null ? `${brands} jenama` : null].filter(Boolean).join(", ");
 
   return (
-    <Link
+    // Dense grid (QA F06): no viewport prefetch; IntentLink warms the route on hover / touch / focus.
+    <IntentLink
       href={href}
-      prefetch={!all}
       transitionTypes={["nav-forward"]}
       data-cat={all ? undefined : slug}
       className={cn("cat-tile", "group/tile relative flex flex-col items-center gap-2 text-center", className)}
@@ -95,6 +94,6 @@ export function CategoryTile({ slug, promos = 0, brands, compact, morph = true, 
         )}
         {srCount && <span className="sr-only">, {srCount}</span>}
       </span>
-    </Link>
+    </IntentLink>
   );
 }

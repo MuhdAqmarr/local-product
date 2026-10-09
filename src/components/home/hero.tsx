@@ -19,7 +19,6 @@ import type { SiteStats } from "@/lib/catalog";
 import type { ProductCardData } from "@/lib/types";
 import { HeroDealStack } from "./hero-deal-stack";
 import { HeroParallax } from "./hero-parallax";
-import "./home.css";
 
 const d = (ms: number) => ({ ["--d" as string]: `${ms}ms` }) as CSSProperties;
 
@@ -100,29 +99,33 @@ export function Hero({ stats, deals, dealKind }: HeroProps) {
             </h1>
 
             {stats.maxDiscount > 0 && (
-              <Link
-                href="/promos"
-                transitionTypes={["nav-forward"]}
-                aria-label={`Diskaun sampai ${stats.maxDiscount}%. Tengok promo`}
-                className="group absolute right-0 -bottom-6 lg:-right-4 lg:-bottom-2"
-              >
+              // The Gochi "sampai!" note sits outside the link so the link's visible text is just
+              // "−N%", which its name starts with (QA F28). Hidden below 390 px, where it would hit
+              // "date." (QA F27).
+              <span className="absolute right-0 -bottom-6 lg:-right-4 lg:-bottom-2">
+                <Link href="/promos" transitionTypes={["nav-forward"]} aria-label={`−${stats.maxDiscount}% sampai. Tengok promo`} className="group block">
+                  <span
+                    className="intro-slap relative grid size-16 place-items-center transition-transform duration-200 ease-pop group-hover:scale-105"
+                    style={{ transform: "rotate(-10deg)", ["--r" as string]: "-10deg", ["--r-from" as string]: "-24deg", ...d(300) }}
+                  >
+                    <Starburst size={64} className="absolute inset-0" />
+                    <span className="relative font-num text-[17px] leading-none text-ink">−{stats.maxDiscount}%</span>
+                  </span>
+                </Link>
                 <span
-                  className="intro-slap relative grid size-16 place-items-center transition-transform duration-200 ease-pop group-hover:scale-105"
-                  style={{ transform: "rotate(-10deg)", ["--r" as string]: "-10deg", ["--r-from" as string]: "-24deg", ...d(300) }}
+                  aria-hidden
+                  className="hand intro-rise pointer-events-none absolute top-1/2 right-full mr-1 hidden -translate-y-1/2 text-hand whitespace-nowrap min-[390px]:block lg:hidden"
+                  style={d(460)}
                 >
-                  <Starburst size={64} className="absolute inset-0" />
-                  <span className="relative font-num text-[17px] leading-none text-ink">−{stats.maxDiscount}%</span>
-                </span>
-                <span aria-hidden className="hand intro-rise absolute top-1/2 right-full mr-1 -translate-y-1/2 text-hand whitespace-nowrap lg:hidden" style={d(460)}>
                   sampai!
                 </span>
-              </Link>
+              </span>
             )}
           </div>
 
           <p className="mt-5 max-w-[40ch] text-lead text-ink-2 lg:max-w-[46ch]">
-            Promo dan produk terbaru dari kedai rasmi {stats.liveBrands} jenama Malaysia, dari skincare sampai sambal. Auto-update setiap beberapa
-            jam, so kau tak terlepas apa-apa.
+            Promo dan produk terbaru dari {stats.brands} jenama Malaysia, dari skincare sampai sambal: {stats.liveBrands} kedai rasmi kami
+            semak live. Auto-update setiap beberapa jam, so kau tak terlepas apa-apa.
           </p>
 
           <HeroSearchPill

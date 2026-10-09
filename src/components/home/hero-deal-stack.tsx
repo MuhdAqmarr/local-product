@@ -6,11 +6,16 @@ import { ProductCard } from "@/components/product/product-card";
 import type { ProductCardData } from "@/lib/types";
 import { HeroParallax } from "./hero-parallax";
 
-/** Resting fan: rotation, offsets and intro delay per card (DESIGN §7.4: −6° / 3° / −2°, 360/440/520 ms). */
+/**
+ * Resting fan: rotation, placement and intro delay per card (DESIGN §7.4: −6° / 3° / −2°, 360/440/520 ms).
+ * Cards are anchored by `bottom` so they always end inside the panel, whatever their height, and
+ * the left card is inset so its −6° corner and sticker clear the panel border (QA F13).
+ * Below xl only the first two show (each ≥150 px wide, so titles never break mid-word).
+ */
 const FAN = [
-  { r: -6, d: 360, left: "0%", top: 64, z: 1 },
-  { r: 3, d: 440, left: "33.5%", top: 30, z: 3 },
-  { r: -2, d: 520, left: "67%", top: 76, z: 2 },
+  { r: -6, d: 360, bottom: 56, z: 1, pos: "left-[4%] xl:left-[3%]" },
+  { r: 3, d: 440, bottom: 72, z: 3, pos: "right-[4%] xl:right-auto xl:left-[calc(50%-var(--cw)/2)]" },
+  { r: -2, d: 520, bottom: 24, z: 2, pos: "right-[3%] hidden xl:block" },
 ] as const;
 
 /**
@@ -26,17 +31,21 @@ export function HeroDealStack({ deals, kind, syncedAt }: { deals: ProductCardDat
 
       <HeroParallax layer="fan" className="absolute inset-x-0 top-[92px] bottom-2">
         <div className="absolute inset-0 rounded-panel border-2 border-ink bg-putih/75 shadow-pop" />
-        <p className="absolute top-4 right-6 flex items-center gap-2 text-overline text-ink-2 uppercase">
+        <h2 className="absolute top-4 right-6 flex items-center gap-2 text-overline text-ink-2 uppercase">
           <span className="live-dot" aria-hidden />
           {kind === "promo" ? "Rak promo live" : "Baru sampai, live"}
-        </p>
+        </h2>
         {deals.length > 0 && (
-          <ul aria-label={kind === "promo" ? "Promo paling besar sekarang" : "Launch terbaru"} className="absolute inset-x-4 top-12 bottom-0">
+          <ul
+            aria-label={kind === "promo" ? "Promo paling besar sekarang" : "Launch terbaru"}
+            // --cw: card width, ≥150 px (titles never break mid-word) and ≤208 px; the fan itself
+            // is capped at 640 px and centred so wide screens keep an overlapping fan.
+            className="absolute inset-x-6 top-12 bottom-0 mx-auto max-w-[640px] [--cw:clamp(150px,44%,208px)] xl:[--cw:clamp(150px,34%,208px)]"
+          >
             {deals.slice(0, 3).map((p, i) => {
               const f = FAN[i];
               const style = {
-                left: f.left,
-                top: f.top,
+                bottom: f.bottom,
                 zIndex: f.z,
                 transform: `rotate(${f.r}deg)`,
                 ["--r" as string]: `${f.r}deg`,
@@ -44,7 +53,7 @@ export function HeroDealStack({ deals, kind, syncedAt }: { deals: ProductCardDat
                 ["--d" as string]: `${f.d}ms`,
               } as CSSProperties;
               return (
-                <li key={p.id} className="intro-slap absolute w-[31%]" style={style}>
+                <li key={p.id} className={`intro-slap absolute w-(--cw) ${f.pos}`} style={style}>
                   <ProductCard product={p} syncedAt={syncedAt} context="rail" emphasis={kind} />
                 </li>
               );
@@ -59,7 +68,7 @@ export function HeroDealStack({ deals, kind, syncedAt }: { deals: ProductCardDat
         </span>
       </HeroParallax>
 
-      <Seal size={96} className="absolute -bottom-5 -left-6 z-[5] -rotate-12" />
+      <Seal size={84} className="absolute -bottom-10 -left-6 z-[5] -rotate-12 xl:-left-10" />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-/* Listing island (/promos, /new). Prefixed `.listing-*`; imported once by product-listing.tsx. */
+/* Listing island (/promos, /new). Prefixed `.listing-*`; bundled via globals.css. */
 
 /* Pending (filters applied before the full list arrived): dim after 120 ms, never instantly. */
 .listing-body { transition: opacity 150ms var(--ease-out-soft); }

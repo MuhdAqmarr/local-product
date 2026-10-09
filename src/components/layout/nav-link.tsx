@@ -1,6 +1,7 @@
 "use client";
 
-import Link, { useLinkStatus } from "next/link";
+import { useLinkStatus } from "next/link";
+import { ShellLink } from "./shell-link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { Squiggle } from "@/components/art/squiggle";
@@ -13,14 +14,19 @@ export function isActivePath(pathname: string | null, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-/** Three 4 px dots, always rendered (opacity-toggled) so pending never shifts layout. */
+/** Three 4 px dots. The fixed-width box is always rendered (no layout shift); the dots, and their
+ *  infinite bounce animation, exist only while the link is pending (QA F08). */
 export function PendingDots({ className }: { className?: string }) {
   const { pending } = useLinkStatus();
   return (
     <span aria-hidden className={cn("dots inline-flex items-center transition-opacity duration-150 [&>i]:size-1", pending ? "opacity-100" : "opacity-0", className)}>
-      <i />
-      <i />
-      <i />
+      {pending && (
+        <>
+          <i />
+          <i />
+          <i />
+        </>
+      )}
     </span>
   );
 }
@@ -45,7 +51,7 @@ export function NavLink({ href, children, badge }: { href: string; children: Rea
   const pathname = usePathname();
   const active = isActivePath(pathname, href);
   return (
-    <Link
+    <ShellLink
       href={href}
       aria-current={active ? "page" : undefined}
       transitionTypes={["nav-tab"]}
@@ -57,6 +63,6 @@ export function NavLink({ href, children, badge }: { href: string; children: Rea
       </span>
       {badge}
       <PendingDots className="w-[18px]" />
-    </Link>
+    </ShellLink>
   );
 }

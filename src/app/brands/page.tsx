@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Store } from "@/components/ui/lucide";
 import { Seal } from "@/components/art/seal";
 import { DirectoryFilter, type DirectoryBrand, type DirectoryFacets } from "@/components/brand/directory-filter";
+import { letterOf } from "@/components/brand/directory-letter";
+import { packPreview } from "@/components/brand/preview-url";
 import { RandomBrandButton } from "@/components/brand/random-brand-button";
 import { LivePill } from "@/components/feedback/live-pill";
 import { Odometer } from "@/components/feedback/odometer";
@@ -10,22 +12,13 @@ import { Band } from "@/components/ui/band";
 import { Accent } from "@/components/ui/section-header";
 import { getBrandSummaries, getStats, type BrandSummary } from "@/lib/catalog";
 import { normalizeText } from "@/lib/search";
+import { pageMetadata } from "@/lib/site";
 import { CATEGORIES, CATEGORY_BY_SLUG, STATES } from "@/lib/taxonomy";
 
 const DESCRIPTION =
   "Direktori jenama lokal Malaysia, dari Cili Padi ke Jenama Ikon. Tapis ikut kategori, saiz jenama, negeri dan promo, terus ke kedai rasmi mereka.";
 
-export const metadata: Metadata = {
-  title: "Direktori jenama",
-  description: DESCRIPTION,
-  alternates: { canonical: "/brands" },
-  openGraph: { title: "Direktori jenama · LokalLah!", description: DESCRIPTION, url: "/brands" },
-};
-
-function letterOf(name: string): string {
-  const c = normalizeText(name).charAt(0).toUpperCase();
-  return /[A-Z]/.test(c) ? c : "#";
-}
+export const metadata: Metadata = pageMetadata({ title: "Direktori jenama", description: DESCRIPTION, path: "/brands" });
 
 function haystack(b: BrandSummary): string {
   return normalizeText([b.name, b.subcategory.replace(/-/g, " "), CATEGORY_BY_SLUG[b.category].nameMs, b.origin ?? "", ...b.tags].join(" "));
@@ -41,7 +34,8 @@ export default async function BrandsPage() {
     letters: [...new Set(brands.map((b) => letterOf(b.name)))].sort((a, b) => (a === "#" ? 1 : b === "#" ? -1 : a.localeCompare(b))),
   };
 
-  // Slim, serialisable card data (+ letter and search text) for the client directory.
+  // Slim, serialisable card data (+ search text) for the client directory. Previews are capped at
+  // the 3 thumbs a card shows and packed (Shopify prefix stripped); the A–Z letter is derived client-side.
   const list: DirectoryBrand[] = brands.map((b) => ({
     slug: b.slug,
     name: b.name,
@@ -49,11 +43,11 @@ export default async function BrandsPage() {
     tier: b.tier,
     description: b.description,
     state: b.state,
+    hasFeed: b.hasFeed,
     live: b.live,
     promoCount: b.promoCount,
     newCount: b.newCount,
-    previews: b.previews,
-    letter: letterOf(b.name),
+    previews: b.previews.slice(0, 3).map(packPreview),
     hay: haystack(b),
   }));
 

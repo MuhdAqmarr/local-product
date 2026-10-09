@@ -1,15 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Heart } from "@/components/ui/lucide";
 import { prefersLessMotion } from "@/components/providers/motion-pref";
 import { FLY_TEACH_LIMIT } from "@/lib/motion";
 import { Particles } from "@/components/art/particles";
 import { cn } from "@/lib/utils";
-import "./save-button.css";
 
 const FLY_KEY = "lokallah:fly";
-const HEART = "M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z";
+/** lucide "heart" (v1.5): one path for both states; CSS fills it bandung when saved (save-button.css). */
+const HEART = "M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5";
 
 /** First 3 saves of a session fly to Simpan; afterwards only bump + count. */
 function takeFlightTicket(): boolean {
@@ -116,12 +115,9 @@ export function HeartToggle({ saved, onToggle, onChange, label, size = "md", ton
       aria-label={saved ? label.unsave : label.save}
       className={cn("heart-btn", size === "lg" && "heart-btn-lg", tone === "solid" && "heart-btn-solid", saved && "heart-on", "relative z-10", className)}
     >
-      <span className={"heart-ic"} data-heart="">
-        <Heart size={20} strokeWidth={2} className={"heart-outline"} aria-hidden="true" />
-        <svg viewBox="0 0 24 24" width={20} height={20} className={cn("heart-filled", popped && "heart-popping")} aria-hidden="true" >
-          <path d={HEART} fill="currentColor" stroke="var(--color-ink)" strokeWidth={2} strokeLinejoin="round" />
-        </svg>
-      </span>
+      <svg viewBox="0 0 24 24" width={20} height={20} className={cn("heart-ic", popped && "heart-popping")} data-heart="" aria-hidden="true">
+        <path d={HEART} />
+      </svg>
       {burst > 0 && <span key={burst} className="heart-burst-ring" aria-hidden="true" />}
       <Particles burst={burst} preset="save" />
     </button>

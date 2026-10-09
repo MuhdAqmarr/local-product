@@ -42,8 +42,8 @@ export interface ArtProps {
 /** Accessibility attributes: decorative by default, `role="img"` + label when titled. */
 export function a11y(title?: string) {
   return title
-    ? ({ role: "img", "aria-label": title, focusable: "false" } as const)
-    : ({ "aria-hidden": true, focusable: "false" } as const);
+    ? ({ role: "img", "aria-label": title } as const)
+    : ({ "aria-hidden": true } as const);
 }
 
 /**

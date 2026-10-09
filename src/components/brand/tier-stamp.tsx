@@ -3,7 +3,6 @@ import { TierIcon } from "@/components/art/tier-icon";
 import { TIER_BY_SLUG } from "@/lib/taxonomy";
 import type { TierSlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import "./brand.css";
 import { TIER_COPY } from "./tier-cop";
 
 export interface TierStampProps {

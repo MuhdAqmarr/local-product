@@ -23,13 +23,20 @@ export interface SegmentedProps<V extends string = string> {
   className?: string;
   /** Compact h-9 version for toolbars. */
   size?: "md" | "sm";
+  /**
+   * `equal` (default): equal cells that truncate their labels. `content`: equal cells that never
+   * shrink below their label (`auto-cols-[1fr]`); give the control room (e.g. `w-max min-w-[540px]`).
+   */
+  fit?: "equal" | "content";
+  /** Below 640 px: hide the icons and let labels wrap to two centred lines (full tier names fit). */
+  wrap?: boolean;
 }
 
 /**
  * Segmented control (DESIGN §6.17): kapas track, one thumb that slides with `translateX(i × 100%)`
  * (equal-width cells, no layout animation). role="radiogroup" with arrow-key roving focus.
  */
-export function Segmented<V extends string>({ options, value, onChange, label, className, size = "md" }: SegmentedProps<V>) {
+export function Segmented<V extends string>({ options, value, onChange, label, className, size = "md", fit = "equal", wrap }: SegmentedProps<V>) {
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
   const index = Math.max(0, options.findIndex((o) => o.value === value));
   const n = options.length;
@@ -51,7 +58,12 @@ export function Segmented<V extends string>({ options, value, onChange, label, c
       role="radiogroup"
       aria-label={label}
       onKeyDown={onKeyDown}
-      className={cn("relative grid grid-flow-col auto-cols-fr rounded-full bg-kapas p-1", size === "md" ? "h-11" : "h-9", className)}
+      className={cn(
+        "relative grid grid-flow-col rounded-full bg-kapas p-1",
+        fit === "content" ? "auto-cols-[1fr]" : "auto-cols-fr",
+        size === "md" ? "h-11" : "h-9",
+        className,
+      )}
     >
       <m.span
         aria-hidden
@@ -79,10 +91,18 @@ export function Segmented<V extends string>({ options, value, onChange, label, c
               "relative z-10 inline-flex min-w-0 items-center justify-center gap-1.5 rounded-full px-2 text-label transition-colors duration-150 [&>svg]:size-[18px]",
               active ? "text-ink" : "text-ink-soft hover:text-ink",
               size === "sm" && "text-[13px]",
+              wrap && "max-sm:px-1 max-sm:[&>svg]:hidden",
             )}
           >
             {o.icon}
-            <span className="truncate">{o.label}</span>
+            <span
+              className={cn(
+                fit === "content" ? "whitespace-nowrap" : "truncate",
+                wrap && "max-sm:line-clamp-2 max-sm:text-center max-sm:text-label-sm max-sm:leading-[1.1] max-sm:whitespace-normal",
+              )}
+            >
+              {o.label}
+            </span>
           </button>
         );
       })}

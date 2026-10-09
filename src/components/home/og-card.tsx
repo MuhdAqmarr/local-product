@@ -1,12 +1,12 @@
 import { ImageResponse } from "next/og";
+import { OG_ALT, OG_SIZE } from "@/lib/site";
 
 /**
  * Social card (1200 × 630) for Home: the Kedai Oyen look in a self-contained ImageResponse
  * (no fetches, no data, bundled font). Shared by opengraph-image.tsx and twitter-image.tsx.
  * Raw hex is fine here: this renders to a PNG, not to the page (values mirror the palette tokens).
  */
-export const OG_SIZE = { width: 1200, height: 630 };
-export const OG_ALT = "LokalLah! — Semua jenama lokal, sentiasa up to date. Promo live dan launch baru dari kedai rasmi jenama Malaysia.";
+export { OG_ALT, OG_SIZE };
 
 const INK = "#2B1736";
 const PETAL = "M50 50C34 46 22 30 30 17C35 9 45 10 50 18C55 10 65 9 70 17C78 30 66 46 50 50Z";

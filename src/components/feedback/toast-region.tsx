@@ -23,7 +23,8 @@ const ICON: Record<ToastTone, { icon: React.ReactNode; well: string }> = {
 /**
  * The single toast region (DESIGN §6.14), mounted once in the root layout.
  * Polite status region for everything, assertive alert for errors. Auto-dismiss 3.2 s
- * (5 s with an action), paused while hovered or focused. Also watches online/offline.
+ * (5 s with an action, or the caller's `duration`), paused while hovered or while focus is
+ * inside it, so a keyboard user who tabs to Undo never loses it. Also watches online/offline.
  */
 export function ToastRegion() {
   const { current, announcement } = useToastState();
@@ -67,14 +68,18 @@ export function ToastRegion() {
 }
 
 function ToastView({ item }: { item: ToastItem }) {
-  const [paused, setPaused] = useState(false);
+  // Hover and focus pause independently: leaving with the pointer must not resume while Undo has focus.
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const paused = hovered || focused;
   const remaining = useRef(item.duration);
   const startedAt = useRef(0);
 
   useEffect(() => {
     if (paused) return;
     startedAt.current = Date.now();
-    const id = window.setTimeout(() => dismissToast(item.id), remaining.current);
+    // Resuming always leaves a little time to act.
+    const id = window.setTimeout(() => dismissToast(item.id), Math.max(remaining.current, 1500));
     return () => {
       window.clearTimeout(id);
       remaining.current -= Date.now() - startedAt.current;
@@ -91,10 +96,12 @@ function ToastView({ item }: { item: ToastItem }) {
       initial="hidden"
       animate="show"
       exit="exit"
-      onPointerEnter={() => setPaused(true)}
-      onPointerLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      onFocus={() => setFocused(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false);
+      }}
       className="on-ink pointer-events-auto flex min-h-12 max-w-[min(92vw,420px)] items-center gap-3 rounded-full bg-ink py-1.5 pl-2 pr-1.5 text-[14px] font-semibold leading-snug text-santan shadow-float"
     >
       <span aria-hidden className={cn("grid size-7 shrink-0 place-items-center rounded-full text-ink ring-2 ring-white", look.well)}>

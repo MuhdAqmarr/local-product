@@ -30,6 +30,67 @@
   45% { transform: scaleY(1.18); }
 }
 
+/* ---- Responsive kedai card (`layout="auto"`, QA F03 / F14): below 480 px the same DOM becomes
+   the compact brand row (DESIGN §6.8 "Brand row"): 88 px, garis border, no pop shadow, 56 px
+   monogram | name (2 lines) + cop + meta | 44 px thumbs over the promo pill. ---- */
+@media (max-width: 479.98px) {
+  .kedai-auto { --pop-radius: var(--radius-card); }
+  .kedai-auto::before { display: none; }
+  .kedai-auto > .kedai-face {
+    flex-direction: row;
+    align-items: center;
+    min-height: 88px;
+    border-color: var(--color-garis);
+    box-shadow: var(--shadow-card);
+  }
+  .kedai-auto:hover > .kedai-face { transform: none; }
+  .kedai-auto:active > .kedai-face { transform: scale(0.98); }
+  .kedai-auto .kedai-band,
+  .kedai-auto .kedai-desc { display: none; }
+  .kedai-auto .kedai-body {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    grid-template-rows: 1fr auto auto 1fr;
+    grid-template-areas: "mono text ." "mono text thumbs" "mono text counts" "mono text .";
+    column-gap: 12px;
+    align-items: center;
+    padding: 8px 8px 8px 10px;
+  }
+  .kedai-auto .kedai-monowrap { grid-area: mono; margin: 0; }
+  .kedai-auto .kedai-text { grid-area: text; gap: 4px; }
+  .kedai-auto .kedai-name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    font-size: 16px;
+    line-height: 1.25;
+  }
+  /* Cop on its own line under the name; it can never reach into the thumbs column. */
+  .kedai-auto .kedai-meta { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .kedai-auto .kedai-collage { grid-area: thumbs; display: flex; gap: 4px; justify-self: end; }
+  .kedai-auto .kedai-collage > li { width: 44px; flex: none; border-radius: 10px; }
+  .kedai-auto .kedai-counts { grid-area: counts; justify-self: end; margin-top: 6px; padding: 0; }
+  .kedai-auto .kedai-counts > :not(.kedai-promo),
+  .kedai-auto.kedai-nopromo .kedai-counts { display: none; }
+}
+/* Two thumbs below 400 px, none below 340 px (the name needs the room). */
+@media (max-width: 399.98px) {
+  .kedai-auto .kedai-collage > li:nth-child(3) { display: none; }
+}
+@media (max-width: 339.98px) {
+  .kedai-auto .kedai-collage { display: none; }
+  .kedai-auto .kedai-body {
+    grid-template-columns: 56px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    grid-template-areas: "mono text" "mono counts";
+  }
+  .kedai-auto .kedai-counts { justify-self: start; margin-top: 4px; }
+}
+
 /* ---- Tier cop popover: anchored when supported, centred otherwise (UA default) ---- */
 .cop-panel {
   width: min(300px, calc(100vw - 32px));

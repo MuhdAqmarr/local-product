@@ -3,6 +3,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import snapshotJson from "@/data/snapshot.json";
 import { BRANDS, getBrand } from "./brands";
+import { encodeCards, encodeSearch, type CardFeed, type SearchFeed } from "@/components/listing/feed-codec";
 import { refreshCatalog } from "./feeds/refresh";
 import { CATEGORIES, NEW_WINDOW_DAYS } from "./taxonomy";
 import type { Brand, Catalog, CategorySlug, FeedStatus, Product, ProductCardData, Snapshot, TierSlug } from "./types";
@@ -264,7 +265,7 @@ export async function getCategorySummaries(): Promise<CategorySummary[]> {
   });
 }
 
-/** Compact rows for the client-side search modal: brands first, then products. */
+/** Client-side search rows (brands first, then products): what `decodeSearch` gives back. */
 export interface SearchItem {
   kind: "brand" | "product";
   id: string;
@@ -283,36 +284,31 @@ export interface SearchItem {
   state?: string;
 }
 
-export async function getSearchIndex(): Promise<SearchItem[]> {
+/** The search modal's index in its slim wire format (see feed-codec.ts). */
+export async function getSearchFeed(): Promise<SearchFeed> {
   "use cache";
   cacheLife("catalog");
   cacheTag("catalog");
   const { products } = await getCatalog();
-  const brands: SearchItem[] = BRANDS.map((b) => ({
-    kind: "brand",
-    id: b.slug,
-    title: b.name,
-    brand: b.slug,
-    brandName: b.name,
-    category: b.category,
-    href: `/brands/${b.slug}`,
-    tier: b.tier,
-    ...(b.state ? { state: b.state } : {}),
-  }));
-  const items: SearchItem[] = scope(products, {})
-    .filter((p) => p.available)
-    .map((p) => ({
-      kind: "product",
-      id: p.id,
-      title: p.title,
-      brand: p.brand,
-      brandName: p.brandName,
-      category: p.brandCategory,
-      href: p.url,
-      image: p.image,
-      price: p.price,
-      currency: p.currency,
-      discount: p.discount,
-    }));
-  return [...brands, ...items];
+  const brands = BRANDS.map((b) => ({ id: b.slug, title: b.name, category: b.category, tier: b.tier, ...(b.state ? { state: b.state } : {}) }));
+  return encodeSearch(
+    brands,
+    scope(products, {}).filter((p) => p.available),
+  );
+}
+
+/** `/api/feed/promos`: every live promo in the slim wire format. */
+export async function getPromosFeed(): Promise<CardFeed> {
+  "use cache";
+  cacheLife("catalog");
+  cacheTag("catalog");
+  return encodeCards(await getPromos());
+}
+
+/** `/api/feed/new`: every launch of the last NEW_WINDOW_DAYS days in the slim wire format. */
+export async function getNewFeed(): Promise<CardFeed> {
+  "use cache";
+  cacheLife("catalog");
+  cacheTag("catalog");
+  return encodeCards(await getNewLaunches());
 }

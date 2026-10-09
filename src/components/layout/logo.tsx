@@ -1,11 +1,11 @@
-import Link from "next/link";
+import { ShellLink } from "./shell-link";
 import { LogoMark } from "@/components/art/logo-mark";
 import { cn } from "@/lib/utils";
 
 /** Mark + Fredoka wordmark: "Lokal" ink + "Lah!" bandung-pekat (on ink: santan + jambu). Links home. */
 export function Logo({ onInk = false, size = "md", className }: { onInk?: boolean; size?: "sm" | "md"; className?: string }) {
   return (
-    <Link
+    <ShellLink
       href="/"
       aria-label="LokalLah! — Utama"
       transitionTypes={["nav-tab"]}
@@ -16,6 +16,6 @@ export function Logo({ onInk = false, size = "md", className }: { onInk?: boolea
         <span className={onInk ? "text-santan" : "text-ink"}>Lokal</span>
         <span className={onInk ? "text-jambu" : "text-bandung-pekat"}>Lah!</span>
       </span>
-    </Link>
+    </ShellLink>
   );
 }

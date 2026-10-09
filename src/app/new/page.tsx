@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { Sparkles } from "@/components/ui/lucide";
 import { Sparkle } from "@/components/art/sparkle";
 import { WauBulan } from "@/components/art/wau-bulan";
@@ -11,11 +12,12 @@ import { getNewLaunches, getStats } from "@/lib/catalog";
 import { formatCount } from "@/lib/format";
 import { NEW_WINDOW_DAYS } from "@/lib/taxonomy";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Baru sampai",
   description: "Produk yang baru launch kat kedai rasmi jenama lokal, dikumpul ikut hari. Disemak lebih kurang setiap 3 jam.",
-  openGraph: { title: "Baru sampai · LokalLah!", description: "Produk yang baru launch kat kedai rasmi jenama lokal." },
-};
+  socialDescription: "Produk yang baru launch kat kedai rasmi jenama lokal.",
+  path: "/new",
+});
 
 export default async function NewPage() {
   const [stats, launches] = await Promise.all([getStats(), getNewLaunches()]);

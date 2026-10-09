@@ -10,7 +10,6 @@ import type { BrandSummary } from "@/lib/catalog";
 import { TIERS } from "@/lib/taxonomy";
 import type { TierSlug } from "@/lib/types";
 import { ScrollStations } from "./explainer-progress";
-import "./home.css";
 
 /** The three faces shown per tier: live shops with the most promos first, then A–Z (stable). */
 function faces(brands: BrandSummary[]) {

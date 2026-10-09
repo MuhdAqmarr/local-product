@@ -1,7 +1,6 @@
 import { BadgePercent, RefreshCw, Sparkles } from "@/components/ui/lucide";
 import { InfoPill } from "@/components/ui/info-pill";
 import { cn } from "@/lib/utils";
-import "./about.css";
 
 const QUOTE =
   "boleh tak ada sorang buat website yang compile all local brand products daripada skincare, fashion, food to all other things yang Malaysian buat? and MUST BE UP TO DATE dari segi promotion and new products they launched";

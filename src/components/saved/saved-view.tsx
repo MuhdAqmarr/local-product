@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { BadgePercent, CircleAlert, Heart, PackageX, Store, TrendingDown, TrendingUp, Trash2 } from "@/components/ui/lucide";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type MouseEvent } from "react";
+import { BadgePercent, CircleAlert, Heart, Info, Store, TrendingDown, TrendingUp, Trash2 } from "@/components/ui/lucide";
 import { Monogram } from "@/components/brand/monogram";
 import { SaveBrandButton } from "@/components/brand/save-brand-button";
 import { TierCop } from "@/components/brand/tier-cop";
@@ -22,7 +22,7 @@ import { Modal } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
 import { panelId, tabId, Tabs } from "@/components/ui/tabs";
 import type { SearchItem } from "@/lib/catalog";
-import { formatCount, timeAgo } from "@/lib/format";
+import { formatCount, outboundUrl, timeAgo } from "@/lib/format";
 import { useSaved, type SavedBrand, type SavedItem, type SavedProduct } from "@/lib/saved";
 import { CATEGORY_BY_SLUG } from "@/lib/taxonomy";
 import type { ProductCardData } from "@/lib/types";
@@ -44,7 +44,8 @@ type Fresh =
   | { kind: "drop"; amount: number }
   | { kind: "up"; amount: number }
   | { kind: "ended" }
-  | { kind: "gone" }
+  /** Not in the live index: the index never holds every product of a store, so this says nothing about stock. */
+  | { kind: "unknown" }
   | { kind: "same" };
 
 interface ProductEntry {
@@ -80,8 +81,10 @@ function useFreshIndex(enabled: boolean) {
 }
 
 function compare(saved: ProductCardData, now: SearchItem | undefined): { product: ProductCardData; fresh: Fresh } {
-  // Not in the live index (sold out or removed): show the last known price, no stale promo sticker.
-  if (!now || now.price == null) return { product: { ...saved, discount: undefined, compareAt: undefined, available: false }, fresh: { kind: "gone" } };
+  // Not in the index (or the index failed to load). The index does not hold every product of a
+  // store, so this is "can't check", never "sold out": keep `available` as saved, drop only the
+  // promo sticker and struck price we can no longer confirm.
+  if (!now || now.price == null) return { product: { ...saved, discount: undefined, compareAt: undefined }, fresh: { kind: "unknown" } };
   const product: ProductCardData = {
     ...saved,
     price: now.price,
@@ -112,9 +115,26 @@ function restore(snapshot: SavedItem[], toggle: ReturnType<typeof useSaved>["tog
   }
 }
 
+/** Undo of a single removal: put the item back at its old place with its old save time. */
+function reinsert(item: SavedItem, current: SavedItem[], toggle: ReturnType<typeof useSaved>["toggle"]) {
+  if (current.some((i) => i.id === item.id)) return;
+  const at = current.findIndex((i) => i.savedAt < item.savedAt);
+  const next = at < 0 ? [...current, item] : [...current.slice(0, at), item, ...current.slice(at)];
+  restore(next, toggle);
+}
+
+/** The heart inside a saved card or brand row (HeartToggle renders `.heart-btn`). */
+function heartIn(el: Element | null | undefined): HTMLElement | null {
+  return el?.querySelector<HTMLElement>(".heart-btn") ?? null;
+}
+
 export function SavedView({ syncedAt }: { syncedAt: string }) {
   const mounted = useMounted();
-  const { items, count, clear, toggle } = useSaved();
+  const { items, count, clear, toggle, remove } = useSaved();
+  const itemsRef = useRef(items);
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
   const now = useNow();
   const [tab, setTab] = useState<Tab>("produk");
   const [sort, setSort] = useState<Sort>("baru");
@@ -133,8 +153,9 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
 
   const entries: ProductEntry[] = useMemo(() => {
     const list = savedProducts.map((saved) => {
-      if (!map) return { saved, product: saved.product, fresh: null };
-      const { product, fresh } = compare(saved.product, map.get(saved.id));
+      // Index failed: every item is "can't check" (never "sold out").
+      if (!map && !error) return { saved, product: saved.product, fresh: null };
+      const { product, fresh } = compare(saved.product, map?.get(saved.id));
       return { saved, product, fresh };
     });
     const dropOf = (e: ProductEntry) => (e.fresh?.kind === "drop" ? e.fresh.amount : 0);
@@ -142,7 +163,7 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
     else if (sort === "diskaun") list.sort((a, b) => (b.product.discount ?? 0) - (a.product.discount ?? 0) || b.saved.savedAt - a.saved.savedAt);
     else list.sort((a, b) => b.saved.savedAt - a.saved.savedAt);
     return list;
-  }, [savedProducts, map, sort]);
+  }, [savedProducts, map, error, sort]);
 
   const drops = entries.filter((e) => e.fresh?.kind === "drop").length;
 
@@ -151,6 +172,36 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
     if (map) for (const item of map.values()) if (item.kind === "product" && item.discount) m.set(item.brand, (m.get(item.brand) ?? 0) + 1);
     return m;
   }, [map]);
+
+  /**
+   * Removing from /saved unmounts the card under the focused heart. Intercept the heart's click
+   * (capture phase, before HeartToggle's own handler), move focus to the next card's heart (or the
+   * previous one, or the tab when the list empties) and say how to undo. Keyboard removals
+   * (`detail === 0`) keep the toast up longer; it also pauses while focused or hovered.
+   */
+  const removeFrom = (event: MouseEvent<HTMLElement>, item: SavedItem, title: string, emptyFocus: string) => {
+    const heart = (event.target as Element).closest(".heart-btn");
+    if (!heart || !event.currentTarget.contains(heart)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const li = event.currentTarget;
+    const nextFocus = heartIn(li.nextElementSibling) ?? heartIn(li.previousElementSibling) ?? document.getElementById(emptyFocus);
+    remove(item.id);
+    requestAnimationFrame(() => nextFocus?.focus({ preventScroll: false }));
+    toast({
+      message: `Dah buang ${title}. Tekan Undo dalam notifikasi untuk batal.`,
+      tone: "save",
+      duration: event.detail === 0 ? 12_000 : undefined,
+      action: {
+        label: "Undo",
+        onClick: () => {
+          reinsert(item, itemsRef.current, toggle);
+          // Back on the restored card's heart once it has re-rendered.
+          requestAnimationFrame(() => requestAnimationFrame(() => heartIn(document.querySelector(`[data-saved-id="${CSS.escape(item.id)}"]`))?.focus()));
+        },
+      },
+    });
+  };
 
   const clearAll = () => {
     const snapshot = items;
@@ -252,11 +303,17 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
                       className="h-11 w-auto min-w-[200px] text-body-sm"
                     />
                   </div>
+                  <h2 className="sr-only">Produk disimpan</h2>
                   <ul role="list" className={gridColumns()}>
                     {entries.map((e) => (
-                      <li key={e.saved.id} className="flex min-w-0 flex-col gap-1.5">
+                      <li
+                        key={e.saved.id}
+                        data-saved-id={e.saved.id}
+                        className="flex min-w-0 flex-col gap-1.5"
+                        onClickCapture={(ev) => removeFrom(ev, e.saved, e.saved.product.title || "produk ni", tabId(TABS_BASE, "produk"))}
+                      >
                         <ProductCard product={e.product} syncedAt={syncedAt} className="h-auto flex-1" />
-                        <SavedMeta fresh={e.fresh} savedAt={e.saved.savedAt} now={now} currency={e.product.currency} />
+                        <SavedMeta fresh={e.fresh} saved={e.saved.product} savedAt={e.saved.savedAt} now={now} currency={e.product.currency} />
                       </li>
                     ))}
                   </ul>
@@ -273,15 +330,23 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
                   primary={{ label: "Jelajah jenama", href: "/brands", trailing: "arrow" }}
                 />
               ) : (
+                <>
+                <h2 className="sr-only">Jenama disimpan</h2>
                 <ul role="list" className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {[...savedBrands]
                     .sort((a, b) => b.savedAt - a.savedAt)
                     .map((b) => (
-                      <li key={b.id} className="min-w-0">
+                      <li
+                        key={b.id}
+                        data-saved-id={b.id}
+                        className="min-w-0"
+                        onClickCapture={(ev) => removeFrom(ev, b, `jenama ${b.brand.name}`, tabId(TABS_BASE, "jenama"))}
+                      >
                         <SavedBrandRow item={b} promos={map ? (promoByBrand.get(b.brand.slug) ?? 0) : null} now={now} />
                       </li>
                     ))}
                 </ul>
+                </>
               )}
             </div>
 
@@ -312,7 +377,20 @@ export function SavedView({ syncedAt }: { syncedAt: string }) {
   );
 }
 
-function SavedMeta({ fresh, savedAt, now, currency }: { fresh: Fresh | null; savedAt: number; now: number | null; currency: string }) {
+function SavedMeta({
+  fresh,
+  saved,
+  savedAt,
+  now,
+  currency,
+}: {
+  fresh: Fresh | null;
+  /** The card as it was saved (last known price + store link). */
+  saved: ProductCardData;
+  savedAt: number;
+  now: number | null;
+  currency: string;
+}) {
   return (
     <div className="flex min-h-[44px] flex-col items-start gap-1 px-1">
       {fresh?.kind === "drop" && (
@@ -331,9 +409,19 @@ function SavedMeta({ fresh, savedAt, now, currency }: { fresh: Fresh | null; sav
           <BadgePercent aria-hidden="true" size={13} strokeWidth={2.5} /> Promo dah tamat
         </span>
       )}
-      {fresh?.kind === "gone" && (
-        <span className="inline-flex items-center gap-1 text-caption text-ink-soft">
-          <PackageX aria-hidden="true" size={13} strokeWidth={2.5} /> Dah tak dijual (atau habis stok)
+      {fresh?.kind === "unknown" && (
+        <span className="text-caption text-ink-soft">
+          <Info aria-hidden="true" size={13} strokeWidth={2.5} className="mr-1 inline align-[-2px]" />
+          Tak dapat semak harga terkini. Harga masa simpan: <span className="font-num">{displayPrice(saved.price, saved.currency)}</span>.{" "}
+          <a
+            href={outboundUrl(saved.url)}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Tengok ${saved.title || "produk ni"} kat kedai rasmi (tab baru)`}
+            className="font-semibold text-ink underline decoration-2 underline-offset-2 hover:decoration-jambu"
+          >
+            Tengok kat kedai rasmi ↗
+          </a>
         </span>
       )}
       <span className="text-caption text-ink-soft">

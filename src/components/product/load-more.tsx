@@ -1,8 +1,9 @@
 "use client";
 
-import { startTransition, useCallback, useEffect, useState, type CSSProperties, type ReactNode } from "react";
-import { ChevronDown } from "@/components/ui/lucide";
+import { startTransition, useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { ChevronDown, RefreshCw } from "@/components/ui/lucide";
 import { Button } from "@/components/ui/button";
+import { decodeCards, type CardFeed } from "@/components/listing/feed-codec";
 import { formatCount } from "@/lib/format";
 import type { ProductCardData } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -48,13 +49,13 @@ export function usePageParam(): [number, (page: number) => void] {
 
 const feeds = new Map<string, Promise<ProductCardData[]>>();
 
-/** Fetches a prerendered JSON feed (`/api/feed/promos`, `/api/feed/new`) once and shares it. */
+/** Fetches a prerendered JSON feed (`/api/feed/promos`, `/api/feed/new`) once, decodes the slim wire format and shares it. */
 export function loadFeed(endpoint: string): Promise<ProductCardData[]> {
   let promise = feeds.get(endpoint);
   if (!promise) {
-    promise = fetch(endpoint).then((res) => {
+    promise = fetch(endpoint).then(async (res) => {
       if (!res.ok) throw new Error(`${endpoint} ${res.status}`);
-      return res.json() as Promise<ProductCardData[]>;
+      return decodeCards((await res.json()) as CardFeed);
     });
     promise.catch(() => feeds.delete(endpoint));
     feeds.set(endpoint, promise);
@@ -73,17 +74,52 @@ export interface LoadMoreProps {
   pending?: boolean;
   /** "promo", "produk", "jenama"… */
   noun?: string;
+  /** The last load failed: show the inline error, and the button becomes the retry. */
   error?: boolean;
+  /**
+   * Prefetch hook: called once when the button comes within ~1 screen (800 px), and only after
+   * the user has scrolled, so nothing is fetched on page load. Skipped on Save-Data.
+   */
+  onNear?: () => void;
   className?: string;
 }
 
+function useNear(onNear: (() => void) | undefined) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!onNear || !el || typeof IntersectionObserver === "undefined") return;
+    if ((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData) return;
+    let io: IntersectionObserver | null = null;
+    const arm = () => {
+      io = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((e) => e.isIntersecting)) return;
+          io?.disconnect();
+          onNear();
+        },
+        { rootMargin: "800px 0px" },
+      );
+      io.observe(el);
+    };
+    window.addEventListener("scroll", arm, { passive: true, once: true });
+    return () => {
+      window.removeEventListener("scroll", arm);
+      io?.disconnect();
+    };
+  }, [onNear]);
+  return ref;
+}
+
 /** "Muat lagi" (DESIGN §0.3 #19): 24 per chunk, no infinite scroll, footer stays reachable. */
-export function LoadMore({ shown, total, onMore, pending, noun = "produk", error, className }: LoadMoreProps) {
+export function LoadMore({ shown, total, onMore, pending, noun = "produk", error, onNear, className }: LoadMoreProps) {
+  const ref = useNear(shown < total ? onNear : undefined);
   if (shown >= total) return null;
   const progress = Math.min(1, shown / Math.max(1, total));
   return (
-    <div className={cn("flex flex-col items-center gap-3 pt-6", className)}>
-      <p className="text-caption text-ink-soft" aria-live="polite">
+    <div ref={ref} className={cn("flex flex-col items-center gap-3 pt-6", className)}>
+      {/* No aria-live: the listing's result count already announces changes. */}
+      <p className="text-caption text-ink-soft">
         Kau dah tengok <span className="font-num text-ink">{formatCount(shown)}</span> daripada{" "}
         <span className="font-num text-ink">{formatCount(total)}</span> {noun}
       </p>
@@ -93,14 +129,19 @@ export function LoadMore({ shown, total, onMore, pending, noun = "produk", error
           style={{ transform: `scaleX(${progress})` }}
         />
       </div>
-      <Button variant="secondary" onClick={onMore} loading={pending} icon={pending ? undefined : <ChevronDown aria-hidden size={20} />}>
-        Muat lagi
-      </Button>
       {error && (
-        <p role="alert" className="text-caption text-sambal-pekat">
+        <p role="alert" className="text-caption font-semibold text-sambal-pekat">
           Alamak, tak jadi. Cuba lagi?
         </p>
       )}
+      <Button
+        variant="secondary"
+        onClick={onMore}
+        loading={pending}
+        icon={pending ? undefined : error ? <RefreshCw aria-hidden size={18} /> : <ChevronDown aria-hidden size={20} />}
+      >
+        {error ? "Cuba lagi" : "Muat lagi"}
+      </Button>
     </div>
   );
 }

@@ -2,7 +2,6 @@
 
 import { useState, type CSSProperties } from "react";
 import { BrandCard, type BrandCardData } from "@/components/brand/brand-card";
-import { BrandRow } from "@/components/brand/brand-row";
 import { LoadMore } from "@/components/product/load-more";
 import { Button } from "@/components/ui/button";
 import { TIER_BY_SLUG } from "@/lib/taxonomy";
@@ -11,7 +10,8 @@ import { useScope } from "./tier-scope";
 const STEP = 12;
 
 /**
- * "Jenama {nameMs}" grid (DESIGN §8.6): rows below 480 px, kedai cards 2 / 3 / 4 columns above,
+ * "Jenama {nameMs}" grid (DESIGN §8.6): one responsive BrandCard per brand (a row below 480 px,
+ * kedai cards 2 / 3 / 4 columns above),
  * 12 at a time with "Muat lagi". Follows the page's tier scope (client state, no network).
  */
 export function CategoryBrands({ brands, nameMs }: { brands: BrandCardData[]; nameMs: string }) {
@@ -52,11 +52,7 @@ export function CategoryBrands({ brands, nameMs }: { brands: BrandCardData[]; na
               className={later ? "min-w-0 animate-rise-in" : "min-w-0"}
               style={later ? ({ animationDelay: `${Math.min(i % STEP, 5) * 50}ms` } as CSSProperties) : undefined}
             >
-              <BrandRow brand={b} prefetch={false} className="xs:hidden" />
-              {/* brand.css sets display on .kedai-card (unlayered), so hide through a wrapper */}
-              <div className="hidden h-full xs:block">
-                <BrandCard brand={b} prefetch={false} />
-              </div>
+              <BrandCard brand={b} layout="auto" />
             </li>
           );
         })}

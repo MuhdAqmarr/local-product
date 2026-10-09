@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { fontVariables } from "./fonts";
 import "./globals.css";
 import { MotionPrefScript } from "@/components/providers/motion-pref-script";
+import { InitialRevealScript } from "@/components/providers/initial-reveal-script";
 import { Providers } from "@/components/providers/providers";
 import { RevealObserver } from "@/components/motion/reveal-observer";
 import { SearchProvider } from "@/components/search/search-provider";
@@ -45,6 +46,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="ms-MY" className={fontVariables} suppressHydrationWarning>
       <head>
         <MotionPrefScript />
+        <InitialRevealScript />
       </head>
       <body className="font-sans text-ink antialiased">
         <SkipLink />

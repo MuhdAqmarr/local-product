@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import type { CSSProperties } from "react";
 import { BadgePercent, Info } from "@/components/ui/lucide";
 import { Sparkle } from "@/components/art/sparkle";
@@ -12,11 +13,12 @@ import { Accent } from "@/components/ui/section-header";
 import { getPromos, getStats } from "@/lib/catalog";
 import { formatCount } from "@/lib/format";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Promo panas",
   description: "Produk jenama lokal yang tengah promo, terus dari kedai rasmi. Harga disemak lebih kurang setiap 3 jam.",
-  openGraph: { title: "Promo panas · LokalLah!", description: "Produk jenama lokal yang tengah promo, terus dari kedai rasmi." },
-};
+  socialDescription: "Produk jenama lokal yang tengah promo, terus dari kedai rasmi.",
+  path: "/promos",
+});
 
 export default async function PromosPage() {
   const [stats, promos] = await Promise.all([getStats(), getPromos()]);

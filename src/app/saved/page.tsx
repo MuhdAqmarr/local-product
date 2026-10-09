@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { PageTransition } from "@/components/motion/page-transition";
 import { SavedView } from "@/components/saved/saved-view";
 import { getStats } from "@/lib/catalog";
 
 export const metadata: Metadata = {
-  title: "Simpanan kau",
-  description: "Produk dan jenama yang kau simpan, dengan semakan harga terkini.",
+  ...pageMetadata({ title: "Simpanan kau", description: "Produk dan jenama yang kau simpan, dengan semakan harga terkini.", path: "/saved" }),
   robots: { index: false },
 };
 

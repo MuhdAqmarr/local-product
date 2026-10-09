@@ -6,7 +6,7 @@
   min-width: 0;
   padding: 4px;
   content-visibility: auto;
-  contain-intrinsic-size: auto 96px;
+  contain-intrinsic-size: auto 104px;
 }
 @media (min-width: 480px) {
   .dir-item { padding: 6px; contain-intrinsic-size: auto 392px; }

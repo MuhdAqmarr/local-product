@@ -4,7 +4,6 @@ import { ArrowRight } from "@/components/ui/lucide";
 import { RailStagger } from "@/components/motion/rail-stagger";
 import { formatCount } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import "./rail.css";
 import { RailControls } from "./rail-controls";
 import { RailEndCard } from "./rail-end-card";
 

@@ -4,7 +4,6 @@ import { Chip } from "@/components/ui/chip";
 import { SectionHeader } from "@/components/ui/section-header";
 import type { BrandSummary } from "@/lib/catalog";
 import { STATES } from "@/lib/taxonomy";
-import "./home.css";
 
 /**
  * "Jelajah ikut negeri" (DESIGN §8.1 #9): all 16 states with their brand counts. Phones get a

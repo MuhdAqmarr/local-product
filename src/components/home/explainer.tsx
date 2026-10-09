@@ -6,7 +6,6 @@ import { displayPrice } from "@/components/product/price-text";
 import type { ProductCardData } from "@/lib/types";
 import { ScrollStations } from "./explainer-progress";
 import { OriginQuote } from "./origin-quote";
-import "./home.css";
 
 function Step({ n, icon, title, children }: { n: number; icon: ReactNode; title: string; children: ReactNode }) {
   return (

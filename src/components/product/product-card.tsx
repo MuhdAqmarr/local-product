@@ -30,6 +30,8 @@ export interface ProductCardProps {
   context?: "grid" | "rail";
   /** Which story the card tells first. Default: promo when discounted, else baru. */
   emphasis?: "promo" | "baru";
+  /** Brand pages: show the brand name as plain text (a link back to the current page is a wasted tab stop). */
+  hideBrandLink?: boolean;
   className?: string;
 }
 
@@ -39,7 +41,7 @@ export interface ProductCardProps {
  * link (stretched link on the title) to the brand's official store; the brand name and the heart
  * are separate controls above it.
  */
-export function ProductCard({ product: p, syncedAt, checkedAt, priority, eager, context = "grid", emphasis, className }: ProductCardProps) {
+export function ProductCard({ product: p, syncedAt, checkedAt, priority, eager, context = "grid", emphasis, hideBrandLink, className }: ProductCardProps) {
   const level = dealLevel(p.discount);
   const baru = baruKind(p.publishedAt, syncedAt);
   const showPromo = level != null && (emphasis !== "baru" || !baru);
@@ -98,19 +100,26 @@ export function ProductCard({ product: p, syncedAt, checkedAt, priority, eager, 
       <div className="flex flex-1 flex-col gap-1 px-1 pt-2 pb-1">
         <div className="flex min-w-0 items-center gap-1.5">
           <Monogram slug={p.brand} name={p.brandName} category={p.brandCategory} size={20} />
-          <Link
-            href={`/brands/${p.brand}`}
-            prefetch={false}
-            className="relative z-10 -my-1 min-w-0 truncate py-1 text-label-sm text-ink-soft decoration-2 underline-offset-2 hover:text-ink hover:underline"
-          >
-            {p.brandName}
-          </Link>
+          {hideBrandLink ? (
+            <span className="min-w-0 truncate text-label-sm text-ink-soft">{p.brandName}</span>
+          ) : (
+            <Link
+              href={`/brands/${p.brand}`}
+              prefetch={false}
+              // Padding cancelled by negative margin makes a 44 px tall tap target with no layout change
+              // (QA F17); it grows mostly upward so the title link below keeps ≥24 px (axe target-size).
+              // Not a ::before: `truncate` clips overflow. It stays well below the save heart.
+              className="relative z-10 -mt-[22px] -mb-2 min-w-0 truncate pt-[22px] pb-2 text-label-sm text-ink-soft decoration-2 underline-offset-2 hover:text-ink hover:underline"
+            >
+              {p.brandName}
+            </Link>
+          )}
           <TierIcon tier={p.brandTier} size={14} className="shrink-0" />
           <span className="sr-only">Tier: {tier.name}</span>
         </div>
 
         <h3 className="line-clamp-2 min-h-[2.7em] text-body-sm [overflow-wrap:anywhere] text-ink-2 supports-[height:1lh]:min-h-[2lh]">
-          <a href={outboundUrl(p.url)} target="_blank" rel="noopener noreferrer" className="stretched-link" aria-label={labelParts.join(", ")}>
+          <a href={outboundUrl(p.url)} target="_blank" rel="noopener noreferrer" className="stretched-link block min-h-[inherit]" aria-label={labelParts.join(", ")}>
             {p.title}
           </a>
         </h3>

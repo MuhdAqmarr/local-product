@@ -13,16 +13,16 @@ import { Band } from "@/components/ui/band";
 import { Accent, SectionHeader } from "@/components/ui/section-header";
 import { brandsInTier } from "@/lib/brands";
 import { getStats } from "@/lib/catalog";
-import { REPO_URL } from "@/lib/site";
+import { pageMetadata, REPO_URL } from "@/lib/site";
 import { TIERS } from "@/lib/taxonomy";
 import type { TierSlug } from "@/lib/types";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Tentang",
   description: "Kenapa LokalLah! wujud, cara kami sync data dari kedai rasmi, apa maksud tier jenama, dan cara cadang jenama lokal.",
-  alternates: { canonical: "/about" },
-  openGraph: { title: "Tentang · LokalLah!", description: "Kenapa LokalLah! wujud dan cara kami sync data dari kedai rasmi.", url: "/about" },
-};
+  socialDescription: "Kenapa LokalLah! wujud dan cara kami sync data dari kedai rasmi.",
+  path: "/about",
+});
 
 const WE_ARE = [
   "Direktori bebas jenama Malaysia, dari Cili Padi sampai Jenama Ikon.",
@@ -155,13 +155,13 @@ export default async function AboutPage() {
         <Band tone="bandung-fizz" as="div" className="md:px-12 md:py-12">
           <div className="grid gap-6 lg:grid-cols-[1fr_1.5fr] lg:gap-12">
             <div>
-              <p className="text-overline uppercase text-ink-2">Cadang jenama</p>
+              <p className="text-overline uppercase text-ink">Cadang jenama</p>
               <h2 id="cadang-title" className="mt-1 text-title-1 text-ink">
                 Kenal jenama lokal yang best?
               </h2>
-              <p className="mt-2 max-w-[40ch] text-lead text-ink-2">Cadang la. Oyen catat, kami semak.</p>
+              <p className="mt-2 max-w-[40ch] text-lead text-ink">Cadang la. Oyen catat, kami semak.</p>
               {!webhook && (
-                <p className="mt-4 flex max-w-[44ch] items-start gap-2 text-body-sm text-ink-2">
+                <p className="mt-4 flex max-w-[44ch] items-start gap-2 text-body-sm text-ink">
                   <CircleDot aria-hidden="true" size={18} className="mt-0.5 shrink-0" />
                   Cadangan dihantar sebagai isu GitHub yang dah siap diisi; kau cuma tekan hantar kat sana.
                 </p>

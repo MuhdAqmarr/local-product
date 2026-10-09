@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import { WauBulan } from "@/components/art/wau-bulan";
 import { CategoryShelf } from "@/components/category/category-shelf";
 import { Explainer } from "@/components/home/explainer";
@@ -16,26 +17,36 @@ import { BrandGridSkeleton, GridSkeleton, RailSkeleton, TileGridSkeleton } from 
 import { Band } from "@/components/ui/band";
 import { Accent, SectionHeader } from "@/components/ui/section-header";
 import { getBrandProducts, getBrandSummaries, getCategorySummaries, getNewLaunches, getPromos, getStats } from "@/lib/catalog";
-import "@/components/home/home.css";
 
 const TITLE = "LokalLah! — Semua jenama lokal, sentiasa up to date";
 const DESCRIPTION =
   "Direktori jenama Malaysia dari Cili Padi ke Jenama Ikon, dengan promo live dan launch baru terus dari kedai rasmi mereka. Auto-update setiap beberapa jam.";
 
-export const metadata: Metadata = {
-  title: { absolute: TITLE },
-  description: DESCRIPTION,
-  alternates: { canonical: "/" },
-  openGraph: { type: "website", siteName: "LokalLah!", locale: "ms_MY", title: TITLE, description: DESCRIPTION, url: "/" },
-  twitter: { title: TITLE, description: DESCRIPTION },
-};
+export const metadata: Metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "/", absolute: true });
 
 const DAY = 86_400_000;
+
+/** Up to `n` items in rank order, preferring a different brand category per card; tops up by rank if too few. */
+function distinctCategories<T extends { id: string; brandCategory: string }>(items: T[], n: number): T[] {
+  const picked: T[] = [];
+  const seen = new Set<string>();
+  for (const it of items) {
+    if (picked.length === n) break;
+    if (seen.has(it.brandCategory)) continue;
+    seen.add(it.brandCategory);
+    picked.push(it);
+  }
+  for (const it of items) {
+    if (picked.length === n) break;
+    if (!picked.includes(it)) picked.push(it);
+  }
+  return picked;
+}
 
 /* ---- Sections (each live section streams in its own Suspense with a shape-exact skeleton) ---- */
 
 async function Ticker() {
-  const [stats, promos, launches] = await Promise.all([getStats(), getPromos({ limit: 6 }), getNewLaunches({ limit: 6, perBrand: 1 })]);
+  const [stats, promos, launches] = await Promise.all([getStats(), getPromos({ limit: 6, showcase: true }), getNewLaunches({ limit: 6, perBrand: 1, showcase: true })]);
   return <LiveTicker promos={promos} launches={launches} syncedAt={stats.syncedAt} />;
 }
 
@@ -61,7 +72,7 @@ async function Categories() {
 }
 
 async function PromoRail() {
-  const [stats, promos] = await Promise.all([getStats(), getPromos({ limit: 12, perBrand: 2 })]);
+  const [stats, promos] = await Promise.all([getStats(), getPromos({ limit: 12, perBrand: 2, showcase: true })]);
   if (!promos.length) return null;
   return (
     <Band tone="mangga-lassi" as="div" className="home-band px-0 pt-0 pb-5 md:px-0 md:pt-0 md:pb-7">
@@ -90,7 +101,7 @@ async function PromoRail() {
 }
 
 async function BaruRail() {
-  const [stats, launches] = await Promise.all([getStats(), getNewLaunches({ limit: 12, perBrand: 2 })]);
+  const [stats, launches] = await Promise.all([getStats(), getNewLaunches({ limit: 12, perBrand: 2, showcase: true })]);
   if (!launches.length) return null;
   const sync = Date.parse(stats.syncedAt);
   // Honest overline: "Minggu ni" only when every card really launched within 7 days of the last sync.
@@ -166,8 +177,10 @@ function Section({ children, fallback, className = "mt-(--section-y)" }: { child
 
 /** Home (DESIGN §8.1). Server pages never read searchParams; the hero is the LCP (text + inline SVG). */
 export default async function Home() {
-  const [stats, topPromos] = await Promise.all([getStats(), getPromos({ limit: 3, perBrand: 1, order: "ranked" })]);
-  const deals = topPromos.length ? topPromos : await getNewLaunches({ limit: 3, perBrand: 1 });
+  // Showcase filter (QA F11): no refurbished clearance or outlier prices up front. The "sampai −N%"
+  // burst still reads stats.maxDiscount, the true maximum. 12 candidates so the 3 cards can vary.
+  const [stats, topPromos] = await Promise.all([getStats(), getPromos({ limit: 12, perBrand: 1, order: "ranked", showcase: true })]);
+  const deals = distinctCategories(topPromos.length ? topPromos : await getNewLaunches({ limit: 12, perBrand: 1, showcase: true }), 3);
 
   return (
     <PageTransition>

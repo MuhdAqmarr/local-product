@@ -5,7 +5,10 @@ import { cn } from "@/lib/utils";
 
 /**
  * Brand description (DESIGN §8.5 #2): max 60ch, clamped to 3 lines with "Baca lagi" only when the
- * text really overflows (measured after mount; the server renders the clamp without a button).
+ * text really overflows. The button is always in the HTML and CSS decides before first paint
+ * whether it shows (brand-profile.css: a scroll timeline on the clamped text is only active while it
+ * hides overflow), so it never pushes the page down at hydration (CLS). Browsers without scroll-driven
+ * animations fall back to the JS measurement (`data-show`).
  */
 export function BrandDescription({ text, className }: { text: string; className?: string }) {
   const ref = useRef<HTMLParagraphElement>(null);
@@ -27,21 +30,20 @@ export function BrandDescription({ text, className }: { text: string; className?
   }, []);
 
   return (
-    <div className={className}>
-      <p ref={ref} id={id} className={cn("max-w-[60ch] text-body text-ink-2", !open && "line-clamp-3")}>
+    <div className={cn("brand-desc", className)}>
+      <p ref={ref} id={id} className={cn("brand-desc-text max-w-[60ch] text-body text-ink-2", !open && "line-clamp-3")}>
         {text}
       </p>
-      {(overflows || open) && (
-        <button
-          type="button"
-          aria-expanded={open}
-          aria-controls={id}
-          onClick={() => setOpen((v) => !v)}
-          className="mt-1 inline-flex min-h-11 items-center text-label text-telang underline-offset-4 hover:underline"
-        >
-          {open ? "Tutup balik" : "Baca lagi"}
-        </button>
-      )}
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={id}
+        data-show={overflows || open ? "" : undefined}
+        onClick={() => setOpen((v) => !v)}
+        className="brand-desc-more text-label text-telang underline-offset-4 hover:underline"
+      >
+        {open ? "Tutup balik" : "Baca lagi"}
+      </button>
     </div>
   );
 }

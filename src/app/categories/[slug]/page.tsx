@@ -3,6 +3,7 @@ import { Suspense, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { WauBulan } from "@/components/art/wau-bulan";
 import type { BrandCardData } from "@/components/brand/brand-card";
+import { packPreview } from "@/components/brand/preview-url";
 import { CategoryHero } from "@/components/category/category-hero";
 import { ChipRow } from "@/components/category/chip-row";
 import { LivePill } from "@/components/feedback/live-pill";
@@ -16,6 +17,7 @@ import { Chip } from "@/components/ui/chip";
 import { Accent, SectionHeader } from "@/components/ui/section-header";
 import { getBrandSummaries, getCategorySummaries, getNewLaunches, getPromos, getStats } from "@/lib/catalog";
 import { formatCount } from "@/lib/format";
+import { ogBase, pageMetadata, twitterBase } from "@/lib/site";
 import { CATEGORIES, CATEGORY_BY_SLUG, isCategorySlug, TIER_BY_SLUG, TIERS } from "@/lib/taxonomy";
 import type { CategorySlug, ProductCardData, TierSlug } from "@/lib/types";
 import { CategoryBrands } from "./category-brands";
@@ -36,10 +38,9 @@ export async function generateMetadata({ params }: PageProps<"/categories/[slug]
   const c = CATEGORY_BY_SLUG[slug];
   const description = `${c.blurb} Promo live dan produk baru dari jenama ${c.nameMs.toLowerCase()} Malaysia, terus dari kedai rasmi.`;
   return {
-    title: `${c.name} (${c.nameMs})`,
-    description,
-    alternates: { canonical: `/categories/${slug}` },
-    openGraph: { title: `${c.name} · LokalLah!`, description, url: `/categories/${slug}` },
+    ...pageMetadata({ title: `${c.name} (${c.nameMs})`, description, path: `/categories/${slug}` }),
+    openGraph: { ...ogBase, title: `${c.name} · LokalLah!`, description, url: `/categories/${slug}` },
+    twitter: { ...twitterBase, title: `${c.name} · LokalLah!`, description },
   };
 }
 
@@ -131,12 +132,18 @@ async function CategoryContent({ params }: { params: PageProps<"/categories/[slu
       tier: b.tier,
       description: b.description,
       state: b.state,
+      hasFeed: b.hasFeed,
       live: b.live,
       promoCount: b.promoCount,
       newCount: b.newCount,
-      previews: b.previews,
+      previews: b.previews.slice(0, 3).map(packPreview),
     }));
   const brandCounts = Object.fromEntries(SCOPES.map((s) => [s, s === "all" ? brands.length : brands.filter((b) => b.tier === s).length])) as Record<Scope, number>;
+
+  const scopeCounts = Object.fromEntries(SCOPES.map((s) => [s, { promos: promoGrid.counts[s], brands: brandCounts[s] }])) as Record<
+    Scope,
+    { promos: number; brands: number }
+  >;
 
   const siblings = CATEGORIES.filter((x) => x.slug !== slug);
 
@@ -159,7 +166,7 @@ async function CategoryContent({ params }: { params: PageProps<"/categories/[slu
       </nav>
 
       <div className="mt-2">
-        <TierScope label="Saiz jenama">
+        <TierScope label="Saiz jenama" counts={scopeCounts}>
           {/* Promo panas */}
           <section id="promo" aria-labelledby="promo-title" className="container-page scroll-mt-40 pt-6">
             <SectionHeader

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { ShellLink } from "./shell-link";
 import { Heart } from "@/components/ui/lucide";
 import { useSaved } from "@/lib/saved";
 import { popStyle } from "@/components/ui/pop";
@@ -14,7 +14,7 @@ export function SavedLink() {
   const { count } = useSaved();
   const active = isActivePath(usePathname(), "/saved");
   return (
-    <Link
+    <ShellLink
       href="/saved"
       transitionTypes={["nav-tab"]}
       aria-label={count ? `Simpan, ${count} item` : "Simpan"}
@@ -27,6 +27,6 @@ export function SavedLink() {
         <Heart aria-hidden size={20} strokeWidth={2.25} className={active ? "fill-bandung" : undefined} />
       </span>
       <CountBubble count={count} className="absolute -right-1.5 -top-1.5 z-10" />
-    </Link>
+    </ShellLink>
   );
 }

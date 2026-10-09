@@ -8,7 +8,6 @@ import { Odometer } from "@/components/feedback/odometer";
 import { outboundUrl } from "@/lib/format";
 import type { Brand, FeedStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import "./brand-profile.css";
 import { BrandDescription } from "./brand-description";
 import { BrandLinks } from "./brand-links";
 import { Monogram } from "./monogram";
@@ -185,7 +184,7 @@ function NoFeedPanel({ brand, hasFeed }: { brand: Brand; hasFeed: boolean }) {
       <p className="mt-3 text-body-sm text-ink-2">
         {hasFeed
           ? "Kami dah semak kedai rasmi diorang, tapi bacaan terakhir tak jumpa produk yang tengah dijual. "
-          : "Kedai jenama ni belum boleh di-sync automatik, jadi kami tak tunjuk harga atau promo. Kami tengah usahakan. "}
+          : "Kedai jenama ni belum boleh disync automatik, jadi kami tak tunjuk harga atau promo. Kami tengah usahakan. "}
         Tengok terus kat{" "}
         <a href={outboundUrl(brand.website)} target="_blank" rel="noopener noreferrer" className="font-semibold text-telang underline underline-offset-2">
           kedai rasmi diorang

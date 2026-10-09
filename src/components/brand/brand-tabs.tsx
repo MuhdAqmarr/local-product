@@ -71,7 +71,10 @@ export function BrandTabs({ promoCount, baruCount, promo, baru, initial }: Brand
   };
 
   return (
-    <section ref={rootRef} aria-label="Produk kedai" onClickCapture={onClickCapture} >
+    <section ref={rootRef} aria-labelledby="kedai-produk-title" onClickCapture={onClickCapture}>
+      <h2 id="kedai-produk-title" className="sr-only">
+        Produk kedai
+      </h2>
       {/* Hash targets (#promo / #baru) so deep links and smooth-scroll anchors land on the tabs. */}
       <span id="promo" aria-hidden className="block scroll-mt-(--header-total)" />
       <span id="baru" aria-hidden className="block scroll-mt-(--header-total)" />

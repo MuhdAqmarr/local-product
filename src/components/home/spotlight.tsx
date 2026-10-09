@@ -42,7 +42,7 @@ export function Spotlight({ brand, products, syncedAt }: { brand: BrandSummary; 
         }
         sub="Kecil-kecil cili padi. Jom sokong yang baru bertatih."
       />
-      <div className="mt-6 grid gap-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-start lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-8">
+      <div className="mt-6 grid gap-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-start lg:grid-cols-4 lg:items-stretch lg:gap-8">
         <div data-reveal="" className="flex flex-col gap-4">
           <BrandCard brand={brand} morph prefetch />
           <Button href={`/brands/${brand.slug}`} variant="secondary" trailing="arrow" transitionTypes={["nav-forward"]} className="self-start">
@@ -50,9 +50,9 @@ export function Spotlight({ brand, products, syncedAt }: { brand: BrandSummary; 
           </Button>
         </div>
         {products.length > 0 && (
-          <ul className="grid grid-cols-2 gap-x-2.5 gap-y-3.5 sm:gap-4 lg:grid-cols-4" aria-label={`Produk terbaru ${brand.name}`}>
-            {products.slice(0, 4).map((p) => (
-              <li key={p.id} className="min-w-0">
+          <ul className="grid grid-cols-2 gap-x-2.5 gap-y-3.5 sm:gap-4 lg:col-span-3 lg:grid-cols-3" aria-label={`Produk terbaru ${brand.name}`}>
+            {products.slice(0, 4).map((p, i) => (
+              <li key={p.id} className={i === 3 ? "min-w-0 lg:hidden" : "min-w-0"}>
                 <ProductCard product={p} syncedAt={syncedAt} />
               </li>
             ))}

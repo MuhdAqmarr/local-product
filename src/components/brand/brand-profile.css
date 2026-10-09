@@ -30,3 +30,17 @@
 
 /* Identity card: monogram sits on the card edge like a shop sign. */
 .kedai-id-stamp { transform-origin: 100% 0; }
+
+/* Description "Baca lagi" (brand-description.tsx): shown only while the 3-line clamp hides text.
+   Decided in CSS before first paint, so the button never pushes the page down at hydration: the
+   clamped <p> is a scroll container, and its scroll timeline is only active while it has hidden
+   overflow. The collapsed state is a 0-height box, not display:none (animations don't run on
+   display:none). Without scroll-driven animations the JS measurement sets [data-show] instead. */
+.brand-desc { timeline-scope: --brand-desc; }
+.brand-desc-text { scroll-timeline: --brand-desc block; }
+.brand-desc-more { display: flex; width: max-content; align-items: center; height: 0; min-height: 0; margin-top: 0; overflow: hidden; visibility: hidden; }
+.brand-desc-more[data-show] { height: auto; min-height: 44px; margin-top: 4px; overflow: visible; visibility: visible; }
+@keyframes brand-desc-show { from, to { height: auto; min-height: 44px; margin-top: 4px; overflow: visible; visibility: visible; } }
+@supports (animation-timeline: scroll()) {
+  .brand-desc-more { animation: brand-desc-show linear both; animation-timeline: --brand-desc; }
+}

@@ -2,7 +2,6 @@
 
 import * as m from "motion/react-m";
 import { useScroll } from "motion/react";
-import "./about.css";
 
 /** /about reading progress (DESIGN §7.7 #7): scaleX = page scroll progress. Transform-only, no React state per frame. */
 export function ReadingProgress() {

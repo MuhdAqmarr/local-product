@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Store } from "@/components/ui/lucide";
 import { getCategorySummaries } from "@/lib/catalog";
 import { CATEGORY_BY_SLUG } from "@/lib/taxonomy";
@@ -13,6 +12,7 @@ import { Logo } from "./logo";
 import type { NavCategory } from "./nav-data";
 import { NavLink } from "./nav-link";
 import { SavedLink } from "./saved-link";
+import { ShellLink } from "./shell-link";
 
 /**
  * Site header (DESIGN §6.2). One sticky element (`#site-header`, VT name "site-header"):
@@ -47,12 +47,12 @@ export async function SiteHeader({ promoCount }: { promoCount: number }) {
           </nav>
 
           <div className="ml-auto flex items-center gap-2.5 lg:hidden">
-            <Link href="/brands" transitionTypes={["nav-tab"]} className="pop" style={popStyle({ offset: 2 })}>
+            <ShellLink href="/brands" transitionTypes={["nav-tab"]} className="pop" style={popStyle({ offset: 2 })}>
               <span className="pop-face h-10 gap-1.5 bg-putih px-3.5 text-label text-ink">
                 <Store aria-hidden size={18} strokeWidth={2.25} />
                 Jenama
               </span>
-            </Link>
+            </ShellLink>
             <CategorySheet categories={categories} />
           </div>
 

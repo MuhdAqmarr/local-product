@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import { BungaRayaShape } from "./bunga-raya";
-import "./art.css";
 import { a11y, C, stroke, type ArtProps } from "./shared";
 
 /**

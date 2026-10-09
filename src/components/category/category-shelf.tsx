@@ -1,6 +1,5 @@
 import type { CategorySlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import "./category.css";
 import { CategoryTile } from "./category-tile";
 
 /** The CategorySummary fields the shelf needs (import type only from `@/lib/catalog`). */

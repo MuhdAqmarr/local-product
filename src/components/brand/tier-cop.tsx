@@ -5,7 +5,6 @@ import { TierIcon } from "@/components/art/tier-icon";
 import { TIER_BY_SLUG } from "@/lib/taxonomy";
 import type { TierSlug } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import "./brand.css";
 
 /** Manglish tier lines (DESIGN §9.10). */
 export const TIER_COPY: Record<TierSlug, { line: string; ring: string }> = {
@@ -34,7 +33,7 @@ export function TierCop({ tier, size = "sm", explain = true, className }: TierCo
   const face = (
     <>
       <TierIcon tier={tier} size={size === "lg" ? 20 : 14} className="shrink-0" />
-      <span className="whitespace-nowrap">{t.name}</span>
+      <span className="truncate">{t.name}</span>
     </>
   );
   const copClass = cn("cop", size === "lg" && "cop-lg");

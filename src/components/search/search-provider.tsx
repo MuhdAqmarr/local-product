@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { decodeSearch, type SearchFeed } from "@/components/listing/feed-codec";
 import type { SearchItem } from "@/lib/catalog";
 
 /**
@@ -23,12 +24,12 @@ const SearchDialog = dynamic(importDialog, { ssr: false });
 
 let indexPromise: Promise<SearchItem[]> | null = null;
 
-/** Fetch `/api/feed/search` once per page life (prerendered + cached JSON). Retries after a failure. */
+/** Fetch `/api/feed/search` once per page life (prerendered + cached JSON, slim wire format decoded here). Retries after a failure. */
 export function loadSearchIndex(): Promise<SearchItem[]> {
   indexPromise ??= fetch("/api/feed/search")
-    .then((res) => {
+    .then(async (res) => {
       if (!res.ok) throw new Error(`search index ${res.status}`);
-      return res.json() as Promise<SearchItem[]>;
+      return decodeSearch((await res.json()) as SearchFeed);
     })
     .catch((error: unknown) => {
       indexPromise = null;
@@ -86,6 +87,8 @@ export function SearchProvider({ children }: { children: ReactNode }) {
       }
       const k = event.key.toLowerCase();
       if ((event.metaKey || event.ctrlKey) && k === "k") {
+        // Another dialog (Tapis sheet, modal) owns focus and the scroll lock: don't open search behind it.
+        if (document.querySelector("dialog[open]:not([data-search-dialog])")) return;
         event.preventDefault();
         open();
       } else if (event.key === "/" && !event.metaKey && !event.ctrlKey && !event.altKey && !isTypingTarget(event.target)) {

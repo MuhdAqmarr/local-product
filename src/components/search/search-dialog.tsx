@@ -62,8 +62,9 @@ function writeRecent(list: string[]) {
   }
 }
 
-/** Example queries offered when the box is empty; only the ones with real results are shown. */
-const EXAMPLES = ["sambal", "tudung", "kopi", "sunscreen", "kasut", "lilin", "batik", "kerepek"];
+/** Example queries offered when the box is empty (same terms as the hero pill); only ones with 3+ product hits are shown. */
+const EXAMPLES = ["baju kurung", "kopi", "sunscreen", "tudung", "serum", "telekung", "batik", "lilin"];
+const EXAMPLE_MIN_PRODUCTS = 3;
 
 const PRODUCTS_STEP = 8;
 
@@ -190,7 +191,11 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
     for (const { item } of index) if (item.kind === "product" && item.discount) counts.set(item.category, (counts.get(item.category) ?? 0) + 1);
     return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([slug]) => slug);
   }, [index]);
-  const examples = useMemo(() => (index ? EXAMPLES.filter((e) => search(index, e, 1).length > 0).slice(0, 6) : []), [index]);
+  // A brand-name hit alone (e.g. "sambal" → Sambal Nyet) is not a useful example: require product hits.
+  const examples = useMemo(
+    () => (index ? EXAMPLES.filter((e) => search(index, e, 20).filter((hit) => hit.kind === "product").length >= EXAMPLE_MIN_PRODUCTS).slice(0, 6) : []),
+    [index],
+  );
 
   /* ---- actions ---- */
   const remember = (text: string) => {
@@ -268,6 +273,7 @@ export default function SearchDialog({ open, onClose, initialQuery }: SearchDial
   return (
     <dialog
       ref={ref}
+      data-search-dialog=""
       aria-label="Cari jenama atau produk"
       onClose={() => {
         if (silent.current) silent.current = false;
