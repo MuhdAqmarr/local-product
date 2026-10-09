@@ -6,7 +6,8 @@
  *
  * Research files look like {"key": "...", "brands": [...], "dropped": [...]}.
  * Manual corrections live in src/data/brand-overrides.json (keyed by slug) so they survive re-runs:
- *   { "<slug>": { ...Brand fields to replace, "drop": true, "allowForeignStore": true } }
+ *   { "<slug>": { ...Brand fields to replace, "drop": true, "allowForeignStore": true, "noFeed": true } }
+ * noFeed keeps the brand but never reads its store (e.g. a store still serving template products).
  * A Shopify store registered outside Malaysia loses its live feed unless allowForeignStore is set
  * (some Malaysian brands run a global store from a Singapore entity).
  */
@@ -134,7 +135,7 @@ function cleanHandle(handle: string | undefined): string | undefined {
 const files = readdirSync(dir).filter((f) => f.endsWith(".json"));
 const researched: ResearchedBrand[] = files.flatMap((f) => (JSON.parse(readFileSync(resolve(dir, f), "utf8")) as { brands: ResearchedBrand[] }).brands);
 
-type Override = Partial<Brand> & { drop?: boolean; allowForeignStore?: boolean };
+type Override = Partial<Brand> & { drop?: boolean; allowForeignStore?: boolean; noFeed?: boolean };
 let overrides: Record<string, Override> = {};
 try {
   overrides = JSON.parse(readFileSync(resolve(root, "src/data/brand-overrides.json"), "utf8")) as Record<string, Override>;
@@ -174,7 +175,7 @@ const brands = await mapPool(unique, 6, async (r): Promise<Brand | null> => {
   const flag = !d.reachable ? "UNREACHABLE" : foreign ? `COUNTRY=${d.country}` : "";
   report.push(`${flag ? "⚠" : "✓"} ${slug.padEnd(32)} ${(d.feed?.type ?? "-").padEnd(12)} ${d.country ?? ""} ${d.currency ?? ""} ${flag} ${d.finalUrl ?? r.website}`);
   if (!d.reachable) return null;
-  const { drop: _drop, allowForeignStore: _allow, ...fields } = override;
+  const { drop: _drop, allowForeignStore: _allow, noFeed, ...fields } = override;
   return {
     slug,
     name: r.name.trim(),
@@ -190,7 +191,7 @@ const brands = await mapPool(unique, 6, async (r): Promise<Brand | null> => {
     ...(cleanHandle(r.tiktok) ? { tiktok: cleanHandle(r.tiktok) } : {}),
     ...(r.shopee ? { shopee: r.shopee } : {}),
     tags: (r.tags ?? []).map((t) => t.toLowerCase()).slice(0, 4),
-    ...(d.feed && !foreign ? { feed: d.feed } : {}),
+    ...(d.feed && !foreign && !noFeed ? { feed: d.feed } : {}),
     ...fields,
   };
 });

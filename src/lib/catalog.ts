@@ -80,6 +80,12 @@ function arrange<T extends Product>(items: T[], compare: (a: T, b: T) => number,
 }
 
 export interface ListOptions {
+  /**
+   * Home-page showcase only: skip refurbished/defect clearance listings, items without a
+   * photo and outlier prices so the first impression is representative. The full lists
+   * (/promos, /new, brand pages) never use this.
+   */
+  showcase?: boolean;
   category?: CategorySlug;
   brand?: string;
   limit?: number;
@@ -87,8 +93,16 @@ export interface ListOptions {
   order?: "mixed" | "ranked";
 }
 
-function scope(products: Product[], { category, brand }: ListOptions): ProductCardData[] {
+const NOT_SHOWCASE = /\b(refurb(ished)?|defect(ive)?|rosak|cacat|reject(ed)?|b-?grade|display (unit|set)|ex-?display|damaged|clearance stock)\b/i;
+const SHOWCASE_MAX_MYR = 2000;
+
+function isShowcase(p: Product): boolean {
+  return Boolean(p.image) && !NOT_SHOWCASE.test(p.title) && (p.currency !== "MYR" || p.price <= SHOWCASE_MAX_MYR);
+}
+
+function scope(products: Product[], { category, brand, showcase }: ListOptions): ProductCardData[] {
   return products
+    .filter((p) => !showcase || isShowcase(p))
     .map(toCard)
     .filter(isDefined)
     .filter((p) => (!category || p.brandCategory === category) && (!brand || p.brand === brand));
@@ -179,6 +193,9 @@ export interface BrandSummary {
   origin?: string;
   founded?: number;
   tags: string[];
+  /** We can read this brand's store (it may still list zero products right now). */
+  hasFeed: boolean;
+  /** Readable store with at least one product on the site. */
   live: boolean;
   promoCount: number;
   newCount: number;
@@ -212,6 +229,7 @@ export async function getBrandSummaries(): Promise<BrandSummary[]> {
       origin: b.origin,
       founded: b.founded,
       tags: b.tags,
+      hasFeed: Boolean(b.feed) && feeds[b.slug]?.status !== "error",
       live: Boolean(b.feed) && feeds[b.slug]?.status !== "error" && mine.length > 0,
       promoCount: promos.length,
       newCount: mine.filter((p) => p.available && isNew(p, syncedAt)).length,

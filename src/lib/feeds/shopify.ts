@@ -35,13 +35,31 @@ export interface ShopifyMeta {
   published_products_count?: number;
 }
 
+/**
+ * Shopify Markets localises products.json by the requester's IP: the same store answers
+ * in MYR from Malaysia, SGD from Singapore (our Vercel functions) and USD from the US
+ * (our build machines). Asking for the Malaysian market explicitly keeps prices in what
+ * Malaysian shoppers actually pay, wherever the request comes from.
+ */
+const MALAYSIA_MARKET = { cookie: "localization=MY; cart_currency=MYR" };
+
 export function fetchShopifyMeta(origin: string): Promise<ShopifyMeta> {
-  return fetchJson<ShopifyMeta>(`${origin}/meta.json`);
+  return fetchJson<ShopifyMeta>(`${origin}/meta.json`, { headers: MALAYSIA_MARKET });
+}
+
+/**
+ * The currency products.json prices are presented in for the Malaysian market. A store
+ * without a Malaysian market answers in its base currency (e.g. USD), so we must ask:
+ * meta.json only reports the base currency, which is wrong for stores that do have one.
+ */
+export async function fetchShopifyCurrency(origin: string): Promise<string | undefined> {
+  const cart = await fetchJson<{ currency?: string }>(`${origin}/cart.js`, { headers: MALAYSIA_MARKET });
+  return typeof cart.currency === "string" && /^[A-Z]{3}$/.test(cart.currency) ? cart.currency : undefined;
 }
 
 /** products.json is ordered newest-published first; one page of 250 covers launches and most promos. */
 export async function fetchShopifyProducts(origin: string, brand: string, currency: string): Promise<Product[]> {
-  const data = await fetchJson<{ products?: ShopifyProduct[] }>(`${origin}/products.json?limit=250`);
+  const data = await fetchJson<{ products?: ShopifyProduct[] }>(`${origin}/products.json?limit=250`, { headers: MALAYSIA_MARKET });
   if (!Array.isArray(data.products)) throw new Error(`No products array from ${origin}`);
   return data.products.flatMap((p) => normalize(p, origin, brand, currency) ?? []);
 }

@@ -1093,11 +1093,7 @@
     "website": "https://dreamland.com.my/",
     "tags": [
       "heritage"
-    ],
-    "feed": {
-      "type": "woocommerce",
-      "origin": "https://dreamland.com.my"
-    }
+    ]
   },
   {
     "slug": "earth-heir",

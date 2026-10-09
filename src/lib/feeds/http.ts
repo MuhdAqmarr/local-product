@@ -18,12 +18,15 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
  * GET a JSON document with a timeout. Retries once on 429/5xx (stores rate-limit
  * products.json per IP), honouring Retry-After when it is short.
  */
-export async function fetchJson<T>(url: string, { timeoutMs = 12_000, retries = 1 } = {}): Promise<T> {
+export async function fetchJson<T>(
+  url: string,
+  { timeoutMs = 12_000, retries = 1, headers = {} }: { timeoutMs?: number; retries?: number; headers?: Record<string, string> } = {},
+): Promise<T> {
   for (let attempt = 0; ; attempt++) {
     let res: Response;
     try {
       res = await fetch(url, {
-        headers: { "user-agent": USER_AGENT, accept: "application/json" },
+        headers: { "user-agent": USER_AGENT, accept: "application/json", ...headers },
         signal: AbortSignal.timeout(timeoutMs),
         cache: "no-store",
         redirect: "follow",

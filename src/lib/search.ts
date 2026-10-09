@@ -12,6 +12,7 @@ export function normalizeText(input: string): string {
 export interface PreparedItem {
   item: SearchItem;
   title: string;
+  /** Leading space so " word" finds matches at the start of any word. */
   haystack: string;
 }
 
@@ -19,13 +20,14 @@ export interface PreparedItem {
 export function prepareIndex(items: SearchItem[]): PreparedItem[] {
   return items.map((item) => {
     const title = normalizeText(item.title);
-    return { item, title, haystack: `${title} ${normalizeText(item.brandName)}` };
+    return { item, title, haystack: ` ${title} ${normalizeText(item.brandName)}` };
   });
 }
 
 /**
- * Brands rank above products. Every query word must appear somewhere;
- * prefix matches beat substring matches; promos get a small nudge.
+ * Brands rank above products. Every query word must match the start of a word
+ * ("lip" finds "lip tint", not "tulips"); whole-title prefix matches rank first;
+ * promos get a small nudge.
  */
 export function search(index: PreparedItem[], query: string, limit = 40): SearchItem[] {
   const q = normalizeText(query);
@@ -34,12 +36,12 @@ export function search(index: PreparedItem[], query: string, limit = 40): Search
   const scored: Array<{ item: SearchItem; score: number }> = [];
 
   for (const entry of index) {
-    if (!words.every((w) => entry.haystack.includes(w))) continue;
+    if (!words.every((w) => entry.haystack.includes(` ${w}`))) continue;
     let score: number;
     if (entry.item.kind === "brand") {
       score = entry.title === q ? 100 : entry.title.startsWith(q) ? 85 : 60;
     } else {
-      score = entry.title.startsWith(q) ? 40 : entry.title.includes(q) ? 32 : 24;
+      score = entry.title.startsWith(q) ? 40 : ` ${entry.title}`.includes(` ${q}`) ? 32 : 24;
       if (entry.item.discount) score += 2;
     }
     scored.push({ item: entry.item, score });

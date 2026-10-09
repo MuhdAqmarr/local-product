@@ -1,4 +1,4 @@
-import { MAX_PROMO_DISCOUNT, MIN_PROMO_DISCOUNT } from "../taxonomy";
+import { MAX_PROMO_DISCOUNT, MIN_PROMO_DISCOUNT, NEW_WINDOW_DAYS } from "../taxonomy";
 import type { Product } from "../types";
 
 /** Things stores sell that are not products: gift cards, fees, protection add-ons, test items. */
@@ -44,15 +44,24 @@ export function httpsUrl(src: string | undefined): string | undefined {
 const byNewest = (a: Product, b: Product) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? "");
 
 /**
- * Keep what the site shows for one brand: its newest launches plus its best live promos.
- * Caps keep the snapshot small even for stores with thousands of products.
+ * Keep what the site shows for one brand: every live promo and every launch inside the
+ * "Baru" window (so counts are real totals within the store's latest 250 products),
+ * plus its newest items for the brand page. The promo cap is only a sanity limit.
  */
-export function selectForBrand(products: Product[], { newest = 24, promos = 36 } = {}): Product[] {
+export function selectForBrand(
+  products: Product[],
+  { now, newest = 24, promoCap = 100 }: { now: number; newest?: number; promoCap?: number },
+): Product[] {
   const keep = new Map<string, Product>();
-  for (const p of [...products].sort(byNewest).slice(0, newest)) keep.set(p.id, p);
+  const sorted = [...products].sort(byNewest);
+  for (const p of sorted.slice(0, newest)) keep.set(p.id, p);
+  const windowStart = now - NEW_WINDOW_DAYS * 86_400_000;
+  for (const p of sorted) {
+    if (p.available && p.publishedAt && Date.parse(p.publishedAt) >= windowStart) keep.set(p.id, p);
+  }
   const onSale = products
     .filter((p) => p.discount !== undefined && p.available)
     .sort((a, b) => (b.discount ?? 0) - (a.discount ?? 0) || byNewest(a, b));
-  for (const p of onSale.slice(0, promos)) keep.set(p.id, p);
+  for (const p of onSale.slice(0, promoCap)) keep.set(p.id, p);
   return [...keep.values()];
 }
