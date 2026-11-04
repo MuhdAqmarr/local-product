@@ -7,7 +7,7 @@
 Built in answer to a viral Threads wish: *"boleh tak ada sorang buat website yang compile all
 local brand products… and MUST BE UP TO DATE dari segi promotion and new products they launched"*.
 
-Live: https://lokallah.vercel.app
+Live: https://lokallah.larasyn.workers.dev
 
 ## What it does
 

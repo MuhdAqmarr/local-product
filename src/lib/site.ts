@@ -9,13 +9,13 @@ import msMeta from "@/i18n/dictionaries/ms/meta";
  */
 export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://lokallah.vercel.app")
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://lokallah.larasyn.workers.dev")
 ).replace(/\/+$/, "");
 
 export const SITE_NAME = "LokalLah!";
 
 /** Who made LokalLah! (footer credit, metadata authors/creator/publisher). */
-export const MAKER = { name: "MaqmarX", url: "https://maqmarx.vercel.app" } as const;
+export const MAKER = { name: "MaqmarX", url: "https://larasyn.com" } as const;
 
 /* ---- Social metadata (QA F10 + docs/I18N.md) ----
  * A page's `openGraph` / `twitter` object REPLACES the layout's wholesale, so every page that sets
